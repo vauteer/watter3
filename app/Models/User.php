@@ -53,5 +53,24 @@ class User extends Authenticatable
             "?d=mp&s=40";
     }
 
+    public static function profilePath(string $stub = ''): string
+    {
+        return storage_path('app/public/profile') .
+            DIRECTORY_SEPARATOR .
+            trim($stub, DIRECTORY_SEPARATOR);
+    }
 
+    public static function removeOrphanProfileImages(): int
+    {
+        $count = 0;
+        foreach (glob(self::profilePath('*')) as $filename) {
+            $user = User::where('profile_image', basename($filename))->first();
+            if ($user === null) {
+                unlink($filename);
+                $count++;
+            }
+        }
+
+        return $count;
+    }
 }

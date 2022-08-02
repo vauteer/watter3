@@ -30,6 +30,13 @@ Route::middleware(['auth', 'verified'])->group(function() {
         return Inertia::render('Dashboard');
     })->middleware(['auth', 'verified'])->name('dashboard');
 
+    Route::get('/users', [TournamentController::class, 'index'])->name('users');
+    Route::get('/users/create', [TournamentController::class, 'create']);
+    Route::post('/users', [TournamentController::class, 'store']);
+    Route::get('/users/{user}/edit', [TournamentController::class, 'edit']);
+    Route::put('/users/{user}', [TournamentController::class, 'update']);
+    Route::delete('/users/{user}', [TournamentController::class, 'destroy']);
+
     Route::get('/tournaments', [TournamentController::class, 'index'])->name('tournaments');
     Route::get('/tournaments/create', [TournamentController::class, 'create']);
     Route::post('/tournaments', [TournamentController::class, 'store']);
