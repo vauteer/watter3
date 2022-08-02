@@ -1,67 +1,53 @@
 <script setup>
-import BreezeButton from '@/Components/Button.vue';
-import BreezeCheckbox from '@/Components/Checkbox.vue';
-import BreezeGuestLayout from '@/Layouts/Guest.vue';
-import BreezeInput from '@/Components/Input.vue';
-import BreezeLabel from '@/Components/Label.vue';
-import BreezeValidationErrors from '@/Components/ValidationErrors.vue';
-import { Head, Link, useForm } from '@inertiajs/inertia-vue3';
+import { Head } from '@inertiajs/inertia-vue3';
+import { useForm } from "@inertiajs/inertia-vue3";
+import TextInput from "@/Shared/TextInput.vue";
+import SubmitButton from "@/Shared/SubmitButton.vue";
 
-defineProps({
-    canResetPassword: Boolean,
-    status: String,
-});
-
-const form = useForm({
+let form = useForm({
     email: '',
     password: '',
-    remember: false
 });
 
-const submit = () => {
-    form.post(route('login'), {
+let submit = () => {
+    form.post('/login', {
         onFinish: () => form.reset('password'),
     });
 };
 </script>
 
 <template>
-    <BreezeGuestLayout>
-        <Head title="Log in" />
+    <div>
+        <Head title="Login Page" />
 
-        <BreezeValidationErrors class="mb-4" />
+        <div class="min-h-full flex flex-col justify-center py-12 sm:px-6 lg:px-8 bg-gray-100">
+            <div class="sm:mx-auto sm:w-full sm:max-w-md">
+                <!--                <img class="mx-auto h-12 w-auto" src="https://tailwindui.com/img/logos/workflow-mark-indigo-600.svg" alt="Workflow" />-->
+                <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">Anmelden</h2>
+            </div>
 
-        <div v-if="status" class="mb-4 font-medium text-sm text-green-600">
-            {{ status }}
+            <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+                <div class="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+                    <form @submit.prevent="submit" class="space-y-6" action="#" method="POST">
+                        <TextInput class="sm:col-span-6" v-model="form.email"
+                                   :error="form.errors.email" id="email"
+                                   label="Email"/>
+                        <TextInput v-model="form.password"
+                                   :error="form.errors.password" id="password"
+                                   label="Passwort" type="password"/>
+
+                        <!--                        <div class="flex items-center justify-between">-->
+                        <!--                            <div class="text-sm">-->
+                        <!--                                <a href="/forgot-password" class="font-medium text-indigo-600 hover:text-indigo-500"> Passwort vergessen ? </a>-->
+                        <!--                            </div>-->
+                        <!--                        </div>-->
+
+                        <SubmitButton :disabled="form.processing" class="w-full">
+                            Anmelden
+                        </SubmitButton>
+                    </form>
+                </div>
+            </div>
         </div>
-
-        <form @submit.prevent="submit">
-            <div>
-                <BreezeLabel for="email" value="Email" />
-                <BreezeInput id="email" type="email" class="mt-1 block w-full" v-model="form.email" required autofocus autocomplete="username" />
-            </div>
-
-            <div class="mt-4">
-                <BreezeLabel for="password" value="Password" />
-                <BreezeInput id="password" type="password" class="mt-1 block w-full" v-model="form.password" required autocomplete="current-password" />
-            </div>
-
-            <div class="block mt-4">
-                <label class="flex items-center">
-                    <BreezeCheckbox name="remember" v-model:checked="form.remember" />
-                    <span class="ml-2 text-sm text-gray-600">Remember me</span>
-                </label>
-            </div>
-
-            <div class="flex items-center justify-end mt-4">
-                <Link v-if="canResetPassword" :href="route('password.request')" class="underline text-sm text-gray-600 hover:text-gray-900">
-                    Forgot your password?
-                </Link>
-
-                <BreezeButton class="ml-4" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                    Log in
-                </BreezeButton>
-            </div>
-        </form>
-    </BreezeGuestLayout>
+    </div>
 </template>

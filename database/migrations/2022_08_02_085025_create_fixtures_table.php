@@ -13,13 +13,13 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('team_fixtures', function (Blueprint $table) {
+        Schema::create('fixtures', function (Blueprint $table) {
             $table->id();
             $table->foreignId('tournament_id')->constrained()->onDelete('cascade');
             $table->foreignId('team1_id')->constrained('teams')->onDelete('restrict');
             $table->foreignId('team2_id')->constrained('teams')->onDelete('restrict');
             $table->unsignedInteger('round');
-            $table->unsignedInteger('table_id');
+            $table->unsignedInteger('table');
             $table->string('score');
             $table->unsignedInteger('team1_won')->default(0);
             $table->unsignedInteger('team2_won')->default(0);
@@ -27,6 +27,8 @@ return new class extends Migration
             $table->unsignedInteger('team2_points')->default(0);
 
             $table->timestamps();
+
+            $table->index(['tournament_id', 'team1_id', 'team2_id']);
         });
     }
 
@@ -37,6 +39,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('team_fixtures');
+        Schema::dropIfExists('fixtures');
     }
 };

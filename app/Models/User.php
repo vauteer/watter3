@@ -41,4 +41,17 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function profileURL(): string
+    {
+//        if ($this->profile_image) {
+//            return asset('storage/profile/' . $this->profile_image);
+//        } else {
+
+        return "https://www.gravatar.com/avatar/" .
+            md5(strtolower(trim($this->email))) .
+            "?d=mp&s=40";
+    }
+
+
 }

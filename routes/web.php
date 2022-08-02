@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\TournamentController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -24,8 +25,17 @@ Route::get('/', function () {
     ]);
 });
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::middleware(['auth', 'verified'])->group(function() {
+    Route::get('/dashboard', function () {
+        return Inertia::render('Dashboard');
+    })->middleware(['auth', 'verified'])->name('dashboard');
+
+    Route::get('/tournaments', [TournamentController::class, 'index'])->name('tournaments');
+    Route::get('/tournaments/create', [TournamentController::class, 'create']);
+    Route::post('/tournaments', [TournamentController::class, 'store']);
+    Route::get('/tournaments/{tournament}/edit', [TournamentController::class, 'edit']);
+    Route::put('/tournaments/{tournament}', [TournamentController::class, 'update']);
+    Route::delete('/tournaments/{tournament}', [TournamentController::class, 'destroy']);
+});
 
 require __DIR__.'/auth.php';

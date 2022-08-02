@@ -22,7 +22,7 @@ return new class extends Migration
             $table->unsignedInteger('winpoints')->default(11);
             $table->boolean('published')->default(false);
             $table->boolean('finished')->default(false);
-            $table->foreignId('user_id')->constrained()->onDelete('restrict');
+            $table->foreignId('created_by')->constrained('users')->onDelete('restrict');
             $table->timestamps();
 
             $table->index(['name', 'start']);
