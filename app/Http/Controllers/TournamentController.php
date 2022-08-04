@@ -6,6 +6,7 @@ use App\Http\Resources\TournamentResource;
 use App\Models\Tournament;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Response;
 
 class TournamentController extends Controller
@@ -36,6 +37,8 @@ class TournamentController extends Controller
             ),
 
             'filters' => $request->only(['search']),
+
+            'canCreate' => Auth::check(),
         ]);
     }
 
@@ -56,29 +59,35 @@ class TournamentController extends Controller
             ->with('success', 'Tournament created.');
     }
 
-    public function edit(Request $request, Tournament $Tournament): Response
+    public function edit(Request $request, Tournament $tournament): Response
     {
         return inertia('Tournaments/Edit', [
             'tournament' => [
-                'id' => $Tournament->id,
-                'name' => $Tournament->name,
+                'id' => $tournament->id,
+                'name' => $tournament->name,
+                'start' => $tournament->start->toDateTimeLocalString(),
+                'rounds' => $tournament->rounds,
+                'games' => $tournament->games,
+                'winpoints' => $tournament->winpoints,
+                'published' => $tournament->puplished,
+                'finished' => $tournament->finished,
             ],
         ]);
     }
 
-    public function update(Request $request, Tournament $Tournament): RedirectResponse
+    public function update(Request $request, Tournament $tournament): RedirectResponse
     {
         $attributes = $request->validate($this->validationRules());
 
-        $Tournament->update($attributes);
+        $tournament->update($attributes);
 
         return redirect()->route('tournaments')
             ->with('success', 'Tournament updated.');
     }
 
-    public function destroy(Request $request, Tournament $Tournament): RedirectResponse
+    public function destroy(Request $request, Tournament $tournament): RedirectResponse
     {
-        $Tournament->delete();
+        $tournament->delete();
 
         return redirect()->route('tournaments')
             ->with('success', 'Tournament deleted');

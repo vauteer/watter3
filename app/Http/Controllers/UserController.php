@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\UserResource;
 use App\Models\User;
+use App\Notifications\NewUser;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -16,15 +17,16 @@ use Inertia\Response;
 
 class UserController extends Controller
 {
-    public function validationRules($id): array
+    public function validationRules(): array
     {
         return [
             'name' => 'required|string',
             'email' => 'required|email',
+            'admin' => 'required|boolean',
         ];
     }
 
-    private function accountRules($id): array
+    private function accountRules(): array
     {
         return [
             'name' => 'required|string',
@@ -53,7 +55,7 @@ class UserController extends Controller
 
             'filters' => $request->only(['search']),
 
-            'canCreate' => Auth::user()->isAdmin(),
+            'canCreate' => Auth::user()->admin,
         ]);
     }
 
@@ -64,7 +66,7 @@ class UserController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
-        $attributes = $request->validate($this->validationRules);
+        $attributes = $request->validate($this->validationRules());
 
         $password = Str::random(8);
         Log::info("Created User {$attributes['name']} with Password {$password}");
@@ -73,7 +75,7 @@ class UserController extends Controller
             'password' => Hash::make($password),
         ]));
 
-        //$user->notify(new NewUser($password));
+        $user->notify(new NewUser($password));
 
         return redirect()->route('users')
             ->with('success', 'User created.');
@@ -86,6 +88,7 @@ class UserController extends Controller
                 'id' => $user->id,
                 'name' => $user->name,
                 'email' => $user->email,
+                'admin' => $user->admin,
             ],
         ]);
     }

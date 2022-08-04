@@ -13,7 +13,9 @@ class Tournament extends Model
 
     protected $guarded = [];
     protected $casts = [
-        'start' => 'datetime'
+        'start' => 'datetime',
+        'published' => 'boolean',
+        'finished' => 'boolean',
     ];
 
     public function players(): BelongsToMany

@@ -15,7 +15,7 @@ const user = computed(() => usePage().props.value.auth.user);
 const getNavigation = computed(() => {
     return [
         { name: 'Turniere', route: 'tournaments', visible: true },
-        // { name: 'Benutzer', route: 'users', visible: true },
+        { name: 'Benutzer', route: 'users', visible: true },
         // { name: 'Backups', route: 'backups', visible: true },
     ];
 })
@@ -44,7 +44,14 @@ let logout = () => {
                             </div>
                         </div>
                     </div>
-                    <div class="hidden md:block">
+                    <div v-if="!user">
+                        <Link v-if="!user" :href="route('login')"
+                              :class="[route().current('login') ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white', 'px-3 py-2 rounded-md text-sm font-medium']"
+                        >
+                            Anmelden
+                        </Link>
+                    </div>
+                    <div v-else class="hidden md:block">
                         <div class="ml-4 flex items-center md:ml-6">
                             <!-- Profile dropdown -->
                             <Menu as="div" class="ml-3 relative">
@@ -84,7 +91,7 @@ let logout = () => {
                 </div>
             </div>
 
-            <DisclosurePanel class="md:hidden">
+            <DisclosurePanel v-if="user" class="md:hidden">
                 <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
                     <Link v-for="item in getNavigation" :key="item.name" as="a" :href="route(item.route)" >
                         <DisclosureButton v-if="item.visible" :class="[route().current(item.route) ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white', 'block px-3 py-2 rounded-md text-base font-medium']">{{ item.name }}</DisclosureButton>
