@@ -11,10 +11,12 @@ class Player extends Model
     use HasFactory;
 
     protected $guarded = [];
+    protected $hidden = ['pivot'];
 
     public function tournaments(): BelongsToMany
     {
-        return $this->belongsToMany(Tournament::class);
+        return $this->belongsToMany(Tournament::class)
+            ->withTimestamps();
     }
 
 

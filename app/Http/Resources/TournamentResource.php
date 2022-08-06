@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Auth;
 
 class TournamentResource extends JsonResource
 {
@@ -25,7 +26,7 @@ class TournamentResource extends JsonResource
             'finished' => $this->finished,
             'creator' => $this->creator->name,
 
-            'editable' => true,
+            'editable' => Auth::user()?->admin,
         ];
     }
 }

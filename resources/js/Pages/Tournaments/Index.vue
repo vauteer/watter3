@@ -5,7 +5,7 @@ import {computed, ref, watch} from "vue";
 import { Head, Link } from '@inertiajs/inertia-vue3';
 import Category from '@/Shared/Category.vue';
 import Pagination from '@/Shared/Pagination.vue';
-import { PencilIcon, LockClosedIcon, ChevronDoubleRightIcon } from '@heroicons/vue/outline';
+import { PencilIcon, LockClosedIcon, ChevronDoubleRightIcon, UserAddIcon } from '@heroicons/vue/outline';
 import {throttle} from "lodash";
 
 let props = defineProps({
@@ -63,7 +63,9 @@ watch(search, throttle(function (value) {
                                             <Link v-if="tournament.editable" :href="`/tournaments/${tournament.id}/edit`">
                                                 <PencilIcon class="h-5 w-5 text-blue-500" />
                                             </Link>
-                                            <LockClosedIcon v-else class="h-5 w-5" />
+                                            <Link v-if="tournament.editable" :href="`/tournaments/${tournament.id}/players`">
+                                                <UserAddIcon class="h-5 w-5 text-blue-500" />
+                                            </Link>
                                         </div>
                                     </td>
                                 </tr>

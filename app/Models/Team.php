@@ -12,6 +12,7 @@ class Team extends Model
     use HasFactory;
 
     protected $guarded = [];
+    protected $hidden = ['pivot'];
 
     public function player1(): BelongsTo
     {
@@ -25,7 +26,8 @@ class Team extends Model
 
     public function tournaments(): BelongsToMany
     {
-        return $this->belongsToMany(Tournament::class);
+        return $this->belongsToMany(Tournament::class)
+            ->withTimestamps();
     }
 
 }

@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\TournamentResource;
+use App\Models\Player;
+use App\Models\Team;
 use App\Models\Tournament;
+use App\Rules\UniquePlayer;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -21,6 +24,14 @@ class TournamentController extends Controller
             'winpoints' => 'int|min:11|max:21',
             'published' => 'boolean',
             'finished' => 'boolean',
+        ];
+    }
+
+    public function playersValidationRules($tournament): array
+    {
+        return  [
+            'player1' => ['required', 'string', 'max:100', new UniquePlayer($tournament->id)],
+            'player2' => ['nullable', 'string', 'max:100', new UniquePlayer($tournament->id)]
         ];
     }
 
@@ -52,7 +63,7 @@ class TournamentController extends Controller
         $attributes = $request->validate($this->validationRules());
 
         Tournament::create(array_merge($attributes, [
-            'created_by' => auth()->user()->id,
+            'created_by' => auth()->id(),
         ]));
 
         return redirect()->route('tournaments')
@@ -92,4 +103,41 @@ class TournamentController extends Controller
         return redirect()->route('tournaments')
             ->with('success', 'Tournament deleted');
     }
+
+    public function createPlayers(Request $request, Tournament $tournament): Response
+    {
+        return inertia('Tournaments/Players', [
+            'id' => $tournament->id,
+            'players' => $tournament->singlePlayers()->get(['players.id', 'name']),
+            'teams' => $tournament->teamsAsArray(),
+        ]);
+    }
+
+    public function storePlayers(Request $request, Tournament $tournament): Response
+    {
+        $attributes = $request->validate($this->playersValidationRules($tournament));
+
+        $this->addPlayers($tournament, $attributes);
+
+        return $this->createPlayers($request, $tournament);
+    }
+
+    private function addPlayers(Tournament $tournament, array $attributes)
+    {
+        $player1 = Player::firstOrCreate(['name' => $attributes['player1']]);
+        $tournament->players()->syncWithoutDetaching([$player1->id]);
+
+        if ($attributes['player2']) {
+            $player2 = Player::firstOrCreate(['name' => $attributes['player2']]);
+            $tournament->players()->syncWithoutDetaching([$player2->id]);
+
+            $team = Team::firstOrCreate([
+                'player1_id' => $player1->id,
+                'player2_id' => $player2->id,
+            ]);
+
+            $tournament->teams()->syncWithoutDetaching([$team->id]);
+        }
+    }
+
 }
