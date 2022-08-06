@@ -11,6 +11,7 @@ class Fixture extends Model
     use HasFactory;
 
     protected $guarded = [];
+    protected $hidden = ['pivot'];
 
     public function tournament(): BelongsTo
     {

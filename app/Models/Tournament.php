@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 
@@ -30,6 +31,11 @@ class Tournament extends Model
     {
         return $this->belongsToMany(Team::class)
             ->withTimestamps();
+    }
+
+    public function fixtures(): HasMany
+    {
+        return $this->HasMany(Fixture::class);
     }
 
     public function creator(): BelongsTo
@@ -101,4 +107,26 @@ class Tournament extends Model
             });
     }
 
+    public function draw()
+    {
+        $teamsCount = $this->teams()->count();
+        $tableCount = $teamsCount / 2;
+        $this->fixtures()->delete();
+
+        $randomTeams = $this->teams()->inRandomOrder()->pluck('teams.id')->toArray();
+        list($home, $away) = array_chunk($randomTeams, $tableCount);
+
+        for ($round = 0; $round < $this->rounds; $round++) {
+            for ($i = 0; $i < $tableCount; $i++) {
+                $this->fixtures()->create([
+                    'team1_id' => $home[$i],
+                    'team2_id' => $away[$i],
+                    'round' => $round + 1,
+                    'table' => $i + 1,
+                ]);
+            }
+
+            array_unshift($away, array_pop($away)); // rotate right/clockwise
+        }
+    }
 }

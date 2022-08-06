@@ -20,7 +20,7 @@ return new class extends Migration
             $table->foreignId('team2_id')->constrained('teams')->onDelete('restrict');
             $table->unsignedInteger('round');
             $table->unsignedInteger('table');
-            $table->string('score');
+            $table->string('score')->nullable();
             $table->unsignedInteger('team1_won')->default(0);
             $table->unsignedInteger('team2_won')->default(0);
             $table->unsignedInteger('team1_points')->default(0);
