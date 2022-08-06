@@ -37,39 +37,43 @@ class Tournament extends Model
         return $this->belongsTo(User::class, 'created_by', 'id');
     }
 
-    public function playerKeys(): array
+    public function currentPlayerCount()
     {
-        $result = $this->players()
-            ->get(['players.id'])
-            ->map(function ($player) {
-                return $player->id;
-            });
-
-        return $result->toArray();
+        return $this->teams()->count() * 2 + $this->players()->count();
     }
+//    public function playerKeys(): array
+//    {
+//        $result = $this->players()
+//            ->get(['players.id'])
+//            ->map(function ($player) {
+//                return $player->id;
+//            });
+//
+//        return $result->toArray();
+//    }
 
-    public function teamPlayerKeys(): array
-    {
-        $result = $this->teams()
-            ->get(['player1_id', 'player2_id'])
-            ->map(function ($team) {
-                return [ $team->player1_id, $team->player2_id];
-            });
+//    public function teamPlayerKeys(): array
+//    {
+//        $result = $this->teams()
+//            ->get(['player1_id', 'player2_id'])
+//            ->map(function ($team) {
+//                return [ $team->player1_id, $team->player2_id];
+//            });
+//
+//        return Arr::flatten($result);
+//    }
 
-        return Arr::flatten($result);
-    }
+//    public function singlePlayerKeys(): array
+//    {
+//        $result = array_diff($this->playerKeys(), $this->teamPlayerKeys());
+//
+//        return Arr::flatten($result);
+//    }
 
-    public function singlePlayerKeys(): array
-    {
-        $result = array_diff($this->playerKeys(), $this->teamPlayerKeys());
-
-        return Arr::flatten($result);
-    }
-
-    public function singlePlayers()
-    {
-        return $this->players()->whereIn('players.id', $this->singlePlayerKeys());
-    }
+//    public function singlePlayers()
+//    {
+//        return $this->players()->whereIn('players.id', $this->singlePlayerKeys());
+//    }
 
     public function playersAsArray(): Collection
     {
@@ -89,6 +93,7 @@ class Tournament extends Model
             ->get(['team_id', 'player1_id', 'player2_id'])
             ->mapWithKeys(function ($team) {
                 return [$team->team_id => [
+                    'id' => $team->team_id,
                     'player1' => $team->player1->name,
                     'player2' => $team->player2->name,
                     ]

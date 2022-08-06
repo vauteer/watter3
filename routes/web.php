@@ -48,7 +48,9 @@ Route::middleware(['auth', 'verified'])->group(function() {
     Route::get('/tournaments/{tournament}/players', [TournamentController::class, 'createPlayers'])
     ->name('tournament.players');
     Route::post('/tournaments/{tournament}/players', [TournamentController::class, 'storePlayers']);
-
+    Route::delete('/tournaments/{tournament}/players/{player}', [TournamentController::class, 'detachPlayer']);
+    Route::delete('/tournaments/{tournament}/teams/{team}', [TournamentController::class, 'detachTeam']);
+    Route::post('/tournaments/{tournament}/players/connect', [TournamentController::class, 'connectPlayers']);
 });
 
 require __DIR__.'/auth.php';

@@ -7,6 +7,7 @@ use App\Models\Player;
 use App\Models\Team;
 use App\Models\Tournament;
 use App\Rules\UniquePlayer;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -107,9 +108,10 @@ class TournamentController extends Controller
     public function createPlayers(Request $request, Tournament $tournament): Response
     {
         return inertia('Tournaments/Players', [
-            'id' => $tournament->id,
-            'players' => $tournament->singlePlayers()->get(['players.id', 'name']),
+            'tournamentId' => $tournament->id,
+            'players' => $tournament->players()->get(['players.id', 'name']),
             'teams' => $tournament->teamsAsArray(),
+            'playerCount' => $tournament->currentPlayerCount(),
         ]);
     }
 
@@ -117,19 +119,17 @@ class TournamentController extends Controller
     {
         $attributes = $request->validate($this->playersValidationRules($tournament));
 
-        $this->addPlayers($tournament, $attributes);
+        $this->attachPlayers($tournament, $attributes);
 
         return $this->createPlayers($request, $tournament);
     }
 
-    private function addPlayers(Tournament $tournament, array $attributes)
+    private function attachPlayers(Tournament $tournament, array $attributes)
     {
         $player1 = Player::firstOrCreate(['name' => $attributes['player1']]);
-        $tournament->players()->syncWithoutDetaching([$player1->id]);
 
         if ($attributes['player2']) {
             $player2 = Player::firstOrCreate(['name' => $attributes['player2']]);
-            $tournament->players()->syncWithoutDetaching([$player2->id]);
 
             $team = Team::firstOrCreate([
                 'player1_id' => $player1->id,
@@ -137,7 +137,44 @@ class TournamentController extends Controller
             ]);
 
             $tournament->teams()->syncWithoutDetaching([$team->id]);
+        } else {
+            $tournament->players()->syncWithoutDetaching([$player1->id]);
         }
     }
+
+    public function detachPlayer(Request $request, Tournament $tournament, Player $player): Response
+    {
+        $tournament->players()->detach([$player->id]);
+
+        return $this->createPlayers($request, $tournament);
+    }
+
+    public function detachTeam(Request $request, Tournament $tournament, Team $team): Response
+    {
+        $tournament->teams()->detach([$team->id]);
+        $tournament->players()->detach([$team->player1_id, $team->player2_id]);
+
+        return $this->createPlayers($request, $tournament);
+    }
+
+    public function connectPlayers(Request $request, Tournament $tournament): Response
+    {
+        $players = $request->input('checkedPlayers');
+
+        $player1_id = $players[0];
+        $player2_id = $players[1];
+
+        $tournament->players()->detach([$player1_id, $player2_id]);
+
+        $team = Team::firstOrCreate([
+            'player1_id' => $player1_id,
+            'player2_id' => $player2_id,
+        ]);
+
+        $tournament->teams()->attach($team->id);
+
+        return $this->createPlayers($request, $tournament);
+    }
+
 
 }

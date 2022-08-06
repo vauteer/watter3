@@ -50,7 +50,7 @@ let submit = () => {
     }
 };
 
-let deleteWork = () => {
+let deleteTournament = () => {
     if (confirm('Wollen Sie das Turnier wirklich löschen ?')) {
         Inertia.delete(`/tournaments/${props.tournament.id}`);
     }
