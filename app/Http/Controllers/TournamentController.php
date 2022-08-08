@@ -59,7 +59,7 @@ class TournamentController extends Controller
 
     public function show(Request $request, Tournament $tournament):Response
     {
-        $round = intval($request->input('round')) ?? $tournament->rounds;
+        $round = ($request->has('round')) ? intval($request->input('round')) : $tournament->rounds;
 
         return inertia('Tournaments/Show', [
             'tournament' => $tournament,

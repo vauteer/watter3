@@ -1,4 +1,5 @@
 <script setup>
+import { computed, ref, onMounted } from "vue";
 import { Inertia } from "@inertiajs/inertia";
 import { Head, Link } from '@inertiajs/inertia-vue3';
 import { PencilIcon, LockClosedIcon } from '@heroicons/vue/outline';
@@ -12,10 +13,21 @@ let props = defineProps({
     canCreate: Boolean,
 });
 
+let getTitle = computed(() => {
+    let date = new Date(props.tournament.start);
+
+    return date.toLocaleDateString() + ' ' + props.tournament.name;
+})
 let switchRound = (round) => {
-    console.log('switchRound');
-        Inertia.get(`/tournaments/${props.tournament.id}/show?round=${round}`);
+    Inertia.get(`/tournaments/${props.tournament.id}/show?round=${round}`);
 };
+
+let rowColor = (game) => {
+    if (game.startsWith('11'))
+        return 'bg-green-100 text-green-800';
+    else
+        return 'bg-red-100 text-red-800';
+}
 
 let getMarkedScore = (score) => {
   return score.replace('11', '<span class="text-green-500">11</span>');
@@ -27,8 +39,7 @@ let getMarkedScore = (score) => {
 
         <Layout>
             <div class="w-full mx-auto bg-gray-100 text-gray-900 text-sm sm:rounded sm:border sm:shadow sm:overflow-hidden mt-2 px-4 sm:px-6 lg:px-8">
-                <div class="w-full text-2xl font-medium text-center text-gray-900">{{ tournament.name }} - Runde
-                    {{ currentRound }}</div>
+                <div class="w-full text-2xl font-medium text-left text-gray-900 pt-3 pl-2">{{ getTitle }}</div>
 
                 <div class="mt-4 mb-4 flex flex-col">
                     <div class="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
@@ -44,7 +55,7 @@ let getMarkedScore = (score) => {
                                         <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
                                             Paarung
                                         </th>
-                                        <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                                        <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 hidden md:block">
                                             Ergebnis
                                         </th>
                                         <th scope="col" class="px-3 py-3.5 text-center text-sm font-semibold text-gray-900">
@@ -65,12 +76,15 @@ let getMarkedScore = (score) => {
                                             <div class="font-bold">{{ fixture.team1 }}</div>
                                             <div class="font-bold">{{ fixture.team2 }}</div>
                                         </td>
-                                        <td class="px-3">
-                                            <div class="font-semibold">{{ fixture.score }}</div>
+                                        <td class="px-3 flex justify-left pt-2.5 hidden md:block">
+                                            <span v-for="game in fixture.games"
+                                                  class="inline-flex items-center px-3.5 py-2 rounded-full text-xs font-medium ml-2"
+                                                  :class="rowColor(game)"
+                                            > {{ game }} </span>
                                         </td>
                                         <td class="px-3 text-center">
-                                            <div class="font-bold text-gray-900">{{ fixture.games }}</div>
-                                            <div class="font-semibold">{{ fixture.points }}</div>
+                                            <div class="font-bold text-gray-900">{{ fixture.scoreGames }}</div>
+                                            <div class="font-semibold">{{ fixture.scorePoints }}</div>
                                         </td>
                                         <td class="px-3">
                                             <div class="h-5">
