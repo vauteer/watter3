@@ -26,6 +26,11 @@ use Inertia\Inertia;
     ]);
 });*/
 
+Route::get('/test', function() {
+
+   redirect('/');
+});
+
 Route::get('/', [TournamentController::class, 'index'])->name('tournaments');
 
 Route::middleware(['auth', 'verified'])->group(function() {
@@ -40,6 +45,7 @@ Route::middleware(['auth', 'verified'])->group(function() {
     Route::put('/users/{user}', [UserController::class, 'update']);
     Route::delete('/users/{user}', [UserController::class, 'destroy']);
 
+    Route::get('/tournaments/{tournament}/show', [TournamentController::class, 'show'])->name('tournaments.show');
     Route::get('/tournaments/create', [TournamentController::class, 'create']);
     Route::post('/tournaments', [TournamentController::class, 'store']);
     Route::get('/tournaments/{tournament}/edit', [TournamentController::class, 'edit']);
@@ -51,6 +57,8 @@ Route::middleware(['auth', 'verified'])->group(function() {
     Route::delete('/tournaments/{tournament}/players/{player}', [TournamentController::class, 'detachPlayer']);
     Route::delete('/tournaments/{tournament}/teams/{team}', [TournamentController::class, 'detachTeam']);
     Route::post('/tournaments/{tournament}/players/connect', [TournamentController::class, 'connectPlayers']);
+    Route::get('/tournaments/fixtures/{fixture}/edit', [TournamentController::class, 'editFixture']);
+    Route::put('/tournaments/fixtures/{fixture}', [TournamentController::class, 'updateFixture']);
 });
 
 require __DIR__.'/auth.php';

@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\FixtureResource;
 use App\Http\Resources\TournamentResource;
+use App\Models\Fixture;
 use App\Models\Player;
 use App\Models\Team;
 use App\Models\Tournament;
+use App\Rules\Score;
 use App\Rules\UniquePlayer;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\RedirectResponse;
@@ -54,6 +57,22 @@ class TournamentController extends Controller
         ]);
     }
 
+    public function show(Request $request, Tournament $tournament):Response
+    {
+        $round = intval($request->input('round')) ?? $tournament->rounds;
+
+        return inertia('Tournaments/Show', [
+            'tournament' => $tournament,
+            'currentRound' => $round,
+            'fixtures' => FixtureResource::collection($tournament->fixtures()
+                ->where('round', $round)
+                ->orderBy('table')
+                ->get()),
+
+            'canCreate' => Auth::check(),
+        ]);
+    }
+
     public function create(Request $request):Response
     {
         return inertia('Tournaments/Edit');
@@ -77,7 +96,8 @@ class TournamentController extends Controller
             'tournament' => [
                 'id' => $tournament->id,
                 'name' => $tournament->name,
-                'start' => $tournament->start->toDateTimeLocalString(),
+//                'start' => substr($tournament->start->toDateTimeLocalString(), 0, 19),
+                'start' => $tournament->start->format('Y-m-d\TH:i'),
                 'rounds' => $tournament->rounds,
                 'games' => $tournament->games,
                 'winpoints' => $tournament->winpoints,
@@ -176,5 +196,30 @@ class TournamentController extends Controller
         return $this->createPlayers($request, $tournament);
     }
 
+    public function editFixture(Request $request, Fixture $fixture): Response
+    {
+        $tournament = $fixture->tournament;
+
+        return inertia('Fixtures/Edit', [
+            'fixture' => [
+                'id' => $fixture->id,
+                'tournament_id' => $tournament->id,
+                'score' => $fixture->score,
+            ],
+            'scorePattern' => $tournament->getScoreRegex(),
+        ]);
+    }
+
+    public function updateFixture(Request $request, Fixture $fixture): RedirectResponse
+    {
+        $attributes = $request->validate([
+            'score' => new Score($fixture),
+        ]);
+
+        $fixture->update($attributes);
+
+        return redirect()->route('tournaments.show', $fixture->tournament_id)
+            ->with('success', 'Tournament updated.');
+    }
 
 }

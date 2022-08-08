@@ -30,4 +30,9 @@ class Team extends Model
             ->withTimestamps();
     }
 
+    public function __toString()
+    {
+        return $this->player1->name . '/' . $this->player2->name;
+    }
+
 }

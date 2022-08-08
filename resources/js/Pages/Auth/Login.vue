@@ -19,7 +19,7 @@ let submit = () => {
 
 <template>
     <div>
-        <Head title="Login Page" />
+        <Head title="Anmeldung" />
 
         <Layout>
             <div class="min-h-full flex flex-col justify-center sm:px-6 lg:px-8 bg-gray-100">

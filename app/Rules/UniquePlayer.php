@@ -8,7 +8,7 @@ use Illuminate\Contracts\Validation\InvokableRule;
 
 class UniquePlayer implements InvokableRule
 {
-    public int $tournamentId;
+    private int $tournamentId;
 
     public function __construct($tournamentId)
     {

@@ -2,6 +2,7 @@
 import { computed, ref, onMounted } from "vue";
 import { Inertia } from "@inertiajs/inertia";
 import { useForm } from "@inertiajs/inertia-vue3";
+import { Head, Link } from '@inertiajs/inertia-vue3';
 import Layout from '@/Shared/Layout.vue';
 import EditTitle from '@/Shared/EditTitle.vue'
 import TextInput from '@/Shared/TextInput.vue';
@@ -31,7 +32,6 @@ onMounted(() => {
     }
     form.player1 = '';
     form.player2 = '';
-
     document.getElementById('player1').focus();
 });
 
@@ -81,6 +81,8 @@ let deleteTeam = (teamId) => {
 </script>
 
 <template>
+    <Head title="Registrierung" />
+
     <Layout>
         <div>
             <button
@@ -89,10 +91,7 @@ let deleteTeam = (teamId) => {
             ></button>
             <div class="relative z-30 w-full max-w-xl mx-auto bg-gray-100 text-gray-900 text-sm sm:rounded sm:border sm:shadow sm:overflow-hidden mt-2">
                 <div class="sm:px-2 lg:px-4 sm:py-2 lg:py-4">
-                    <div class="flex justify-between items-center">
-                        <EditTitle class="ml-3 mb-4">Teams/Spieler - Bisher gemeldet: {{ playerCount }}</EditTitle>
-                        <SubmitButton v-if="canDraw" class="mb-4">Spielplan erstellen</SubmitButton>
-                    </div>
+                    <EditTitle class="ml-3 mb-4">{{ teams.length }} Teams - {{ players.length }} freie Spieler</EditTitle>
 
                     <div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg sm:px-2 lg:px-4 bg-white">
                         <form @submit.prevent="submit" class="space-y-8 divide-y divide-gray-200">
@@ -177,6 +176,7 @@ let deleteTeam = (teamId) => {
                         </table>
                     </div>
                     <div class="w-full flex justify-center mt-3">
+                        <SubmitButton v-if="canDraw" class="my-3">Spielplan erstellen</SubmitButton>
                     </div>
                 </div>
             </div>

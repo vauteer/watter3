@@ -93,20 +93,24 @@ class Tournament extends Model
             });
     }
 
-    public function teamsAsArray(): Collection
+    public function teamsAsArray()
     {
         return $this->teams()
             ->get(['team_id', 'player1_id', 'player2_id'])
-            ->mapWithKeys(function ($team) {
-                return [$team->team_id => [
+            ->map(function ($team) {
+                return [
                     'id' => $team->team_id,
                     'player1' => $team->player1->name,
                     'player2' => $team->player2->name,
-                    ]
+
                 ];
             });
     }
 
+    public function registeredTeams()
+    {
+
+    }
     public function draw()
     {
         $teamsCount = $this->teams()->count();
@@ -127,6 +131,12 @@ class Tournament extends Model
             }
 
             array_unshift($away, array_pop($away)); // rotate right/clockwise
+            // $away[] = array_shift($away); //rotate left/counterclockwise
         }
+    }
+
+    public function getScoreRegex()
+    {
+        return '^(' . Fixture::SCORE_REGEX . ' ){' . $this->games - 1 . '}' . Fixture::SCORE_REGEX . '$';
     }
 }

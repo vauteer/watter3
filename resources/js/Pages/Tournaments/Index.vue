@@ -40,6 +40,9 @@ watch(search, throttle(function (value) {
                                 <tr>
                                     <th scope="col" class="px-3 py-3.5 w-6"><span class="sr-only">Select Tournament</span></th>
                                     <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">Name</th>
+                                    <th scope="col" class="py-3.5 pl-4 pr-3">
+                                        <span class="sr-only">Spieler hinzufügen</span>
+                                    </th>
                                     <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6 w-6">
                                         <span class="sr-only">Edit</span>
                                     </th>
@@ -60,11 +63,15 @@ watch(search, throttle(function (value) {
                                     </td>
                                     <td class="px-3">
                                         <div class="h-5">
-                                            <Link v-if="tournament.editable" :href="`/tournaments/${tournament.id}/edit`">
-                                                <PencilIcon class="h-5 w-5 text-blue-500" />
-                                            </Link>
                                             <Link v-if="tournament.editable" :href="`/tournaments/${tournament.id}/players`">
                                                 <UserAddIcon class="h-5 w-5 text-blue-500" />
+                                            </Link>
+                                        </div>
+                                    </td>
+                                    <td class="px-3">
+                                        <div class="h-5">
+                                            <Link v-if="tournament.editable" :href="`/tournaments/${tournament.id}/edit`">
+                                                <PencilIcon class="h-5 w-5 text-blue-500" />
                                             </Link>
                                         </div>
                                     </td>

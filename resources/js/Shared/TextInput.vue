@@ -7,15 +7,15 @@ let props = defineProps({
         default: 'text',
     },
     step: {
-        type: String,
-        default: '1'
+        type: String|null,
+        default: null,
     },
     placeholder: {
         type: String,
         default: null,
     },
     regex: {
-        type: String,
+        type: String|null,
         default: null,
     },
     error: String,

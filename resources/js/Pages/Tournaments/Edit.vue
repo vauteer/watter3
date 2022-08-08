@@ -33,8 +33,8 @@ onMounted(() => {
         form.rounds = props.tournament.rounds;
         form.games = String(props.tournament.games);
         form.winpoints = String(props.tournament.winpoints);
-        form.published = String(props.tournament.published);
-        form.finished = props.tournament.finished;
+        form.published = Boolean(props.tournament.published);
+        form.finished = Boolean(props.tournament.finished);
 
         editMode.value = true;
     }
@@ -84,7 +84,7 @@ const getSubmitButtonText = computed(() => {
                                     <TextInput class="sm:col-span-3" v-model="form.name" :error="form.errors.name" id="name"
                                                label="Name"/>
                                     <TextInput class="sm:col-span-3" v-model="form.start" :error="form.errors.start" id="start"
-                                               type='datetime-local' label="Start"/>
+                                               type='datetime-local' label="Start" step="60"/>
                                     <TextInput class="sm:col-span-3" v-model="form.rounds" :error="form.errors.rounds" id="rounds"
                                                type="number" step="1" label="Runden"/>
                                     <TextInput class="sm:col-span-3" v-model="form.games" :error="form.errors.games" id="games"
