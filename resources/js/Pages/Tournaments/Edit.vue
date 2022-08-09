@@ -1,5 +1,6 @@
 <script setup>
 import { computed, ref, onMounted } from "vue";
+import { Head, Link } from '@inertiajs/inertia-vue3';
 import { Inertia } from "@inertiajs/inertia";
 import { useForm } from "@inertiajs/inertia-vue3";
 import Layout from '@/Shared/Layout.vue';
@@ -86,7 +87,7 @@ const getSubmitButtonText = computed(() => {
                                     <TextInput class="sm:col-span-3" v-model="form.start" :error="form.errors.start" id="start"
                                                type='datetime-local' label="Start" step="60"/>
                                     <TextInput class="sm:col-span-3" v-model="form.rounds" :error="form.errors.rounds" id="rounds"
-                                               type="number" step="1" label="Runden"/>
+                                               type="number" label="Runden" min="0" step="1"/>
                                     <TextInput class="sm:col-span-3" v-model="form.games" :error="form.errors.games" id="games"
                                                type="number" step="1" label="Spiele (pro Runde)"/>
                                     <TextInput class="sm:col-span-3" v-model="form.winpoints" :error="form.errors.winpoints" id="winpoints"

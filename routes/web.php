@@ -59,6 +59,7 @@ Route::middleware(['auth', 'verified'])->group(function() {
     Route::post('/tournaments/{tournament}/players/connect', [TournamentController::class, 'connectPlayers']);
     Route::get('/tournaments/fixtures/{fixture}/edit', [TournamentController::class, 'editFixture']);
     Route::put('/tournaments/fixtures/{fixture}', [TournamentController::class, 'updateFixture']);
+    Route::get('/tournaments/{tournament}/lists/{round}', [TournamentController::class, 'tableLists']);
 });
 
 require __DIR__.'/auth.php';

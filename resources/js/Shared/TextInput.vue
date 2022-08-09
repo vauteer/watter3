@@ -6,10 +6,9 @@ let props = defineProps({
         type: String,
         default: 'text',
     },
-    step: {
-        type: String|null,
-        default: null,
-    },
+    min: String,
+    max: String,
+    step: String,
     placeholder: {
         type: String,
         default: null,
@@ -30,7 +29,10 @@ defineEmits(['update:modelValue']);
     <div>
         <label v-if="label" class="block text-sm font-medium text-gray-700 ml-2" :for="id">{{ label }}</label>
         <input :id="id" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
-               :type="type" :step="step"
+               :type="type"
+               :step="step"
+               :min="min"
+               :max="max"
                :value="modelValue"
                :pattern="regex"
                :placeholder="placeholder"

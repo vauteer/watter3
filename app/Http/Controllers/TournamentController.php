@@ -64,9 +64,10 @@ class TournamentController extends Controller
         return inertia('Tournaments/Show', [
             'tournament' => $tournament,
             'currentRound' => $round,
+            'standings' => $tournament->standings(),
             'fixtures' => FixtureResource::collection($tournament->fixtures()
                 ->where('round', $round)
-                ->orderBy('table')
+                ->orderBy('table_number')
                 ->get()),
 
             'canCreate' => Auth::check(),
@@ -101,7 +102,7 @@ class TournamentController extends Controller
                 'rounds' => $tournament->rounds,
                 'games' => $tournament->games,
                 'winpoints' => $tournament->winpoints,
-                'published' => $tournament->puplished,
+                'published' => $tournament->published,
                 'finished' => $tournament->finished,
             ],
         ]);
@@ -205,6 +206,9 @@ class TournamentController extends Controller
                 'id' => $fixture->id,
                 'tournament_id' => $tournament->id,
                 'score' => $fixture->score,
+                'round' => $fixture->round,
+                'team1' => $fixture->team1->__toString(),
+                'team2' => $fixture->team2->__toString(),
             ],
             'scorePattern' => $tournament->getScoreRegex(),
         ]);
@@ -222,4 +226,9 @@ class TournamentController extends Controller
             ->with('success', 'Tournament updated.');
     }
 
+    public function tableLists(Request $request, Tournament $tournament, $round)
+    {
+        return (new Response($tournament->tableLists($round)->Output(), 200))
+            ->header('Content-Type', 'application/pdf');
+    }
 }

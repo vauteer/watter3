@@ -19,7 +19,7 @@ return new class extends Migration
             $table->foreignId('team1_id')->constrained('teams')->onDelete('restrict');
             $table->foreignId('team2_id')->constrained('teams')->onDelete('restrict');
             $table->unsignedInteger('round');
-            $table->unsignedInteger('table');
+            $table->unsignedInteger('table_number');  // not table ! Is reserved by laravel for table name
             $table->string('score')->nullable();
             $table->unsignedInteger('team1_won')->default(0);
             $table->unsignedInteger('team2_won')->default(0);

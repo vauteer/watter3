@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Fpdf\Fpdf;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -47,39 +48,6 @@ class Tournament extends Model
     {
         return $this->teams()->count() * 2 + $this->players()->count();
     }
-//    public function playerKeys(): array
-//    {
-//        $result = $this->players()
-//            ->get(['players.id'])
-//            ->map(function ($player) {
-//                return $player->id;
-//            });
-//
-//        return $result->toArray();
-//    }
-
-//    public function teamPlayerKeys(): array
-//    {
-//        $result = $this->teams()
-//            ->get(['player1_id', 'player2_id'])
-//            ->map(function ($team) {
-//                return [ $team->player1_id, $team->player2_id];
-//            });
-//
-//        return Arr::flatten($result);
-//    }
-
-//    public function singlePlayerKeys(): array
-//    {
-//        $result = array_diff($this->playerKeys(), $this->teamPlayerKeys());
-//
-//        return Arr::flatten($result);
-//    }
-
-//    public function singlePlayers()
-//    {
-//        return $this->players()->whereIn('players.id', $this->singlePlayerKeys());
-//    }
 
     public function playersAsArray(): Collection
     {
@@ -107,10 +75,6 @@ class Tournament extends Model
             });
     }
 
-    public function registeredTeams()
-    {
-
-    }
     public function draw()
     {
         $teamsCount = $this->teams()->count();
@@ -126,13 +90,102 @@ class Tournament extends Model
                     'team1_id' => $home[$i],
                     'team2_id' => $away[$i],
                     'round' => $round + 1,
-                    'table' => $i + 1,
+                    'table_number' => $i + 1,
                 ]);
             }
 
             array_unshift($away, array_pop($away)); // rotate right/clockwise
             // $away[] = array_shift($away); //rotate left/counterclockwise
         }
+    }
+
+    public function standings(?int $tillRound = null)
+    {
+        if ($tillRound === null)
+            $tillRound = $this->rounds;
+
+        $standings = [];
+        $teams = $this->teams;
+        foreach ($teams as $team) {
+            $standings[$team->id] = [
+                'id' => $team->id,
+                'player1' => $team->player1->name,
+                'player2' => $team->player2->name,
+                'won' => 0,
+                'lost' => 0,
+                'pointsWon' => 0,
+                'pointsLost' => 0,
+            ];
+        }
+
+        $fixtures = $this->fixtures()->where('round', '<=', $tillRound)->get();
+
+        foreach ($fixtures as $fixture) {
+            $standings[$fixture->team1_id]['won'] += $fixture->team1_won;
+            $standings[$fixture->team1_id]['lost'] += $fixture->team2_won;
+            $standings[$fixture->team1_id]['pointsWon'] += $fixture->team1_points;
+            $standings[$fixture->team1_id]['pointsLost'] += $fixture->team2_points;
+
+            $standings[$fixture->team2_id]['won'] += $fixture->team2_won;
+            $standings[$fixture->team2_id]['lost'] += $fixture->team1_won;
+            $standings[$fixture->team2_id]['pointsWon'] += $fixture->team2_points;
+            $standings[$fixture->team2_id]['pointsLost'] += $fixture->team1_points;
+        }
+
+        foreach ($standings as $id => $ranking) {
+            $games[$id] = $ranking['won'];
+            $pointsDifference[$id] = $ranking['pointsWon'] - $ranking['pointsLost'];
+            $pointsWon[$id] = $ranking['pointsWon'];
+        }
+
+        array_multisort($games, SORT_DESC, $pointsDifference, SORT_DESC, $pointsWon, SORT_DESC, $standings);
+
+        return $standings;
+    }
+
+    public function tableLists($round)
+    {
+        $gamesPerRound = $this->games;
+
+        $fixtures = $this->fixtures()->where('round', $round)
+            ->orderBy('table_number')
+            ->get();
+
+        $pdf = new FPDF('L', 'mm', 'A4');
+
+        foreach ($fixtures as $fixture) {
+            $pdf->AddPage();
+            $pdf->SetFont('Arial', 'B', 16);
+            $pdf->Cell(120, 10, 'Runde ' . $fixture->round . ' - Tisch ' . $fixture->table_number, 0, 0);
+            $pdf->Ln(10);
+            $pdf->SetFont('Arial', 'B', 12);
+            $pdf->Cell(60, 7, 'Schreiber:');
+            $pdf->Line(40, 27, 120, 27);
+            $pdf->Ln(10);
+            $pdf->Cell(60, 7, utf8_decode($fixture->team1->player1->name));
+            $pdf->Cell(60, 7, utf8_decode($fixture->team2->player1->name));
+            $pdf->Ln(7);
+            $pdf->Cell(60, 7, utf8_decode($fixture->team1->player2->name));
+            $pdf->Cell(60, 7, utf8_decode($fixture->team2->player2->name));
+
+//            $pdf->Line(0, 20, 120, 20);
+            $pdf->Line(60, 30, 60, 50 + ($gamesPerRound * 20));
+            $pdf->Line(0, 50, 120, 50);
+
+            for ($i = 1; $i <= $gamesPerRound; $i++) {
+                $y = 50 + ($i * 20);
+                $pdf->Line(0, $y, 120, $y);
+            }
+
+            $pdf->Ln(15 + (20 * $gamesPerRound));
+            $pdf->SetFont('Arial', '', 12);
+            $pdf->Cell(60, 6, 'LS-Watter 3');
+            $pdf->Cell(60, 6, 'http://watter.it-ruler.de');
+            $pdf->Ln(6);
+            $pdf->Cell(120, 6, chr(169) . ' 2016 Gerald Lindner');
+        }
+
+        return $pdf;
     }
 
     public function getScoreRegex()

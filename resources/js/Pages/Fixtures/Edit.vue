@@ -24,6 +24,11 @@ onMounted(() => {
     document.getElementById('score').focus();
 });
 
+const getTitle = computed(() => {
+    return props.fixture.team1 + ' gegen ' + props.fixture.team2;
+});
+
+
 let submit = () => {
     form.put(`/tournaments/fixtures/${props.fixture.id}`);
 };
@@ -39,7 +44,11 @@ let submit = () => {
             ></button>
             <div class="relative z-30 w-full max-w-xl mx-auto bg-gray-100 text-gray-900 text-sm sm:rounded sm:border sm:shadow sm:overflow-hidden mt-2">
                 <div class="sm:px-2 lg:px-4 sm:py-2 lg:py-4">
-                    <EditTitle class="ml-3 mb-4">Ergebnis bearbeiten</EditTitle>
+                    <div class="font-medium text-lg text-center text-gray-900 ml-3 mb-4">
+                        <div>{{ fixture.team1 }}</div>
+                        <div>gegen</div>
+                        <div>{{ fixture.team2 }}</div>
+                    </div>
 
                     <div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg sm:px-2 lg:px-4 bg-white">
                         <form @submit.prevent="submit" class="space-y-8 divide-y divide-gray-200">
@@ -51,7 +60,7 @@ let submit = () => {
                                 <div class="py-5">
                                     <div class="flex justify-between">
                                         <div class="w-full flex justify-end">
-                                            <AbortButton :href="route('tournaments.show', fixture.tournament_id)">
+                                            <AbortButton :href="route('tournaments.show', fixture.tournament_id) + '?round=' + fixture.round">
                                                 Abbrechen
                                             </AbortButton>
                                             <SubmitButton class="ml-2">Speichern</SubmitButton>
