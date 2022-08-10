@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Fpdf\Fpdf;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -49,6 +50,25 @@ class Tournament extends Model
         return $this->teams()->count() * 2 + $this->players()->count();
     }
 
+    public static function showable(User|null $user)
+    {
+        if ($user === null) {
+            return Tournament::where('start', '<', Carbon::now());
+        } else if ($user->admin) {
+            return Tournament::query();
+        } else {
+            return Tournament::where('start', '<', Carbon::now())
+                ->orWhere('created_by', $user->id);
+        }
+    }
+
+    public static function test()
+    {
+        $tournaments = Tournament::all();
+        return $tournaments->filter(function ($item, $key) {
+            return $item->id % 2;
+        });
+    }
     public function playersAsArray(): Collection
     {
         return $this->players()
@@ -78,6 +98,9 @@ class Tournament extends Model
     public function draw()
     {
         $teamsCount = $this->teams()->count();
+        if ($teamsCount % 2 !== 0)
+            return;
+
         $tableCount = $teamsCount / 2;
         $this->fixtures()->delete();
 
@@ -191,5 +214,19 @@ class Tournament extends Model
     public function getScoreRegex()
     {
         return '^(' . Fixture::SCORE_REGEX . ' ){' . $this->games - 1 . '}' . Fixture::SCORE_REGEX . '$';
+    }
+
+    public function editableBy(User|null $user)
+    {
+        return $user !== null && ($user->admin || $user->id === $this->created_by);
+    }
+
+    public function canShow(User|null $user)
+    {
+        if ($user === null) {
+            return $this->start < Carbon::now();
+        } else {
+            return $this->admin || ($this->start < Carbon::now() || $this->created_by = $user->id);
+        }
     }
 }

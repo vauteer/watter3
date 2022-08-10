@@ -31,6 +31,8 @@ let getTabsModel = computed(() => {
     return model;
 });
 
+let team1Won = computed((gameScore) => gameScore.startsWith(props.tournament.winpoints));
+
 let switchRound = (round) => {
     Inertia.get(`/tournaments/${props.tournament.id}/show?round=${round}`);
 };
@@ -86,7 +88,7 @@ let switchRound = (round) => {
                                         <td class="px-3 flex justify-left pt-2.5 hidden md:block">
                                             <span v-for="game in fixture.games"
                                                   class="inline-flex items-center px-3.5 py-2 rounded-full text-xs font-medium ml-2"
-                                                  :class="game.startsWith('11') ? 'bg-green-100 text-green-800' :'bg-blue-100 text-blue-800'"
+                                                  :class="game.startsWith(tournament.winpoints) ? 'bg-green-100 text-green-800' :'bg-blue-100 text-blue-800'"
                                             > {{ game }} </span>
                                         </td>
                                         <td class="px-3 text-center">

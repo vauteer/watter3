@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Auth;
 
-class TournamentResource extends JsonResource
+class PlayerResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -18,15 +18,8 @@ class TournamentResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'start' => $this->start->format('d.m.Y H:i'),
-            'rounds' => $this->rounds,
-            'games' =>  $this->games,
-            'winpoints' => $this->winpoints,
-            'published' => $this->published,
-            'finished' => $this->finished,
-            'creator' => $this->creator->name,
 
-            'editable' => $this->editableBy(Auth::user()),
+            'editable' => Auth::user()->admin,
         ];
     }
 }

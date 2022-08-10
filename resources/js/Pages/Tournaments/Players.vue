@@ -10,6 +10,7 @@ import AbortButton from '@/Shared/AbortButton.vue';
 import SubmitButton from '@/Shared/SubmitButton.vue';
 import DeleteButton from '@/Shared/DeleteButton.vue';
 import CheckBox from '@/Shared/CheckBox.vue';
+import ActionButton from "@/Shared/ActionButton.vue";
 
 let props = defineProps({
     tournamentId: Number,
@@ -46,9 +47,7 @@ let submit = () => {
 };
 
 let canConnect = computed(() => {
-    let result = connectForm.checkedPlayers.length == 2;
-    console.log(connectForm.checkedPlayers.length, result);
-    return result;
+    return connectForm.checkedPlayers.length === 2;
 });
 
 let canDraw = computed(() => {
@@ -70,6 +69,12 @@ let deletePlayer = (playerId) => {
         Inertia.delete(`/tournaments/${props.tournamentId}/players/${playerId}`);
     }
 };
+
+let draw = () => {
+    if (confirm('Wollen Sie das Turnier wirklich (neu) auslosen ?')) {
+        Inertia.post(`/tournaments/${props.tournamentId}/draw`);
+    }
+}
 
 let deleteTeam = (teamId) => {
     if (confirm('Wollen Sie das Team wirklich löschen ?')) {
@@ -175,8 +180,11 @@ let deleteTeam = (teamId) => {
                             </tbody>
                         </table>
                     </div>
-                    <div class="w-full flex justify-center mt-3">
-                        <SubmitButton v-if="canDraw" class="my-3">Spielplan erstellen</SubmitButton>
+                    <div class="w-full flex justify-between mt-3">
+                        <AbortButton :href="route('tournaments')">
+                            Zurück
+                        </AbortButton>
+                        <ActionButton v-if="canDraw" :onClick="draw">Spielplan erstellen</ActionButton>
                     </div>
                 </div>
             </div>

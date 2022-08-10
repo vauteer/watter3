@@ -42,7 +42,7 @@ class TournamentController extends Controller
     public function index(Request $request):Response
     {
         return inertia('Tournaments/Index', [
-            'tournaments' => TournamentResource::collection(Tournament::query()
+            'tournaments' => TournamentResource::collection(Tournament::showable(auth()->user())
                 ->when($request->input('search'), function($query, $search) {
                     $query->where('name', 'like', "%{$search}%");
                 })
@@ -195,6 +195,13 @@ class TournamentController extends Controller
         $tournament->teams()->attach($team->id);
 
         return $this->createPlayers($request, $tournament);
+    }
+
+    public function draw(Request $request, Tournament $tournament): Response
+    {
+        $tournament->draw();
+
+        return $this->show($request);
     }
 
     public function editFixture(Request $request, Fixture $fixture): Response

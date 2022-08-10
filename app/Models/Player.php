@@ -13,11 +13,9 @@ class Player extends Model
     protected $guarded = [];
     protected $hidden = ['pivot'];
 
-    public function tournaments(): BelongsToMany
+    public function teams()
     {
-        return $this->belongsToMany(Tournament::class)
-            ->withTimestamps();
+        return Team::where('player1_id', $this->id)->orWhere('player2_id', $this->id)->get();
     }
-
 
 }

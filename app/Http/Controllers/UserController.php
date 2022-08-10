@@ -30,6 +30,7 @@ class UserController extends Controller
     {
         return [
             'name' => 'required|string',
+            'email' => 'required|email',
             'profile_image' => 'nullable|string|max:100',
         ];
     }
@@ -118,10 +119,10 @@ class UserController extends Controller
             'user' => [
                 'id' => $user->id,
                 'name' => $user->name,
+                'email' => $user->email,
                 'profile_image' => $user->profile_image,
             ],
-        ])
-            ->with('languages', \Helpers::languages());
+        ]);
     }
 
     public function updateAccount(Request $request): RedirectResponse
@@ -141,7 +142,7 @@ class UserController extends Controller
 
         User::removeOrphanProfileImages();
 
-        return redirect()->route('home')
+        return redirect()->route('tournaments')
             ->with('success', 'Account updated.');
     }
 
@@ -150,6 +151,6 @@ class UserController extends Controller
     {
         auth()->login($user);
 
-        return redirect()->route('home');
+        return redirect()->route('tournaments');
     }
 }

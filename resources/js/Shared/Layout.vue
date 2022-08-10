@@ -6,16 +6,16 @@ import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuIt
 import { MenuIcon, XIcon } from '@heroicons/vue/outline'
 import { usePage } from "@inertiajs/inertia-vue3";
 
-defineProps({
-    auth: Object,
-});
-
+// defineProps({
+//     auth: Object,
+// });
+//
 const user = computed(() => usePage().props.value.auth.user);
 
 const getNavigation = computed(() => {
     return [
-        { name: 'Turniere', route: 'tournaments', visible: true },
-        { name: 'Benutzer', route: 'users', visible: true },
+        { name: 'Turniere', route: 'tournaments', public: true },
+        { name: 'Benutzer', route: 'users', public: false },
         // { name: 'Backups', route: 'backups', visible: true },
     ];
 })
@@ -35,7 +35,7 @@ let logout = () => {
                         <div class="hidden md:block">
                             <div class="ml-10 flex items-baseline space-x-4">
                                 <div v-for="item in getNavigation" :key="item.name" >
-                                    <Link v-if="item.visible" :href="route(item.route)"
+                                    <Link v-if="user?.admin || item.public" :href="route(item.route)"
                                           :class="[route().current(item.route) ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white', 'px-3 py-2 rounded-md text-sm font-medium']"
                                     >
                                         {{ item.name }}
@@ -44,8 +44,8 @@ let logout = () => {
                             </div>
                         </div>
                     </div>
-                    <div v-if="!user">
-                        <Link v-if="!user" :href="route('login')"
+                    <div v-if="!user" class="hidden md:block">
+                        <Link :href="route('login')"
                               :class="[route().current('login') ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white', 'px-3 py-2 rounded-md text-sm font-medium']"
                         >
                             Anmelden
@@ -91,13 +91,16 @@ let logout = () => {
                 </div>
             </div>
 
-            <DisclosurePanel v-if="user" class="md:hidden">
+            <DisclosurePanel class="md:hidden">
                 <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
                     <Link v-for="item in getNavigation" :key="item.name" as="a" :href="route(item.route)" >
                         <DisclosureButton v-if="item.visible" :class="[route().current(item.route) ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white', 'block px-3 py-2 rounded-md text-base font-medium']">{{ item.name }}</DisclosureButton>
                     </Link>
+                    <Link v-if="!user" :href="route('login')">
+                        <DisclosureButton class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Anmelden</DisclosureButton>
+                    </Link>
                 </div>
-                <div class="pt-4 pb-3 border-t border-gray-700">
+                <div v-if="user" class="pt-4 pb-3 border-t border-gray-700">
                     <div class="flex items-center px-5">
                         <div class="flex-shrink-0">
                             <img class="h-10 w-10 rounded-full" :src="user.profileUrl" alt="" />
@@ -112,10 +115,6 @@ let logout = () => {
                                           class="block px-3 py-2 rounded-md text-base font-medium text-gray-400 hover:text-white hover:bg-gray-700">
                             Konto
                         </DisclosureButton>
-                        <!--                        <DisclosureButton as="a" href="/settings"-->
-                        <!--                                          class="block px-3 py-2 rounded-md text-base font-medium text-gray-400 hover:text-white hover:bg-gray-700">-->
-                        <!--                            {{ $t('Settings') }}-->
-                        <!--                        </DisclosureButton>-->
                         <DisclosureButton @click="logout"
                                           class="block px-3 py-2 rounded-md text-base font-medium text-gray-400 hover:text-white hover:bg-gray-700">
                             Abmelden

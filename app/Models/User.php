@@ -17,11 +17,7 @@ class User extends Authenticatable
      *
      * @var array<int, string>
      */
-    protected $fillable = [
-        'name',
-        'email',
-        'password',
-    ];
+    protected $guarded = [];
 
     /**
      * The attributes that should be hidden for serialization.
@@ -44,13 +40,15 @@ class User extends Authenticatable
 
     public function profileURL(): string
     {
-//        if ($this->profile_image) {
-//            return asset('storage/profile/' . $this->profile_image);
-//        } else {
-
-        return "https://www.gravatar.com/avatar/" .
-            md5(strtolower(trim($this->email))) .
-            "?d=mp&s=40";
+        if ($this->profile_image) {
+            return asset('storage/profile/' . $this->profile_image);
+        }
+        else
+        {
+            return "https://www.gravatar.com/avatar/" .
+                md5(strtolower(trim($this->email))) .
+                "?d=mp&s=40";
+        }
     }
 
     public static function profilePath(string $stub = ''): string
