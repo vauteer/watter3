@@ -29,33 +29,34 @@ class Fixture extends Model
         return $this->belongsTo(Team::class);
     }
 
-    public function calculate(string $newScore, bool $persist): bool|string
+    public function calculate(string|null $newScore, bool $persist): bool|string
     {
         $wonHome = $wonAway = $pointsHome = $pointsAway = $index =0;
         $requiredGames = $this->tournament->games;
         $winPoints = $this->tournament->winpoints;
         $normalizedScore = '';
 
-        preg_match_all('|' . self::SCORE_REGEX . '|', $newScore, $matches);
-//        dd($matches);
-        $gamesCount = count($matches[0]);
-        if ($gamesCount !== $requiredGames)
-            return "{$gamesCount} statt {$requiredGames} Spiele eingegeben";
+        if ($newScore !== null) {
+            preg_match_all('|' . self::SCORE_REGEX . '|', $newScore, $matches);
+            $gamesCount = count($matches[0]);
+            if ($gamesCount !== $requiredGames)
+                return "{$gamesCount} statt {$requiredGames} Spiele eingegeben";
 
-        for ($i = 0; $i < $gamesCount; $i++) {
-            $points1 = intval(($matches[1][$i]));
-            $points2 = intval(($matches[2][$i]));
+            for ($i = 0; $i < $gamesCount; $i++) {
+                $points1 = intval(($matches[1][$i]));
+                $points2 = intval(($matches[2][$i]));
 
-            if (self::pointsValid($points1, $winPoints) && self::pointsValid($points2, $winPoints) &&
-                $points1 !== $points2 && ($points1 === 11 || $points2 == 11)) {
-                $pointsHome += $points1;
-                $pointsAway += $points2;
-                ($points1 === 11) ? $wonHome++ : $wonAway++;
-            } else {
-                return "{$matches[0][$i]} ist ungültig";
+                if (self::pointsValid($points1, $winPoints) && self::pointsValid($points2, $winPoints) &&
+                    $points1 !== $points2 && ($points1 === 11 || $points2 == 11)) {
+                    $pointsHome += $points1;
+                    $pointsAway += $points2;
+                    ($points1 === 11) ? $wonHome++ : $wonAway++;
+                } else {
+                    return "{$matches[0][$i]} ist ungültig";
+                }
+
+                $normalizedScore .= "{$points1}-{$points2} ";
             }
-
-            $normalizedScore .= "{$points1}-{$points2} ";
         }
 
         if ($persist) {
