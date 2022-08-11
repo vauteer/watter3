@@ -20,8 +20,7 @@ return new class extends Migration
             $table->unsignedInteger('rounds')->default(3);
             $table->unsignedInteger('games')->default(4);
             $table->unsignedInteger('winpoints')->default(11);
-            $table->boolean('published')->default(false);
-            $table->boolean('finished')->default(false);
+            $table->boolean('private')->default(false);
             $table->foreignId('created_by')->constrained('users')->onDelete('restrict');
             $table->timestamps();
 

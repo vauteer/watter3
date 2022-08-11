@@ -1,9 +1,7 @@
 <script setup>
 import { computed, ref, onMounted } from "vue";
-import { Inertia } from "@inertiajs/inertia";
-import { useForm } from "@inertiajs/inertia-vue3";
+import { useForm, Head } from "@inertiajs/inertia-vue3";
 import Layout from '@/Shared/Layout.vue';
-import EditTitle from '@/Shared/EditTitle.vue'
 import TextInput from '@/Shared/TextInput.vue';
 import AbortButton from '@/Shared/AbortButton.vue';
 import SubmitButton from '@/Shared/SubmitButton.vue';
@@ -36,6 +34,8 @@ let submit = () => {
 </script>
 
 <template>
+    <Head title="Ergebnis" />
+
     <Layout>
         <div>
             <button

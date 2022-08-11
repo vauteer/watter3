@@ -20,4 +20,5 @@ return [
     'account_was_created' => "A Account was created for you.",
     'thank_you_for_using_our_application' => "Thank you for using our application!",
     'your_password' => 'Your Password: :password',
+    'Hello!' => "Hllsdfö"
 ];

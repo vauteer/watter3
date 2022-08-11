@@ -1,6 +1,6 @@
 <script setup>
-import {onMounted, computed} from "vue";
-import {useForm} from "@inertiajs/inertia-vue3";
+import { onMounted, computed } from "vue";
+import { useForm, Head } from "@inertiajs/inertia-vue3";
 import EditTitle from "@/Shared/EditTitle.vue";
 import ImageUpload from "@/Shared/ImageUpload.vue";
 import TextInput from "@/Shared/TextInput.vue";
@@ -46,6 +46,8 @@ function back() {
 
 </script>
 <template>
+    <Head title="Konto" />
+
     <Layout>
         <div>
             <button tabindex="-1" class="hidden md:block fixed z-20 inset-0 h-full w-full bg-black opacity-50 cursor-default"></button>

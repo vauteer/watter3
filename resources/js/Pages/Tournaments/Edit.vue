@@ -1,8 +1,7 @@
 <script setup>
 import { computed, ref, onMounted } from "vue";
-import { Head, Link } from '@inertiajs/inertia-vue3';
 import { Inertia } from "@inertiajs/inertia";
-import { useForm } from "@inertiajs/inertia-vue3";
+import { useForm, Head } from "@inertiajs/inertia-vue3";
 import Layout from '@/Shared/Layout.vue';
 import EditTitle from '@/Shared/EditTitle.vue'
 import TextInput from '@/Shared/TextInput.vue';
@@ -21,8 +20,7 @@ let form = useForm({
     rounds: '3',
     games: '4',
     winpoints: '11',
-    published: false,
-    finished: false,
+    private: false,
 });
 
 let editMode = ref(false);
@@ -34,8 +32,7 @@ onMounted(() => {
         form.rounds = props.tournament.rounds;
         form.games = String(props.tournament.games);
         form.winpoints = String(props.tournament.winpoints);
-        form.published = Boolean(props.tournament.published);
-        form.finished = Boolean(props.tournament.finished);
+        form.private = Boolean(props.tournament.private);
 
         editMode.value = true;
     }
@@ -68,6 +65,8 @@ const getSubmitButtonText = computed(() => {
 </script>
 
 <template>
+    <Head title="Turniere" />
+
     <Layout>
         <div>
             <button
@@ -93,12 +92,8 @@ const getSubmitButtonText = computed(() => {
                                     <TextInput class="sm:col-span-3" v-model="form.winpoints" :error="form.errors.winpoints" id="winpoints"
                                                type="number" step="1" label="Punkte zum Sieg"/>
                                     <div class="sm:col-span-6">
-                                        <CheckBox v-model="form.published" :error="form.errors.published"
-                                                  id="published" label="Veröffentlicht"/>
-                                    </div>
-                                    <div class="sm:col-span-6">
-                                        <CheckBox v-model="form.finished" :error="form.errors.finished"
-                                                  id="finished" label="Beendet"/>
+                                        <CheckBox v-model="form.private" :error="form.errors.private"
+                                                  id="private" label="Privat"/>
                                     </div>
                                 </div>
                                 <div class="py-5">

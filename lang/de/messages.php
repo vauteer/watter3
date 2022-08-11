@@ -20,4 +20,6 @@ return [
     'account_was_created' => "Ein Zugang wurde für Sie erstellt.",
     'thank_you_for_using_our_application' => "Vielen Dank, daß Sie unser Programm nutzen!",
     'your_password' => 'Ihr Passwort: :password',
+    'Hello!' => 'Hallo!',
+    'Regards' => 'Grüße',
 ];

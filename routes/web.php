@@ -1,8 +1,12 @@
 <?php
 
+use App\Backup;
+use App\Http\Controllers\BackupController;
 use App\Http\Controllers\PlayerController;
 use App\Http\Controllers\TournamentController;
 use App\Http\Controllers\UserController;
+use App\Models\Player;
+use App\Models\Tournament;
 use App\Models\User;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -48,9 +52,9 @@ Route::middleware(['auth', 'verified'])->group(function() {
     Route::get('/users/account', [UserController::class, 'editAccount']);
     Route::put('/users/account', [UserController::class, 'updateAccount']);
     Route::get('/users/create', [UserController::class, 'create'])
-        ->can('create', 'user');
+        ->can('create', User::class);
     Route::post('/users', [UserController::class, 'store'])
-        ->can('create', 'user');
+        ->can('create', User::class);
     Route::get('/users/{user}/edit', [UserController::class, 'edit'])
         ->can('update', 'user');
     Route::put('/users/{user}', [UserController::class, 'update'])
@@ -60,13 +64,21 @@ Route::middleware(['auth', 'verified'])->group(function() {
     Route::post('/users/{user}/login', [UserController::class, 'loginAs'])
         ->can('create', 'user');
 
+    Route::get('/backups', [BackupController::class, 'index'])
+        ->can('view', Backup::class)
+        ->name('backups');
+    Route::get('/backups/create', [BackupController::class, 'create'])
+        ->can('create', Backup::class);
+    Route::post('/backups/restore', [BackupController::class, 'restore'])
+        ->can('restore', Backup::class);
+
     Route::get('/players', [PlayerController::class, 'index'])
-        ->can('view', 'player')
+        ->can('view', Player::class)
         ->name('players');
     Route::get('/players/create', [PlayerController::class, 'create'])
-        ->can('create', 'player');
+        ->can('create', Player::class);
     Route::post('/players', [PlayerController::class, 'store'])
-        ->can('create', 'player');
+        ->can('create', Player::class);
     Route::get('/players/{player}/edit', [PlayerController::class, 'edit'])
         ->can('update', 'player');
     Route::put('/players/{player}', [PlayerController::class, 'update'])
@@ -75,9 +87,9 @@ Route::middleware(['auth', 'verified'])->group(function() {
         ->can('delete', 'player');
 
     Route::get('/tournaments/create', [TournamentController::class, 'create'])
-        ->can('create', 'tournament');
+        ->can('create', Tournament::class);
     Route::post('/tournaments', [TournamentController::class, 'store'])
-        ->can('create', 'tournament');
+        ->can('create', Tournament::class);
     Route::get('/tournaments/{tournament}/edit', [TournamentController::class, 'edit'])
         ->can('update', 'tournament');
     Route::put('/tournaments/{tournament}', [TournamentController::class, 'update'])
@@ -95,12 +107,13 @@ Route::middleware(['auth', 'verified'])->group(function() {
         ->can('update', 'tournament');
     Route::post('/tournaments/{tournament}/players/connect', [TournamentController::class, 'connectPlayers'])
         ->can('update', 'tournament');
+    Route::post('/tournaments/{tournament}/draw', [TournamentController::class, 'draw'])
+        ->can('update', 'tournament');
     Route::get('/tournaments/fixtures/{fixture}/edit', [TournamentController::class, 'editFixture'])
-        ->can('update', 'tournament');
+        ->can('update', 'fixture');
     Route::put('/tournaments/fixtures/{fixture}', [TournamentController::class, 'updateFixture'])
-        ->can('update', 'tournament');
-    Route::get('/tournaments/{tournament}/lists/{round}', [TournamentController::class, 'tableLists'])
-        ->can('update', 'tournament');
+        ->can('update', 'fixture');
+    Route::get('/tournaments/{tournament}/lists/{round}', [TournamentController::class, 'tableLists']);
 });
 
 require __DIR__.'/auth.php';

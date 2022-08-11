@@ -18,12 +18,12 @@ class TournamentResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'start' => $this->start->format('d.m.Y H:i'),
+            'date' => $this->start->format('d.m.Y'),
+            'time' => $this->start->format('H:i'),
             'rounds' => $this->rounds,
             'games' =>  $this->games,
             'winpoints' => $this->winpoints,
-            'published' => $this->published,
-            'finished' => $this->finished,
+            'private' => $this->private,
             'creator' => $this->creator->name,
 
             'editable' => $this->editableBy(Auth::user()),

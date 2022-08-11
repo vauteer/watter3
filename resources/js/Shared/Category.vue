@@ -6,6 +6,10 @@ let props =defineProps({
     search: {
         type: Boolean,
         default: true,
+    },
+    buttonTitle: {
+        type: String,
+        default: 'Neu',
     }
 });
 
@@ -23,7 +27,7 @@ defineEmits(['update:modelValue']);
                 <Link
                     class="rounded-md border border-transparent bg-indigo-600 px-4 py-2 my-2 mr-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:w-auto"
                     :href="createUrl" as="button" type="button">
-                    Neu
+                    {{ buttonTitle }}
                 </Link>
             </div>
         </div>

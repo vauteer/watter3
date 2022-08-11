@@ -64,7 +64,10 @@ watch(search, throttle(function (value) {
                             >
                                 Keine Daten
                             </div>
-                            <Pagination v-if="players.meta.last_page > 1" class="mt-6" :meta="players.meta"></Pagination>
+                            <div v-if="players.meta.last_page > 1"
+                                 class="flex justify-center bg-white" >
+                                <Pagination :meta="players.meta"></Pagination>
+                            </div>
                         </div>
                     </div>
                 </div>

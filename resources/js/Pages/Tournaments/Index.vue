@@ -5,7 +5,7 @@ import {computed, ref, watch} from "vue";
 import { Head, Link } from '@inertiajs/inertia-vue3';
 import Category from '@/Shared/Category.vue';
 import Pagination from '@/Shared/Pagination.vue';
-import { PencilIcon, LockClosedIcon, ChevronDoubleRightIcon, UserAddIcon } from '@heroicons/vue/outline';
+import { PencilIcon, EyeOffIcon, ChevronDoubleRightIcon, UserAddIcon } from '@heroicons/vue/outline';
 import {throttle} from "lodash";
 
 let props = defineProps({
@@ -39,11 +39,11 @@ watch(search, throttle(function (value) {
                             <table class="min-w-full divide-y divide-gray-300">
                                 <thead class="bg-gray-50 text-left">
                                 <tr>
-                                    <th scope="col" class="px-3 py-3.5"><span class="sr-only">Select Tournament</span></th>
                                     <th scope="col" class="pr-3 py-3.5 text-sm font-semibold text-gray-900 sm:pl-6">
                                         Start
                                     </th>
-                                    <th scope="col" class="pr-3 py-3.5 text-sm font-semibold text-gray-900 sm:pl-6">Name</th>
+                                    <th scope="col" class="pr-3 py-3.5 text-sm font-semibold text-gray-900 pl-4 sm:pl-6">Name</th>
+                                    <th scope="col" class="px-3 py-3.5 w-6"><span class="sr-only">Status</span></th>
                                     <th scope="col" class="pr-3 py-3.5 pl-4">
                                         <span class="sr-only">Spieler hinzufügen</span>
                                     </th>
@@ -53,21 +53,19 @@ watch(search, throttle(function (value) {
                                 </tr>
                                 </thead>
                                 <tbody class="divide-y divide-gray-200 bg-white">
-                                <tr v-for="tournament in tournaments.data" :key="tournament.id" class="text-gray-500 text-left">
-                                    <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm sm:pl-6">
-                                        <Link
-                                              :href="`/tournaments/${tournament.id}/show`"
-                                              as="button"
-                                        >
-                                            <ChevronDoubleRightIcon class="h-5 w-5 text-blue-500" />
-                                        </Link>
+                                <tr v-for="tournament in tournaments.data" :key="tournament.id"
+                                    class="text-base text-gray-500 text-left">
+                                    <td class="py-2 pl-4 sm:pl-6">
+                                        <div>{{ tournament.date }} {{ tournament.time }}</div>
                                     </td>
-                                    <td class="whitespace-nowrap pr-3 text-sm sm:pl-6">
-                                        <div class="font-bold">{{ tournament.start }}</div>
-                                    </td>
-                                    <td class="whitespace-nowrap pr-3 text-sm sm:pl-6">
-                                        <div class="font-bold">{{ tournament.name }}</div>
+                                    <td class="whitespace-nowrap py-1 pl-4 text-sm sm:pl-6">
+                                        <Link :href="`/tournaments/${tournament.id}/show`" as="button"
+                                              class="text-base font-semibold text-blue-500"
+                                        >{{ tournament.name }}</Link>
                                         <div v-if="auth.user?.admin" class="font-sm">{{ tournament.creator }}</div>
+                                    </td>
+                                    <td class="px-3">
+                                        <EyeOffIcon v-if="tournament.private" class="h-5 w-5" />
                                     </td>
                                     <td class="px-3">
                                         <div class="h-5">
@@ -91,7 +89,10 @@ watch(search, throttle(function (value) {
                             >
                                 Keine Daten
                             </div>
-                            <Pagination v-if="tournaments.meta.last_page > 1" class="mt-6" :meta="tournaments.meta"></Pagination>
+                            <div v-if="tournaments.meta.last_page > 1"
+                                 class="flex justify-center bg-white" >
+                                <Pagination :meta="tournaments.meta"></Pagination>
+                            </div>
                         </div>
                     </div>
                 </div>

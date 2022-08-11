@@ -11,12 +11,14 @@ import { usePage } from "@inertiajs/inertia-vue3";
 // });
 //
 const user = computed(() => usePage().props.value.auth.user);
+const success = computed(() => usePage().props.value.flash.success);
 
 const getNavigation = computed(() => {
     return [
-        { name: 'Turniere', route: 'tournaments', public: true },
-        { name: 'Benutzer', route: 'users', public: false },
-        // { name: 'Backups', route: 'backups', visible: true },
+        { name: 'Turniere', route: 'tournaments', admin: false },
+        { name: 'Spieler', route: 'players', admin: true },
+        { name: 'Benutzer', route: 'users', admin: true },
+        { name: 'Backups', route: 'backups', admin: true },
     ];
 })
 
@@ -35,7 +37,7 @@ let logout = () => {
                         <div class="hidden md:block">
                             <div class="ml-10 flex items-baseline space-x-4">
                                 <div v-for="item in getNavigation" :key="item.name" >
-                                    <Link v-if="user?.admin || item.public" :href="route(item.route)"
+                                    <Link v-if="user?.admin || !item.admin" :href="route(item.route)"
                                           :class="[route().current(item.route) ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white', 'px-3 py-2 rounded-md text-sm font-medium']"
                                     >
                                         {{ item.name }}
@@ -125,7 +127,10 @@ let logout = () => {
         </Disclosure>
 
         <main>
-            <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+            <div class="max-w-7xl mx-auto py-2 sm:px-6 lg:px-8">
+                <div v-if="success" class="bg-green-400 text-center">
+                    {{ success }}
+                </div>
                 <slot />
             </div>
         </main>

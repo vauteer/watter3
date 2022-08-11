@@ -28,7 +28,7 @@ class PlayerPolicy
      * @param  \App\Models\Player  $player
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function view(User $user, Player $player)
+    public function view(User $user)
     {
         return $user->admin;
     }

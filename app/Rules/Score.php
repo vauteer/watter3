@@ -28,11 +28,14 @@ class Score implements InvokableRule
      */
     public function __invoke($attribute, $value, $fail)
     {
+        if ($value === null)
+            return;
+
         if (!preg_match('/' . $this->tournament->getScoreRegex() . '/', $value)) {
-            $fail("Das Ergebnis hat ein ungültiges Format oder zuwenig Spiele");
+            $fail("Das Ergebnis hat ein ungültiges Format oder die falsche Anzahl an Spielen");
         }
 
-        $passed = $this->fixture->calculate($value);
+        $passed = $this->fixture->calculate($value, false);
 
         if ($passed !== true)
             $fail($passed);

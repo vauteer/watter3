@@ -1,7 +1,7 @@
 <script setup>
 import {computed, ref, onMounted} from "vue";
 import {Inertia} from "@inertiajs/inertia";
-import {useForm} from "@inertiajs/inertia-vue3";
+import { useForm, Head } from "@inertiajs/inertia-vue3";
 import Layout from '@/Shared/Layout.vue';
 import EditTitle from '@/Shared/EditTitle.vue'
 import TextInput from '@/Shared/TextInput.vue';
@@ -53,6 +53,8 @@ const getSubmitButtonText = computed(() => {
 </script>
 
 <template>
+    <Head title="Spieler" />
+
     <Layout>
         <div>
             <button

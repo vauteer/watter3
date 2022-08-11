@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Backup;
 use App\Http\Resources\FixtureResource;
 use App\Http\Resources\TournamentResource;
 use App\Models\Fixture;
@@ -27,7 +28,6 @@ class TournamentController extends Controller
             'games' => 'int|min:2|max:9',
             'winpoints' => 'int|min:11|max:21',
             'published' => 'boolean',
-            'finished' => 'boolean',
         ];
     }
 
@@ -42,7 +42,8 @@ class TournamentController extends Controller
     public function index(Request $request):Response
     {
         return inertia('Tournaments/Index', [
-            'tournaments' => TournamentResource::collection(Tournament::showable(auth()->user())
+            'tournaments' => TournamentResource::collection(Tournament::query()
+                ->whereIn('id', Tournament::visibleIds(auth()->user()))
                 ->when($request->input('search'), function($query, $search) {
                     $query->where('name', 'like', "%{$search}%");
                 })
@@ -83,12 +84,12 @@ class TournamentController extends Controller
     {
         $attributes = $request->validate($this->validationRules());
 
-        Tournament::create(array_merge($attributes, [
+        $tournament = Tournament::create(array_merge($attributes, [
             'created_by' => auth()->id(),
         ]));
 
         return redirect()->route('tournaments')
-            ->with('success', 'Tournament created.');
+            ->with('success', "{$tournament->name} wurde hinzugefügt.");
     }
 
     public function edit(Request $request, Tournament $tournament): Response
@@ -102,8 +103,7 @@ class TournamentController extends Controller
                 'rounds' => $tournament->rounds,
                 'games' => $tournament->games,
                 'winpoints' => $tournament->winpoints,
-                'published' => $tournament->published,
-                'finished' => $tournament->finished,
+                'private' => $tournament->private,
             ],
         ]);
     }
@@ -115,15 +115,17 @@ class TournamentController extends Controller
         $tournament->update($attributes);
 
         return redirect()->route('tournaments')
-            ->with('success', 'Tournament updated.');
+            ->with('success', "{$tournament->name} wurde geändert.");
     }
 
     public function destroy(Request $request, Tournament $tournament): RedirectResponse
     {
+        Backup::create();
+
         $tournament->delete();
 
         return redirect()->route('tournaments')
-            ->with('success', 'Tournament deleted');
+            ->with('success', 'Turnier wurde gelöscht.');
     }
 
     public function createPlayers(Request $request, Tournament $tournament): Response
@@ -201,7 +203,7 @@ class TournamentController extends Controller
     {
         $tournament->draw();
 
-        return $this->show($request);
+        return $this->show($request, $tournament);
     }
 
     public function editFixture(Request $request, Fixture $fixture): Response
@@ -227,15 +229,20 @@ class TournamentController extends Controller
             'score' => new Score($fixture),
         ]);
 
-        $fixture->update($attributes);
+        $fixture->calculate($attributes['score'], true);
+        //$fixture->update($attributes);
 
-        return redirect()->route('tournaments.show', $fixture->tournament_id)
-            ->with('success', 'Tournament updated.');
+        if ($fixture->tournament->finished())
+            Backup::create();
+
+        return redirect()
+            ->route('tournaments.show', ['tournament' => $fixture->tournament_id, 'round' => $fixture->round])
+            ->with('success', "Ergebnis wurde geändert.");
     }
 
     public function tableLists(Request $request, Tournament $tournament, $round)
     {
-        return (new Response($tournament->tableLists($round)->Output(), 200))
+        return (new \Illuminate\Http\Response($tournament->tableLists($round)->Output(), 200))
             ->header('Content-Type', 'application/pdf');
     }
 }

@@ -43,10 +43,10 @@ class PlayerController extends Controller
     {
         $attributes = $request->validate($this->validationRules());
 
-        Player::create($attributes);
+        $player = Player::create($attributes);
 
         return redirect()->route('players')
-            ->with('success', 'Player created.');
+            ->with('success', "{$player->name} hinzugefügt");
     }
 
     public function edit(Request $request, Player $player): Response
@@ -76,7 +76,7 @@ class PlayerController extends Controller
         $player->update($attributes);
 
         return redirect()->route('players')
-            ->with('success', 'Player updated.');
+            ->with('success', "{$player->name} wurde geändert");
     }
 
     public function destroy(Request $request, Player $player): RedirectResponse
@@ -85,10 +85,10 @@ class PlayerController extends Controller
             $player->delete();
         } catch (\Exception $ex) {
             return redirect()->route('players')
-                ->with('error', 'Player not deleted');
+                ->with('success', "{$player->name} konnte nicht gelöscht werden");
         }
 
         return redirect()->route('players')
-            ->with('success', 'Player deleted');
+            ->with('success', 'Spieler wurde gelöscht');
     }
 }

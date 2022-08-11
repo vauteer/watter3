@@ -17,11 +17,15 @@ use Inertia\Response;
 
 class UserController extends Controller
 {
-    public function validationRules(): array
+    public function validationRules($id): array
     {
         return [
             'name' => 'required|string',
-            'email' => 'required|email',
+            'email' => [
+                'required',
+                'email',
+                Rule::unique('users')->ignore($id)
+            ],
             'admin' => 'required|boolean',
         ];
     }
@@ -67,7 +71,7 @@ class UserController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
-        $attributes = $request->validate($this->validationRules());
+        $attributes = $request->validate($this->validationRules(-1));
 
         $password = Str::random(8);
         Log::info("Created User {$attributes['name']} with Password {$password}");
@@ -79,7 +83,7 @@ class UserController extends Controller
         $user->notify(new NewUser($password));
 
         return redirect()->route('users')
-            ->with('success', 'User created.');
+            ->with('success', "{$user->name} wurde hinzugefügt.");
     }
 
     public function edit(Request $request, User $user): Response
@@ -96,11 +100,12 @@ class UserController extends Controller
 
     public function update(Request $request, User $user): RedirectResponse
     {
-        $attributes = $request->validate($this->validationRules());
+        $attributes = $request->validate($this->validationRules($user->id));
         $user->update($attributes);
 
 
-        return redirect()->route('users')->with('success', 'User updated.');
+        return redirect()->route('users')
+            ->with('success', "{$user->name} wurde geändert.");
     }
 
     public function destroy(Request $request, User $user): RedirectResponse
@@ -108,7 +113,7 @@ class UserController extends Controller
         $user->delete();
 
         return redirect()->route('users')
-            ->with('success', 'User deleted');;
+            ->with('success', 'Benutzer wurde gelöscht.');;
     }
 
     public function editAccount(Request $request): Response
@@ -143,7 +148,7 @@ class UserController extends Controller
         User::removeOrphanProfileImages();
 
         return redirect()->route('tournaments')
-            ->with('success', 'Account updated.');
+            ->with('success', "Das Konto wurde geändert.");
     }
 
 

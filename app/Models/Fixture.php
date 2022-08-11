@@ -29,7 +29,7 @@ class Fixture extends Model
         return $this->belongsTo(Team::class);
     }
 
-    public function calculate($newScore): bool|string
+    public function calculate(string $newScore, bool $persist): bool|string
     {
         $wonHome = $wonAway = $pointsHome = $pointsAway = $index =0;
         $requiredGames = $this->tournament->games;
@@ -58,12 +58,14 @@ class Fixture extends Model
             $normalizedScore .= "{$points1}-{$points2} ";
         }
 
-        $this->team1_won = $wonHome;
-        $this->team2_won = $wonAway;
-        $this->team1_points = $pointsHome;
-        $this->team2_points = $pointsAway;
-        $this->score = rtrim($normalizedScore);
-        $this->save();
+        if ($persist) {
+            $this->team1_won = $wonHome;
+            $this->team2_won = $wonAway;
+            $this->team1_points = $pointsHome;
+            $this->team2_points = $pointsAway;
+            $this->score = rtrim($normalizedScore);
+            $this->save();
+        }
 
         return true;
     }

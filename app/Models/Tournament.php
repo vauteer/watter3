@@ -19,8 +19,7 @@ class Tournament extends Model
     protected $guarded = [];
     protected $casts = [
         'start' => 'datetime',
-        'published' => 'boolean',
-        'finished' => 'boolean',
+        'private' => 'boolean',
     ];
 
     public function players(): BelongsToMany
@@ -50,25 +49,45 @@ class Tournament extends Model
         return $this->teams()->count() * 2 + $this->players()->count();
     }
 
-    public static function showable(User|null $user)
+    public static function visibleIds(User|null $user)
     {
         if ($user === null) {
-            return Tournament::where('start', '<', Carbon::now());
+            $tournaments = Tournament::where('start', '<', Carbon::now())
+                ->where('private', false)
+                ->get()
+                ->filter(function ($item, $key) {
+                    return $item->finished();
+                });
         } else if ($user->admin) {
-            return Tournament::query();
+            $tournaments = Tournament::all();
         } else {
-            return Tournament::where('start', '<', Carbon::now())
-                ->orWhere('created_by', $user->id);
+            $tournaments = Tournament::where('start', '<', Carbon::now())
+                ->where('private', false)
+                ->orWhere('created_by', $user->id)
+            ->get();
         }
+
+        return $tournaments->pluck(['id'])->toArray();
     }
 
     public static function test()
     {
         $tournaments = Tournament::all();
         return $tournaments->filter(function ($item, $key) {
-            return $item->id % 2;
-        });
+            return !$item->finished();
+        })->pluck(['id'])->toArray();
     }
+
+    public function drawn()
+    {
+        return $this->fixtures()->count() > 0;
+    }
+
+    public function finished()
+    {
+        return $this->drawn() && $this->fixtures()->whereNull('score')->count() === 0;
+    }
+
     public function playersAsArray(): Collection
     {
         return $this->players()

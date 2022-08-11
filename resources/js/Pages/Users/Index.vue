@@ -5,7 +5,7 @@ import {computed, ref, watch} from "vue";
 import { Head, Link } from '@inertiajs/inertia-vue3';
 import Category from '@/Shared/Category.vue';
 import Pagination from '@/Shared/Pagination.vue';
-import { PencilIcon, StarIcon, CheckIcon, ChevronDoubleRightIcon } from '@heroicons/vue/outline';
+import { PencilIcon, StarIcon, CheckIcon, ChevronDoubleRightIcon, LoginIcon } from '@heroicons/vue/outline';
 import {throttle} from "lodash";
 
 let props = defineProps({
@@ -54,7 +54,7 @@ watch(search, throttle(function (value) {
                                               :href="`/users/${user.id}/login`"
                                               method="post" as="button"
                                         >
-                                            <ChevronDoubleRightIcon class="h-5 w-5 text-blue-500" />
+                                            <LoginIcon class="h-5 w-5 text-blue-500" />
                                         </Link>
                                         <CheckIcon v-if="user.id === auth.user.id" class="h-5 w-5"/>
                                     </td>
@@ -85,7 +85,10 @@ watch(search, throttle(function (value) {
                             >
                                 Keine Daten
                             </div>
-                            <Pagination v-if="users.meta.last_page > 1" class="mt-6" :meta="users.meta"></Pagination>
+                            <div v-if="users.meta.last_page > 1"
+                                 class="flex justify-center bg-white" >
+                                <Pagination :meta="users.meta"></Pagination>
+                            </div>
                         </div>
                     </div>
                 </div>
