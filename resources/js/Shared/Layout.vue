@@ -36,7 +36,7 @@ let logout = () => {
                     <div class="w-full flex items-center justify-between">
                         <div class="">
                             <div class="text-white text-xl ml-12">Watter<span class="text-sm"> by</span></div>
-                            <img class="h-10 -mt-3" src="logo.png" alt="Workflow" />
+                            <img class="h-10 -mt-3" src="/logo.png" alt="Workflow" />
                         </div>
                         <div class="hidden md:block">
                             <div class="ml-4 flex justify-end">
