@@ -31,15 +31,18 @@ let logout = () => {
 <template>
     <div class="min-h-full">
         <Disclosure as="nav" class="bg-gray-800" v-slot="{ open }">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="max-w-2xl mx-auto px-2 sm:px-6 lg:px-4">
                 <div class="flex items-center justify-between h-16">
-                    <div class="flex items-center">
-                        <div class="text-white text-sm ml-2">LS-Watter 3</div>
+                    <div class="w-full flex items-center justify-between">
+                        <div class="">
+                            <div class="text-white text-xl ml-12">Watter<span class="text-sm"> by</span></div>
+                            <img class="h-10 -mt-3" src="logo.png" alt="Workflow" />
+                        </div>
                         <div class="hidden md:block">
-                            <div class="ml-10 flex items-baseline space-x-4">
+                            <div class="ml-4 flex justify-end">
                                 <div v-for="item in getNavigation" :key="item.name" >
                                     <Link v-if="user?.admin || !item.admin" :href="route(item.route)"
-                                          :class="[route().current(item.route) ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white', 'px-3 py-2 rounded-md text-sm font-medium']"
+                                          :class="[route().current(item.route) ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white', 'px-3 py-4 rounded-md text-base font-medium']"
                                     >
                                         {{ item.name }}
                                     </Link>
@@ -61,7 +64,7 @@ let logout = () => {
                                 <div>
                                     <MenuButton class="max-w-xs bg-gray-800 rounded-full flex items-center text-sm text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white">
                                         <span class="sr-only">Open user menu</span>
-                                        <img class="h-10 rounded-full" :src="user.profileUrl" alt="" />
+                                        <img class="w-16 object-cover rounded-full" :src="user.profileUrl" alt="" />
                                     </MenuButton>
                                 </div>
                                 <transition enter-active-class="transition ease-out duration-100" enter-from-class="transform opacity-0 scale-95" enter-to-class="transform opacity-100 scale-100" leave-active-class="transition ease-in duration-75" leave-from-class="transform opacity-100 scale-100" leave-to-class="transform opacity-0 scale-95">
@@ -97,7 +100,7 @@ let logout = () => {
             <DisclosurePanel class="md:hidden">
                 <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
                     <Link v-for="item in getNavigation" :key="item.name" as="a" :href="route(item.route)" >
-                        <DisclosureButton v-if="item.visible" :class="[route().current(item.route) ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white', 'block px-3 py-2 rounded-md text-base font-medium']">{{ item.name }}</DisclosureButton>
+                        <DisclosureButton v-if="user?.admin || !item.admin" :class="[route().current(item.route) ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white', 'block px-3 py-2 rounded-md text-base font-medium']">{{ item.name }}</DisclosureButton>
                     </Link>
                     <Link v-if="!user" :href="route('login')">
                         <DisclosureButton class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Anmelden</DisclosureButton>

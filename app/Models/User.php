@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use function PHPUnit\Framework\fileExists;
 
 class User extends Authenticatable
 {
@@ -58,6 +59,7 @@ class User extends Authenticatable
             DIRECTORY_SEPARATOR .
             trim($stub, DIRECTORY_SEPARATOR);
     }
+
 
     public static function removeOrphanProfileImages(): int
     {
