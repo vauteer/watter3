@@ -36,7 +36,7 @@ class Fixture extends Model
         $winPoints = $this->tournament->winpoints;
         $normalizedScore = '';
 
-        if ($newScore !== null) {
+        if ($newScore) {
             preg_match_all('|' . self::SCORE_REGEX . '|', $newScore, $matches);
             $gamesCount = count($matches[0]);
             if ($gamesCount !== $requiredGames)
@@ -60,12 +60,11 @@ class Fixture extends Model
         }
 
         if ($persist) {
-            $normalizedScore = rtrim($normalizedScore);
             $this->team1_won = $wonHome;
             $this->team2_won = $wonAway;
             $this->team1_points = $pointsHome;
             $this->team2_points = $pointsAway;
-            $this->score = $normalizedScore ?? null;
+            $this->score = rtrim($normalizedScore);
             $this->save();
         }
 
