@@ -60,11 +60,12 @@ class Fixture extends Model
         }
 
         if ($persist) {
+            $normalizedScore = rtrim($normalizedScore);
             $this->team1_won = $wonHome;
             $this->team2_won = $wonAway;
             $this->team1_points = $pointsHome;
             $this->team2_points = $pointsAway;
-            $this->score = rtrim($normalizedScore);
+            $this->score = $normalizedScore === '' ? null : $normalizedScore;
             $this->save();
         }
 
