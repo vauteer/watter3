@@ -65,7 +65,7 @@ class Fixture extends Model
             $this->team2_won = $wonAway;
             $this->team1_points = $pointsHome;
             $this->team2_points = $pointsAway;
-            $this->score = $normalizedScore ? null : $normalizedScore;
+            $this->score = $normalizedScore ?? null;
             $this->save();
         }
 
