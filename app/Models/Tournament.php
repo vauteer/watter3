@@ -148,6 +148,9 @@ class Tournament extends Model
 
         $standings = [];
         $teams = $this->teams;
+        if (count($teams) === 0)
+            return $standings;
+
         foreach ($teams as $team) {
             $standings[$team->id] = [
                 'id' => $team->id,
