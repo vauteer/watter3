@@ -85,7 +85,7 @@ class PlayerController extends Controller
             $player->delete();
         } catch (\Exception $ex) {
             return redirect()->route('players')
-                ->with('success', "{$player->name} konnte nicht gelöscht werden");
+                ->with('error', "{$player->name} konnte nicht gelöscht werden");
         }
 
         return redirect()->route('players')

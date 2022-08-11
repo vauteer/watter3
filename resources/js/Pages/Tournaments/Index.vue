@@ -55,7 +55,7 @@ watch(search, throttle(function (value) {
                                 <tbody class="divide-y divide-gray-200 bg-white">
                                 <tr v-for="tournament in tournaments.data" :key="tournament.id"
                                     class="text-base text-gray-500 text-left">
-                                    <td class="py-2 pl-4 sm:pl-6">
+                                    <td class="py-2 pl-4 sm:pl-6 text-sm">
                                         <div>{{ tournament.date }} {{ tournament.time }}</div>
                                     </td>
                                     <td class="whitespace-nowrap py-1 pl-4 text-sm sm:pl-6">

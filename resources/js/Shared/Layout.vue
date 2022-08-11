@@ -11,7 +11,8 @@ import { usePage } from "@inertiajs/inertia-vue3";
 // });
 //
 const user = computed(() => usePage().props.value.auth.user);
-const success = computed(() => usePage().props.value.flash.success);
+const flashSuccess = computed(() => usePage().props.value.flash.success);
+const flashError = computed(() => usePage().props.value.flash.error);
 
 const getNavigation = computed(() => {
     return [
@@ -128,8 +129,11 @@ let logout = () => {
 
         <main>
             <div class="max-w-7xl mx-auto py-2 sm:px-6 lg:px-8">
-                <div v-if="success" class="bg-green-400 text-center">
-                    {{ success }}
+                <div v-if="flashSuccess" class="bg-green-400 text-center">
+                    {{ flashSuccess }}
+                </div>
+                <div v-if="flashError" class="bg-green-400 text-center">
+                    {{ flashError }}
                 </div>
                 <slot />
             </div>
