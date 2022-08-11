@@ -139,6 +139,9 @@ let logout = () => {
                     {{ flashError }}
                 </div>
                 <slot />
+                <div class="w-full text-gray-900 text-sm text-center mt-1.5">
+                    <p> &copy; 2016 <a href="mailto:gerald@modehaus-lindner.de">Gerald Lindner</a></p>
+                </div>
             </div>
         </main>
     </div>
