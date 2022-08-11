@@ -1,10 +1,8 @@
 <script setup>
-import BreezeButton from '@/Components/Button.vue';
-import BreezeGuestLayout from '@/Layouts/Guest.vue';
-import BreezeInput from '@/Components/Input.vue';
-import BreezeLabel from '@/Components/Label.vue';
-import BreezeValidationErrors from '@/Components/ValidationErrors.vue';
 import { Head, useForm } from '@inertiajs/inertia-vue3';
+import Layout from '@/Shared/Layout.vue';
+import TextInput from '@/Shared/TextInput.vue';
+import SubmitButton from '@/Shared/SubmitButton.vue';
 
 defineProps({
     status: String,
@@ -20,30 +18,31 @@ const submit = () => {
 </script>
 
 <template>
-    <BreezeGuestLayout>
-        <Head title="Forgot Password" />
+    <Head title="Passwort vergessen" />
 
-        <div class="mb-4 text-sm text-gray-600">
-            Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.
-        </div>
-
-        <div v-if="status" class="mb-4 font-medium text-sm text-green-600">
-            {{ status }}
-        </div>
-
-        <BreezeValidationErrors class="mb-4" />
-
-        <form @submit.prevent="submit">
-            <div>
-                <BreezeLabel for="email" value="Email" />
-                <BreezeInput id="email" type="email" class="mt-1 block w-full" v-model="form.email" required autofocus autocomplete="username" />
+    <Layout>
+        <div class="min-h-full flex flex-col justify-center sm:px-6 lg:px-8 bg-gray-100">
+            <div class="sm:mx-auto sm:w-full sm:max-w-md">
+                <!--                <img class="mx-auto h-12 w-auto" src="https://tailwindui.com/img/logos/workflow-mark-indigo-600.svg" alt="Workflow" />-->
+                <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">Passwort zurücksetzen</h2>
             </div>
 
-            <div class="flex items-center justify-end mt-4">
-                <BreezeButton :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                    Email Password Reset Link
-                </BreezeButton>
+            <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+                <div class="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+                    <div class="mb-4 text-sm text-gray-600">
+                        Passwort vergessen ? Kein Problem.<br> Teilen Sie uns einfach Ihre Email-Adresse mit und wir senden Ihnen einen Reset-Link zu.
+                    </div>
+                    <form @submit.prevent="submit" class="space-y-6" action="#" method="POST">
+                        <TextInput class="sm:col-span-6" v-model="form.email"
+                                   :error="form.errors.email" id="email" type="email"
+                                   label="Email" required autofocus autocomplete="username"/>
+
+                        <SubmitButton :disabled="form.processing" class="w-full">
+                            Link zusenden
+                        </SubmitButton>
+                    </form>
+                </div>
             </div>
-        </form>
-    </BreezeGuestLayout>
+        </div>
+    </Layout>
 </template>
