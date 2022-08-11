@@ -7,6 +7,7 @@ import Layout from "@/Shared/Layout.vue";
 import Tabs from "@/Shared/Tabs.vue";
 
 let props = defineProps({
+    auth: Object,
     tournament: Object,
     currentRound: Number,
     fixtures: Object,
@@ -45,7 +46,7 @@ let switchRound = (round) => {
             class="w-full mx-auto bg-gray-100 text-gray-900 text-sm sm:rounded sm:border sm:shadow sm:overflow-hidden mt-2 px-4 sm:px-6 lg:px-8">
             <div class="w-full flex justify-between pt-3 pl-2">
                 <div class="text-2xl font-medium text-gray-900">{{ getTitle }}</div>
-                <a
+                <a v-if="auth.user"
                     class="bg-blue-500 py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-center text-gray-700 hover:bg-blue-200 focus:outline-none focus:ring-1 focus:ring-offset-1 focus:ring-indigo-500"
                     :href="`/tournaments/${tournament.id}/lists/${currentRound}`" target="_blank">Tisch-Listen</a>
             </div>
