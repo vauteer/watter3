@@ -75,11 +75,11 @@ class Fixture extends Model
         return ($points === 0 || ($points > 1 && $points <= $winPoints));
     }
 
-    private static function calculateAll()
+    public static function calculateAll()
     {
         $fixtures = Fixture::all();
         foreach ($fixtures as $fixture) {
-            $fixture->calculate($fixture->score);
+            $fixture->calculate($fixture->score, true);
         }
     }
 
