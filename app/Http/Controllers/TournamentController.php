@@ -88,6 +88,9 @@ class TournamentController extends Controller
             'created_by' => auth()->id(),
         ]));
 
+        Team::deleteUnused();
+        Player::deleteUnused();
+
         return redirect()->route('tournaments')
             ->with('success', "{$tournament->name} wurde hinzugefügt.");
     }

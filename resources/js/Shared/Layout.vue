@@ -42,7 +42,7 @@ let logout = () => {
                             <div class="ml-4 flex justify-end">
                                 <div v-for="item in getNavigation" :key="item.name" >
                                     <Link v-if="user?.admin || !item.admin" :href="route(item.route)"
-                                          :class="[route().current(item.route) ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white', 'px-3 py-4 rounded-md text-base font-medium']"
+                                          :class="[route().current(item.route) ? 'bg-gray-900 text-orange-400' : 'text-gray-300 hover:bg-gray-600 hover:text-white', 'px-3 py-4 rounded-md text-base font-medium']"
                                     >
                                         {{ item.name }}
                                     </Link>
