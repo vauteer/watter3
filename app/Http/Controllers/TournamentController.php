@@ -199,16 +199,20 @@ class TournamentController extends Controller
         return $this->createPlayers($request, $tournament);
     }
 
-    public function draw(Request $request, Tournament $tournament): Response
+    public function draw(Request $request, Tournament $tournament): RedirectResponse
     {
         $tournament->draw();
 
-        return $this->show($request, $tournament);
+        return redirect()->route('tournaments.show', [
+            'tournament' => $tournament->id,
+            'round' => 1
+        ]);
     }
 
     public function editFixture(Request $request, Fixture $fixture): Response
     {
         $tournament = $fixture->tournament;
+        $winpoints = $tournament->winpoints;
 
         return inertia('Fixtures/Edit', [
             'fixture' => [
@@ -219,6 +223,7 @@ class TournamentController extends Controller
                 'team1' => $fixture->team1->__toString(),
                 'team2' => $fixture->team2->__toString(),
             ],
+            'placeholder' => "$winpoints-9 8-$winpoints ...",
             'scorePattern' => $tournament->getScoreRegex(),
         ]);
     }

@@ -9,6 +9,7 @@ import SubmitButton from '@/Shared/SubmitButton.vue';
 let props = defineProps({
     fixture: Object,
     scorePattern: String|null,
+    placeholder: String,
 });
 
 let form = useForm({
@@ -25,7 +26,6 @@ onMounted(() => {
 const getTitle = computed(() => {
     return props.fixture.team1 + ' gegen ' + props.fixture.team2;
 });
-
 
 let submit = () => {
     form.put(`/tournaments/fixtures/${props.fixture.id}`);
@@ -55,7 +55,7 @@ let submit = () => {
                             <div class="space-y-8 divide-y divide-gray-200 my-3 mx-2">
                                 <div class="grid grid-cols-1 gap-y-4 gap-x-4 sm:grid-cols-6">
                                     <TextInput class="sm:col-span-6" v-model="form.score" :error="form.errors.score"
-                                               id="score" label="Ergebnis" :regex="null"/>
+                                               id="score" label="Ergebnis" :regex="null" :placeholder="placeholder"/>
                                 </div>
                                 <div class="py-5">
                                     <div class="flex justify-between">
