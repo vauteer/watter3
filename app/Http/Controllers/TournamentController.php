@@ -223,11 +223,27 @@ class TournamentController extends Controller
                 'team1' => $fixture->team1->__toString(),
                 'team2' => $fixture->team2->__toString(),
             ],
-            'placeholder' => "$winpoints-9 8-$winpoints ...",
+            'placeholder' => $this->getPlaceholder($tournament),
             'scorePattern' => $tournament->getScoreRegex(),
         ]);
     }
 
+    /**
+     * @throws \Exception
+     */
+    private function getPlaceholder($tournament)
+    {
+        $winPoints = $tournament->winpoints;
+        $result = 'z.B.: ';
+        for ($i = 0; $i < $tournament->games; $i++) {
+            $points1 = $i % 2 ? $winPoints : random_int(2, $winPoints - 1);
+            $points2 = $i % 2 ? random_int(2, $winPoints - 1) : $winPoints;
+
+            $result .= "$points1-$points2 ";
+        }
+
+        return rtrim($result);
+    }
     public function updateFixture(Request $request, Fixture $fixture): RedirectResponse
     {
         $attributes = $request->validate([
