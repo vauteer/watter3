@@ -55,7 +55,7 @@ let submit = () => {
                             <div class="space-y-8 divide-y divide-gray-200 my-3 mx-2">
                                 <div class="grid grid-cols-1 gap-y-4 gap-x-4 sm:grid-cols-6">
                                     <TextInput class="sm:col-span-6" v-model="form.score" :error="form.errors.score"
-                                               id="score" label="Ergebnis" :regex="null" :placeholder="placeholder"/>
+                                               id="score" label="Ergebnis" :regex="scorePattern" :placeholder="placeholder"/>
                                 </div>
                                 <div class="py-5">
                                     <div class="flex justify-between">
