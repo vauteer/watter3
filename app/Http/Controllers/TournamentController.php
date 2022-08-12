@@ -258,7 +258,7 @@ class TournamentController extends Controller
 
         return redirect()
             ->route('tournaments.show', ['tournament' => $fixture->tournament_id, 'round' => $fixture->round])
-            ->with('success', "Ergebnis wurde geändert.");
+            ->with('success', "Ergebnis {$fixture->team1->__toString()} gegen {$fixture->team2->__toString()} wurde geändert.");
     }
 
     public function tableLists(Request $request, Tournament $tournament, $round)
