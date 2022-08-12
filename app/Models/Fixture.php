@@ -47,10 +47,10 @@ class Fixture extends Model
                 $points2 = intval(($matches[2][$i]));
 
                 if (self::pointsValid($points1, $winPoints) && self::pointsValid($points2, $winPoints) &&
-                    $points1 !== $points2 && ($points1 === 11 || $points2 == 11)) {
+                    $points1 !== $points2 && ($points1 === $winPoints || $points2 == $winPoints)) {
                     $pointsHome += $points1;
                     $pointsAway += $points2;
-                    ($points1 === 11) ? $wonHome++ : $wonAway++;
+                    ($points1 === $winPoints) ? $wonHome++ : $wonAway++;
                 } else {
                     return "{$matches[0][$i]} ist ungültig";
                 }
