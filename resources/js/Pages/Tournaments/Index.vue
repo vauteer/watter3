@@ -40,7 +40,7 @@ watch(search, throttle(function (value) {
                                 <thead class="bg-gray-50 text-left">
                                 <tr>
                                     <th scope="col" class="pr-3 py-3.5 text-sm font-semibold text-gray-900 sm:pl-6">
-                                        Start
+                                        Datum
                                     </th>
                                     <th scope="col" class="pr-3 py-3.5 text-sm font-semibold text-gray-900 pl-4 sm:pl-6">Name</th>
                                     <th scope="col" class="px-3 py-3.5 w-6"><span class="sr-only">Status</span></th>
@@ -55,12 +55,12 @@ watch(search, throttle(function (value) {
                                 <tbody class="divide-y divide-gray-200 bg-white">
                                 <tr v-for="tournament in tournaments.data" :key="tournament.id"
                                     class="text-base text-gray-500 text-left">
-                                    <td class="py-2 pl-4 sm:pl-6 text-sm">
-                                        <div>{{ tournament.date }} {{ tournament.time }}</div>
+                                    <td class="w-32 py-2 pl-4 sm:pl-6 text-sm">
+                                        <div>{{ tournament.date }}</div>
                                     </td>
                                     <td class="whitespace-nowrap py-1 pl-4 text-sm sm:pl-6">
                                         <Link :href="`/tournaments/${tournament.id}/show`" as="button"
-                                              class="text-base font-semibold text-blue-500"
+                                              class="font-semibold text-blue-500"
                                         >{{ tournament.name }}</Link>
                                         <div v-if="auth.user?.admin" class="font-sm">{{ tournament.creator }}</div>
                                     </td>
