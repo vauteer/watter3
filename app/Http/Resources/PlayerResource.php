@@ -19,7 +19,7 @@ class PlayerResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
 
-            'editable' => Auth::user()->admin,
+            'modifiable' => Auth::user()->admin,
         ];
     }
 }

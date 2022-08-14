@@ -83,8 +83,17 @@ class Tournament extends Model
         return $this->fixtures()->count() > 0;
     }
 
+    public function started()
+    {
+        return $this->drawn() && $this->fixtures()->whereNotNull('score')->count() > 0;
+    }
+
     public function finished()
     {
+        Fixture::where('tournament_id', $this->id)
+            ->where('score', '')
+            ->update(['score' => null]);
+
         return $this->drawn() && $this->fixtures()->whereNull('score')->count() === 0;
     }
 
@@ -238,7 +247,7 @@ class Tournament extends Model
         return '^(' . Fixture::SCORE_REGEX . ' ){' . $this->games - 1 . '}' . Fixture::SCORE_REGEX . '$';
     }
 
-    public function editableBy(User|null $user)
+    public function modifiableBy(User|null $user)
     {
         return $user !== null && ($user->admin || $user->id === $this->created_by);
     }
@@ -248,7 +257,7 @@ class Tournament extends Model
         if ($user === null) {
             return $this->start < Carbon::now();
         } else {
-            return $this->admin || ($this->start < Carbon::now() || $this->created_by = $user->id);
+            return $this->admin || ($this->start < Carbon::now() || $this->created_by === $user->id);
         }
     }
 }

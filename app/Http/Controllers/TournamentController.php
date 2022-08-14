@@ -11,6 +11,7 @@ use App\Models\Team;
 use App\Models\Tournament;
 use App\Rules\Score;
 use App\Rules\UniquePlayer;
+use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -72,6 +73,8 @@ class TournamentController extends Controller
                 ->get()),
 
             'canCreate' => Auth::check(),
+            'canEdit' => $tournament->modifiableBy(auth()->user()) &&
+                ($tournament->start > Carbon::yesterday() || !$tournament->finished()),
         ]);
     }
 
@@ -107,6 +110,7 @@ class TournamentController extends Controller
                 'games' => $tournament->games,
                 'winpoints' => $tournament->winpoints,
                 'private' => $tournament->private,
+                'drawn' => $tournament->drawn(),
             ],
         ]);
     }

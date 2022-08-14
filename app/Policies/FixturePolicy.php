@@ -42,7 +42,7 @@ class FixturePolicy
      */
     public function update(User $user, Fixture $fixture)
     {
-        return $fixture->tournament->editableBy($user);
+        return $fixture->tournament->modifiableBy($user);
     }
 
     /**

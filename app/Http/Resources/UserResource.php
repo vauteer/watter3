@@ -21,7 +21,7 @@ class UserResource extends JsonResource
             'email' => $this->email,
             'admin' => $this->admin,
 
-            'editable' => Auth::user()->admin,
+            'modifiable' => Auth::user()->admin,
         ];
     }
 }

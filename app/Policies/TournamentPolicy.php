@@ -47,7 +47,7 @@ class TournamentPolicy
      */
     public function update(User $user, Tournament $tournament)
     {
-        return $tournament->editableBy($user);
+        return $tournament->modifiableBy($user);
     }
 
     /**
@@ -59,6 +59,6 @@ class TournamentPolicy
      */
     public function delete(User $user, Tournament $tournament)
     {
-        return $tournament->editableBy($user);
+        return $tournament->modifiableBy($user);
     }
 }

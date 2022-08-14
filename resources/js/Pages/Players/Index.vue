@@ -50,7 +50,7 @@ watch(search, throttle(function (value) {
                                     </td>
                                     <td class="px-3">
                                         <div class="h-5">
-                                            <Link v-if="player.editable" :href="`/players/${player.id}/edit`">
+                                            <Link v-if="player.modifiable" :href="`/players/${player.id}/edit`">
                                                 <PencilIcon class="h-5 w-5 text-blue-500" />
                                             </Link>
                                             <LockClosedIcon v-else class="h-5 w-5" />

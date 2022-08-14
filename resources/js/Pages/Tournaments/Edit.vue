@@ -24,6 +24,7 @@ let form = useForm({
 });
 
 let editMode = ref(false);
+let drawn = ref(false);
 
 onMounted(() => {
     if (props.tournament !== undefined) {
@@ -35,6 +36,7 @@ onMounted(() => {
         form.private = Boolean(props.tournament.private);
 
         editMode.value = true;
+        drawn.value = Boolean(props.tournament.drawn)
     }
 
     document.getElementById('name').focus();
@@ -86,11 +88,17 @@ const getSubmitButtonText = computed(() => {
                                     <TextInput class="sm:col-span-3" v-model="form.start" :error="form.errors.start" id="start"
                                                type='datetime-local' label="Start" step="60"/>
                                     <TextInput class="sm:col-span-3" v-model="form.rounds" :error="form.errors.rounds" id="rounds"
-                                               type="number" label="Runden" min="0" step="1"/>
+                                               type="number" label="Runden" min="0" step="1"
+                                               :class="{ hidden: drawn }"
+                                    />
                                     <TextInput class="sm:col-span-3" v-model="form.games" :error="form.errors.games" id="games"
-                                               type="number" step="1" label="Spiele (pro Runde)"/>
+                                               type="number" step="1" label="Spiele (pro Runde)"
+                                               :class="{ hidden: drawn }"
+                                    />
                                     <TextInput class="sm:col-span-3" v-model="form.winpoints" :error="form.errors.winpoints" id="winpoints"
-                                               type="number" step="1" label="Punkte zum Sieg"/>
+                                               type="number" step="1" label="Punkte zum Sieg"
+                                               :class="{ hidden: drawn }"
+                                    />
                                     <div class="sm:col-span-6">
                                         <CheckBox v-model="form.private" :error="form.errors.private"
                                                   id="private" label="Privat"/>

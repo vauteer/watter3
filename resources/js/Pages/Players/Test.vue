@@ -71,7 +71,7 @@ watch(search, throttle(function (value) {
                                     </td>
                                     <td class="px-3">
                                         <div class="h-5">
-                                            <Link v-if="item.editable" :href="`/items/${item.id}/edit`">
+                                            <Link v-if="item.changeable" :href="`/items/${item.id}/edit`">
                                                 <PencilIcon class="h-5 w-5 text-blue-500"/>
                                             </Link>
                                         </div>

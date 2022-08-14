@@ -135,7 +135,7 @@ let logout = () => {
                 <div v-if="flashSuccess" class="bg-green-400 text-center">
                     {{ flashSuccess }}
                 </div>
-                <div v-if="flashError" class="bg-green-400 text-center">
+                <div v-if="flashError" class="bg-red-400 text-center">
                     {{ flashError }}
                 </div>
                 <slot />

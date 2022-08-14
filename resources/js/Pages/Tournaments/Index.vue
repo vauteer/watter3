@@ -69,14 +69,14 @@ watch(search, throttle(function (value) {
                                     </td>
                                     <td class="px-3">
                                         <div class="h-5">
-                                            <Link v-if="tournament.editable" :href="`/tournaments/${tournament.id}/players`">
+                                            <Link v-if="tournament.modifiable && !tournament.started" :href="`/tournaments/${tournament.id}/players`">
                                                 <UserAddIcon class="h-5 w-5 text-blue-500" />
                                             </Link>
                                         </div>
                                     </td>
                                     <td class="px-3">
                                         <div class="h-5">
-                                            <Link v-if="tournament.editable" :href="`/tournaments/${tournament.id}/edit`">
+                                            <Link v-if="tournament.modifiable" :href="`/tournaments/${tournament.id}/edit`">
                                                 <PencilIcon class="h-5 w-5 text-blue-500" />
                                             </Link>
                                         </div>
