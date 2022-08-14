@@ -11,7 +11,7 @@ let getUrl = function(page) {
     if (page < 1 || page > props.meta.last_page) {
         return null;
     } else {
-        return props.meta.path + '?page=' + page;
+        return props.meta.links[1].url.replace(/page=\d+/, 'page=' + page);
     }
 };
 
