@@ -8,7 +8,7 @@ import SubmitButton from '@/Shared/SubmitButton.vue';
 
 let props = defineProps({
     fixture: Object,
-    scorePattern: String|null,
+    scorePattern: String,
     placeholder: String,
 });
 

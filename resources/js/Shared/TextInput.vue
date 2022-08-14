@@ -14,7 +14,7 @@ let props = defineProps({
         default: null,
     },
     regex: {
-        type: String|null,
+        type: String,
         default: null,
     },
     error: String,
