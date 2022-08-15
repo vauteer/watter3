@@ -6,6 +6,7 @@ use App\Models\Fixture;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
@@ -85,15 +86,15 @@ class Backup
         return self::prefix() . Carbon::now()->format(self::DATE_FORMAT) . '.sql.gz';
     }
 
-    private static function copyS3(string $path): void
+    private static function copyS3(string $filePath): void
     {
         if (!env('AWS_ENABLED', false))
             return;
 
         $destinationPath = env('AWS_ROOT', '') . DIRECTORY_SEPARATOR .
-            pathinfo($path, PATHINFO_BASENAME);
+            pathinfo($filePath, PATHINFO_BASENAME);
 
-        $fp = fopen($path, 'r');
+        $fp = fopen($filePath, 'r');
 
         Storage::disk('s3')->put($destinationPath, $fp);
 
@@ -117,6 +118,7 @@ class Backup
             $result[] = [
                 'id' => $id++,
                 'timestamp' => $date->getTimestamp(),
+                'carbon' => $date,
                 'date' => $date->format('Y-m-d H:i:s'),
                 'filename' => basename($filename),
                 'age' => $now->diffInMinutes($date),
@@ -126,6 +128,20 @@ class Backup
         return Arr::sort($result, function ($value) {
             return $value['age'];
         });
+    }
+
+    public static function latest()
+    {
+        $backups = self::all();
+
+        return $backups ? head($backups) : null;
+    }
+
+    public static function latestDate()
+    {
+        $latest = self::latest();
+
+        return $latest ? $latest['date'] : null;
     }
 
     public static function deleteOld($days, $retain = 1): int
@@ -146,13 +162,15 @@ class Backup
 
     public static function isDirty()
     {
-        $lastUpdate = Fixture::max('updated_at');
-        if ($lastUpdate === null)
-            return false;
+        $latestDate = self::latestDate();
+        if ($latestDate === null)
+            return true;
 
-        $backups = self::all();
+        $changes = Fixture::where('updated_at', '>', $latestDate)->count();
+        if ($changes === 0)
+            $changes = DB::table('team_tournament')->where('updated_at', '>', $latestDate)->count();
 
-        return (!$backups || $lastUpdate > head($backups)['date']);
+        return $changes > 0;
     }
 
 }

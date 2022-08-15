@@ -17,12 +17,6 @@ return new class extends Migration
             $table->id();
             $table->foreignId('team_id')->constrained()->onDelete('restrict');
             $table->foreignId('tournament_id')->constrained()->onDelete('cascade');
-            $table->unsignedInteger('won')->default(0);
-            $table->unsignedInteger('lost')->default(0);
-            $table->unsignedInteger('points_won')->default(0);
-            $table->unsignedInteger('points_lost')->default(0);
-            $table->integer('points_diff')->default(0);
-
 
             $table->timestamps();
         });
