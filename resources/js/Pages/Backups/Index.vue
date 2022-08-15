@@ -5,6 +5,7 @@ import Layout from "@/Shared/Layout.vue";
 
 let props = defineProps({
     backups: Object,
+    isDirty: Boolean,
 });
 
 </script>
@@ -16,7 +17,7 @@ let props = defineProps({
         <Layout>
             <div
                 class="w-full max-w-2xl mx-auto bg-gray-100 text-gray-900 text-sm sm:rounded sm:border sm:shadow sm:overflow-hidden mt-2 px-4 sm:px-6 lg:px-8">
-                <Category createUrl="/backups/create" :search="false" button-title="Backup erstellen">Backups</Category>
+                <Category createUrl="/backups/create" :search="false" button-title="Backup erstellen" :button-disabled="!isDirty">Backups</Category>
 
                 <div class="mt-4 mb-4 flex flex-col">
                     <div class="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">

@@ -14,6 +14,7 @@ class BackupController extends Controller
     {
         return inertia('Backups/Index', [
             'backups' => BackupResource::collection(Backup::all()),
+            'isDirty' => Backup::isDirty(),
         ]);
     }
 

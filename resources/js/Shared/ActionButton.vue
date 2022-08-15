@@ -3,14 +3,15 @@ let props = defineProps({
     onClick: {
         type: Function,
         default: null,
-    }
+    },
+    disabled: Boolean,
 });
 </script>
 
 <template>
     <button
-        class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-        type="button"
+        class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 enabled:hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-25"
+        type="button" :disabled="disabled"
         @click="onClick"
     >
         <slot></slot>

@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Models\Fixture;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Arr;
@@ -14,6 +15,11 @@ class Backup
 
     public static function create(): string|array
     {
+        if (!self::isDirty())
+            return "Kein Backup gemacht. Keine Änderungen seit dem letzten Backup.";
+
+        self::deleteOld(180, 10);
+
         $mysqldump = 'mysqldump';
         $gzip = 'gzip';
 
@@ -62,6 +68,11 @@ class Backup
 
     }
 
+    public static function prefix(): string
+    {
+        return config('database.connections.mysql.database') . '_';
+    }
+
     public static function path(string $filename = ''): string
     {
         $filename = trim($filename, DIRECTORY_SEPARATOR);
@@ -71,8 +82,7 @@ class Backup
 
     public static function makeFilename(): string
     {
-        return config('database.connections.mysql.database') . '_' .
-            Carbon::now()->format(self::DATE_FORMAT) . '.sql.gz';
+        return self::prefix() . Carbon::now()->format(self::DATE_FORMAT) . '.sql.gz';
     }
 
     private static function copyS3(string $path): void
@@ -95,10 +105,14 @@ class Backup
         $result = [];
         $id = 1;
         $now = Carbon::now();
+        $pattern = '/' . self::prefix() .'(.*)\.sql/';
 
-        foreach (glob(storage_path('backups/*.sql.gz')) as $filename) {
-            $dateString = substr($filename, -26, 19);
-            $date = Carbon::createFromFormat(self::DATE_FORMAT, $dateString);
+        foreach (glob(self::path('*.sql.gz')) as $filename) {
+            preg_match($pattern, $filename, $matches);
+            if (!$matches)
+                continue;
+
+            $date = Carbon::createFromFormat(self::DATE_FORMAT, $matches[1]);
 
             $result[] = [
                 'id' => $id++,
@@ -113,4 +127,32 @@ class Backup
             return $value['age'];
         });
     }
+
+    public static function deleteOld($days, $retain = 1): int
+    {
+        $minutes = $days * 24 * 60;
+        $backups = self::all();
+        $count = count($backups);
+        $deleted = 0;
+
+        while ($count > $retain &&  ($backups[$count-1]["age"] > $minutes)) {
+            unlink(self::path(last($backups)['filename']));
+            $deleted++;
+            $count--;
+        }
+
+        return $deleted;
+    }
+
+    public static function isDirty()
+    {
+        $lastUpdate = Fixture::max('updated_at');
+        if ($lastUpdate === null)
+            return false;
+
+        $backups = self::all();
+
+        return (!$backups || $lastUpdate > head($backups)['date']);
+    }
+
 }

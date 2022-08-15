@@ -80,6 +80,10 @@ let getLinks = computed(() => {
                        aria-current="page"
                        class="z-10 bg-indigo-50 border-indigo-500 text-indigo-600 relative inline-flex items-center px-3.5 py-2 border text-sm font-medium"> {{ link.label }}
                     </p>
+                    <p v-else-if="!link.url"
+                       class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-3.5 py-2 border text-sm font-medium">
+                        {{ link.label }}
+                    </p>
                     <Link v-else :href="link.url"
                           class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-3.5 py-2 border text-sm font-medium">
                         {{ link.label }}
