@@ -30,11 +30,15 @@ class UserController extends Controller
         ];
     }
 
-    private function accountRules(): array
+    private function accountRules($id): array
     {
         return [
             'name' => 'required|string',
-            'email' => 'required|email',
+            'email' => [
+                'required',
+                'email',
+                Rule::unique('users')->ignore($id)
+            ],
             'profile_image' => 'nullable|string|max:100',
         ];
     }
@@ -137,7 +141,7 @@ class UserController extends Controller
         $passwordAttributes = $request->validate($this->passwordRules());
 
         if ($passwordAttributes['password'] !== null) {
-            Log::info($passwordAttributes['password']);
+            //Log::info($passwordAttributes['password']);
             $attributes = array_merge($attributes, [
                 'password' => Hash::make($passwordAttributes['password']),
             ]);

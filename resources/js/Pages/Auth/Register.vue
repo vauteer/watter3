@@ -1,10 +1,8 @@
 <script setup>
-import BreezeButton from '@/Components/Button.vue';
-import BreezeGuestLayout from '@/Layouts/Guest.vue';
-import BreezeInput from '@/Components/Input.vue';
-import BreezeLabel from '@/Components/Label.vue';
-import BreezeValidationErrors from '@/Components/ValidationErrors.vue';
 import { Head, Link, useForm } from '@inertiajs/inertia-vue3';
+import Layout from '@/Shared/Layout.vue';
+import TextInput from '@/Shared/TextInput.vue';
+import SubmitButton from '@/Shared/SubmitButton.vue';
 
 const form = useForm({
     name: '',
@@ -22,41 +20,37 @@ const submit = () => {
 </script>
 
 <template>
-    <BreezeGuestLayout>
+    <Layout>
         <Head title="Register" />
 
-        <BreezeValidationErrors class="mb-4" />
-
         <form @submit.prevent="submit">
-            <div>
-                <BreezeLabel for="name" value="Name" />
-                <BreezeInput id="name" type="text" class="mt-1 block w-full" v-model="form.name" required autofocus autocomplete="name" />
-            </div>
+            <TextInput class="sm:col-span-6" v-model="form.name"
+                       :error="form.errors.name" id="name" type="text"
+                       required autocomplete="name" autofocus
+                       label="Name"/>
 
-            <div class="mt-4">
-                <BreezeLabel for="email" value="Email" />
-                <BreezeInput id="email" type="email" class="mt-1 block w-full" v-model="form.email" required autocomplete="username" />
-            </div>
+            <TextInput class="sm:col-span-6" v-model="form.email"
+                       :error="form.errors.email" id="email" type="email"
+                       label="Email" required autofocus autocomplete="username"/>
 
-            <div class="mt-4">
-                <BreezeLabel for="password" value="Password" />
-                <BreezeInput id="password" type="password" class="mt-1 block w-full" v-model="form.password" required autocomplete="new-password" />
-            </div>
+            <TextInput class="sm:col-span-6" v-model="form.password"
+                       :error="form.errors.password" id="password" type="password"
+                       required autocomplete="current-password"
+                       label="Passwort"/>
 
-            <div class="mt-4">
-                <BreezeLabel for="password_confirmation" value="Confirm Password" />
-                <BreezeInput id="password_confirmation" type="password" class="mt-1 block w-full" v-model="form.password_confirmation" required autocomplete="new-password" />
-            </div>
+            <TextInput class="sm:col-span-6" v-model="form.password_confirmation"
+                       :error="form.errors.password_confirmation" id="password_confirmation" type="password"
+                       required autocomplete="new-password" label="Passwort bestätigen"/>
 
             <div class="flex items-center justify-end mt-4">
                 <Link :href="route('login')" class="underline text-sm text-gray-600 hover:text-gray-900">
                     Already registered?
                 </Link>
 
-                <BreezeButton class="ml-4" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
+                <SubmitButton :disabled="form.processing" class="w-full">
                     Register
-                </BreezeButton>
+                </SubmitButton>
             </div>
         </form>
-    </BreezeGuestLayout>
+    </Layout>
 </template>

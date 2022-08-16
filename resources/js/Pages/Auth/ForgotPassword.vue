@@ -35,7 +35,7 @@ const submit = () => {
                     <form @submit.prevent="submit" class="space-y-6" action="#" method="POST">
                         <TextInput class="sm:col-span-6" v-model="form.email"
                                    :error="form.errors.email" id="email" type="email"
-                                   label="Email" required autofocus autocomplete="username"/>
+                                   label="Email" required autofocus autocomplete="email"/>
 
                         <SubmitButton :disabled="form.processing" class="w-full">
                             Link zusenden
