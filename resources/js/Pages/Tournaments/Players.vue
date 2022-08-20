@@ -4,12 +4,9 @@ import { Inertia } from "@inertiajs/inertia";
 import { useForm } from "@inertiajs/inertia-vue3";
 import { Head, Link } from '@inertiajs/inertia-vue3';
 import Layout from '@/Shared/Layout.vue';
-import EditTitle from '@/Shared/EditTitle.vue'
 import TextInput from '@/Shared/TextInput.vue';
 import AbortButton from '@/Shared/AbortButton.vue';
 import SubmitButton from '@/Shared/SubmitButton.vue';
-import DeleteButton from '@/Shared/DeleteButton.vue';
-import CheckBox from '@/Shared/CheckBox.vue';
 import ActionButton from "@/Shared/ActionButton.vue";
 
 let props = defineProps({
@@ -86,7 +83,7 @@ let deleteTeam = (teamId) => {
 </script>
 
 <template>
-    <Head title="Registrierung" />
+    <Head :title="$t('Registrierung')" />
 
     <Layout>
         <div>
@@ -96,7 +93,7 @@ let deleteTeam = (teamId) => {
             ></button>
             <div class="relative z-30 w-full max-w-xl mx-auto bg-gray-100 text-gray-900 text-sm sm:rounded sm:border sm:shadow sm:overflow-hidden mt-2">
                 <div class="sm:px-2 lg:px-4 sm:py-2 lg:py-4">
-                    <EditTitle class="ml-3 mb-4">{{ teams.length }} Teams - {{ players.length }} freie Spieler</EditTitle>
+                    <div class="font-medium text-lg text-gray-900ml-3 mb-4">{{ teams.length }} Teams - {{ players.length }} {{ $t('freie Spieler') }}</div>
 
                     <div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg sm:px-2 lg:px-4 bg-white">
                         <form @submit.prevent="submit" class="space-y-8 divide-y divide-gray-200">
@@ -112,13 +109,14 @@ let deleteTeam = (teamId) => {
                         </form>
                     </div>
                     <div v-if="players.length > 0" class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg mt-4">
-                        <div class="text-center font-semibold">Einzelne Spieler</div>
+                        <div class="text-center font-semibold">{{ $t('Einzelne Spieler') }}</div>
                         <form @submit.prevent="submitConnect" class="space-y-8 divide-y divide-gray-200">
                             <table class="min-w-full divide-y divide-gray-300">
                                 <thead class="bg-gray-50">
                                 <tr>
                                     <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"></th>
-                                    <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">Name</th>
+                                    <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">
+                                        {{ $t('Name') }}</th>
                                     <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6 w-6">
                                         <span class="sr-only">Delete</span>
                                     </th>
@@ -142,7 +140,7 @@ let deleteTeam = (teamId) => {
                                             type="button"
                                             @click="deletePlayer(player.id)"
                                         >
-                                            Löschen
+                                            {{ $t('Löschen') }}
                                         </button>
                                     </td>
                                 </tr>
@@ -151,7 +149,7 @@ let deleteTeam = (teamId) => {
                             <div class="flex justify-center bg-white">
                                 <SubmitButton v-if="canConnect" :disabled="connectForm.processing"
                                               class="w-1/2 my-2"
-                                >Team erstellen</SubmitButton>
+                                >{{ $t('Team erstellen') }}</SubmitButton>
                             </div>
                         </form>
                     </div>
@@ -182,9 +180,9 @@ let deleteTeam = (teamId) => {
                     </div>
                     <div class="w-full flex justify-between mt-3">
                         <AbortButton :href="route('tournaments')">
-                            Zurück
+                            {{ $t('Abbrechen') }}
                         </AbortButton>
-                        <ActionButton v-if="canDraw" :onClick="draw">Spielplan erstellen</ActionButton>
+                        <ActionButton v-if="canDraw" :onClick="draw">{{ $t("Spielplan erstellen") }}</ActionButton>
                     </div>
                 </div>
             </div>

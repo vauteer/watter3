@@ -36,6 +36,8 @@ class HandleInertiaRequests extends Middleware
     public function share(Request $request)
     {
         $user = Auth::user();
+        $locale = 'de';
+
         $data = [
             'auth' => $user ? [
                 'user' => [
@@ -48,6 +50,7 @@ class HandleInertiaRequests extends Middleware
             ] : [
                 'user' => null
             ],
+            'locale' => $locale,
             'flash' => [
                 'success' => fn () => $request->session()->get('success'),
                 'error' => fn () => $request->session()->get('error'),

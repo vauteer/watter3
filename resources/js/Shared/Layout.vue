@@ -34,7 +34,7 @@ let logout = () => {
             <div class="max-w-2xl mx-auto px-2 sm:px-6 lg:px-4">
                 <div class="flex items-center justify-between h-16">
                     <div class="w-full flex items-center justify-between">
-                        <div class="">
+                        <div>
                             <div class="text-white text-xl ml-12">Watter<span class="text-sm"> by</span></div>
                             <img class="h-10 -mt-3" src="/logo.png" alt="Workflow" />
                         </div>
@@ -44,7 +44,7 @@ let logout = () => {
                                     <Link v-if="user?.admin || !item.admin" :href="route(item.route)"
                                           :class="[route().current(item.route) ? 'bg-gray-900 text-orange-400' : 'text-gray-300 hover:bg-gray-600 hover:text-white', 'px-3 py-4 rounded-md text-base font-medium']"
                                     >
-                                        {{ item.name }}
+                                        {{ $t(item.name) }}
                                     </Link>
                                 </div>
                             </div>

@@ -1,4 +1,24 @@
 {
     "Hello!": "Hallo!",
-    "Regards": "Grüße"
+    "Regards": "Grüße",
+    "Turniere": "Turniere",
+    "Spieler": "Spieler",
+    "Benutzer": "Benutzer",
+    "Backups": "Backups",
+    "Neu": "Neu",
+    "Speichern": "Speichern",
+    "Hinzufügen": "Hinzufügen",
+    "Abbrechen": "Abbrechen",
+    "Löschen": "Löschen",
+    "Neues Turnier": "Neues Turnier",
+    "Turnier bearbeiten": "Turnier bearbeiten",
+    "Name": "Name",
+    "Start": "Start",
+    "Runden": "Runden",
+    "Spiele (pro Runde)": "Spiele (pro Runde)",
+    "Punkte zum Sieg": "Punkte zum Sieg",
+    "Privat": "Privat",
+    "Neuer Spieler": "Neuer Spieler",
+    "Spieler bearbeiten": "Spieler bearbeiten",
+    "Z": "Z"
 }

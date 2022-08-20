@@ -22,6 +22,7 @@
     "dependencies": {
         "@headlessui/vue": "^1.6.7",
         "@heroicons/vue": "^1.0.6",
-        "dropzone": "^6.0.0-beta.2"
+        "dropzone": "^6.0.0-beta.2",
+        "vue-i18n": "^9.2.2"
     }
 }

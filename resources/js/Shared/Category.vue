@@ -29,7 +29,7 @@ defineEmits(['update:modelValue']);
                 <Link
                     class="rounded-md border border-transparent bg-indigo-600 px-4 py-2 my-2 mr-2 text-sm font-medium text-white shadow-sm enabled:hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:w-auto disabled:opacity-25"
                     :href="createUrl" as="button" type="button" :disabled="buttonDisabled">
-                    {{ buttonTitle }}
+                    {{ $t(buttonTitle) }}
                 </Link>
             </div>
         </div>
