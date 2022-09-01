@@ -2,7 +2,7 @@
 import {computed} from "vue";
 import {Inertia} from "@inertiajs/inertia";
 import {Head, Link} from '@inertiajs/inertia-vue3';
-import {PencilIcon} from '@heroicons/vue/outline';
+import {PencilIcon} from '@heroicons/vue/24/outline';
 import Layout from "@/Shared/Layout.vue";
 import Tabs from "@/Shared/Tabs.vue";
 

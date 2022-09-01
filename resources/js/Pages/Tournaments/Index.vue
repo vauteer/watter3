@@ -5,7 +5,7 @@ import {computed, ref, watch} from "vue";
 import { Head, Link } from '@inertiajs/inertia-vue3';
 import Category from '@/Shared/Category.vue';
 import Pagination from '@/Shared/Pagination.vue';
-import { PencilIcon, EyeOffIcon, ChevronDoubleRightIcon, UserAddIcon } from '@heroicons/vue/outline';
+import { PencilIcon, EyeSlashIcon, UserPlusIcon } from '@heroicons/vue/24/outline';
 import {throttle} from "lodash";
 
 let props = defineProps({
@@ -65,12 +65,12 @@ watch(search, throttle(function (value) {
                                         <div v-if="auth.user?.admin" class="font-sm">{{ tournament.creator }}</div>
                                     </td>
                                     <td class="px-3">
-                                        <EyeOffIcon v-if="tournament.private" class="h-5 w-5" />
+                                        <EyeSlashIcon v-if="tournament.private" class="h-5 w-5" />
                                     </td>
                                     <td class="px-3">
                                         <div class="h-5">
                                             <Link v-if="tournament.modifiable && !tournament.started" :href="`/tournaments/${tournament.id}/players`">
-                                                <UserAddIcon class="h-5 w-5 text-blue-500" />
+                                                <UserPlusIcon class="h-5 w-5 text-blue-500" />
                                             </Link>
                                         </div>
                                     </td>

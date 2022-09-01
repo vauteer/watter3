@@ -2,7 +2,7 @@
 import {computed, ref, watch} from "vue";
 import {Head, Link} from '@inertiajs/inertia-vue3';
 import {Inertia} from "@inertiajs/inertia";
-import {PencilIcon, LockClosedIcon} from '@heroicons/vue/outline';
+import {PencilIcon, LockClosedIcon} from '@heroicons/vue/24/outline';
 import {throttle} from "lodash";
 import Category from "@/Shared/Category.vue";
 import Pagination from "@/Shared/Pagination.vue";
