@@ -216,11 +216,11 @@ class Tournament extends Model
             $pdf->Cell(60, 7, 'Schreiber:');
             $pdf->Line(40, 27, 120, 27);
             $pdf->Ln(10);
-            $pdf->Cell(60, 7, utf8_decode($fixture->team1->player1->name));
-            $pdf->Cell(60, 7, utf8_decode($fixture->team2->player1->name));
+            $pdf->Cell(60, 7, mb_convert_encoding($fixture->team1->player1->name, 'ISO-8859-1', 'UTF-8'));
+            $pdf->Cell(60, 7, mb_convert_encoding($fixture->team2->player1->name, 'ISO-8859-1', 'UTF-8'));
             $pdf->Ln(7);
-            $pdf->Cell(60, 7, utf8_decode($fixture->team1->player2->name));
-            $pdf->Cell(60, 7, utf8_decode($fixture->team2->player2->name));
+            $pdf->Cell(60, 7, mb_convert_encoding($fixture->team1->player2->name, 'ISO-8859-1', 'UTF-8'));
+            $pdf->Cell(60, 7, mb_convert_encoding($fixture->team2->player2->name, 'ISO-8859-1', 'UTF-8'));
 
 //            $pdf->Line(0, 20, 120, 20);
             $pdf->Line(60, 30, 60, 50 + ($gamesPerRound * 20));
