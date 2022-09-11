@@ -37,11 +37,11 @@ const open = ref(true)
                                 </div>
                             </div>
                             <div class="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
-                                <MyButton nature="danger" @click="$emit('confirmed')"
+                                <MyButton theme="danger" @click="$emit('confirmed')"
                                           class="w-full sm:ml-3 sm:w-1/4">
                                     Ja
                                 </MyButton>
-                                <MyButton nature="abort" @click="$emit('canceled')" ref="cancelButtonRef"
+                                <MyButton theme="abort" @click="$emit('canceled')" ref="cancelButtonRef"
                                           class="w-full sm:w-1/4"
                                 >
                                     Nein

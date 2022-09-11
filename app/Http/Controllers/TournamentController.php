@@ -72,7 +72,7 @@ class TournamentController extends Controller
                 ->withQueryString()
             ),
 
-            'filters' => $request->only(['search']),
+            'options' => $request->only(['search']),
 
             'canCreate' => Auth::check(),
         ]);
@@ -248,6 +248,7 @@ class TournamentController extends Controller
         $winpoints = $tournament->winpoints;
 
         return inertia('Fixtures/Edit', [
+            'origin' => session(self::URL_KEY),
             'fixture' => [
                 'id' => $fixture->id,
                 'tournament_id' => $tournament->id,

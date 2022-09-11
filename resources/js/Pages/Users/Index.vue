@@ -11,7 +11,7 @@ import {throttle} from "lodash";
 let props = defineProps({
     auth: Object,
     users: Object,
-    filters: Object,
+    options: Object,
 });
 
 let showTournaments = (id) => {
@@ -25,7 +25,7 @@ let showTournaments = (id) => {
         });
 };
 
-let search = ref(props.filters.search);
+let search = ref(props.options.search);
 
 watch(search, throttle(function (value) {
     Inertia.get('/users', {search: value}, {
@@ -39,7 +39,7 @@ watch(search, throttle(function (value) {
     <Head title="Benutzer" />
 
     <MyLayout>
-        <div class="w-full max-w-2xl mx-auto bg-gray-100 text-gray-900 text-sm sm:rounded sm:border sm:shadow sm:overflow-hidden mt-2 px-4 sm:px-6 lg:px-8">
+        <div class="w-full max-w-3xl mx-auto bg-gray-100 text-gray-900 text-sm sm:rounded sm:border sm:shadow sm:overflow-hidden mt-2 px-4 sm:px-6 lg:px-8">
             <MyCategory createUrl="/users/create" v-model="search">Benutzer</MyCategory>
 
             <div class="mt-4 mb-4 flex flex-col">
@@ -51,8 +51,8 @@ watch(search, throttle(function (value) {
                                 <tr>
                                     <th scope="col" class="px-3 py-3.5 w-6"><span class="sr-only">Switch User</span></th>
                                     <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">Name</th>
-                                    <th scope="col" class="py-3.5 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">Email</th>
-                                    <th scope="col" class="px-3 py-3.5 w-6"><span class="sr-only">Status</span></th>
+                                    <th scope="col" class="hidden md:table-cell py-3.5 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">Email</th>
+                                    <th scope="col" class="px-3 py-3.5 w-5"><span class="sr-only">Status</span></th>
                                     <th scope="col" class="px-3 py-3.5 w-6"><span class="sr-only">Show Tournaments</span></th>
                                     <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6 w-6">
                                         <span class="sr-only">Edit</span>
@@ -73,7 +73,7 @@ watch(search, throttle(function (value) {
                                     <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm sm:pl-6">
                                         <div class="font-bold">{{ user.name }}</div>
                                     </td>
-                                    <td class="pl-2 text-sm text-gray-500 sm:pl-4">
+                                    <td class="hidden md:table-cell pl-2 text-sm text-gray-500 sm:pl-4">
                                         <div>{{ user.email }}</div>
                                     </td>
                                     <td class="px-3">

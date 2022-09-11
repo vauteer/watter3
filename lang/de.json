@@ -11,6 +11,7 @@
     "Speichern": "Speichern",
     "Hinzufügen": "Hinzufügen",
     "Abbrechen": "Abbrechen",
+    "Zurück": "Zurück",
     "Löschen": "Löschen",
     "Neues Turnier": "Neues Turnier",
     "Turnier bearbeiten": "Turnier bearbeiten",
@@ -22,5 +23,10 @@
     "Privat": "Privat",
     "Neuer Spieler": "Neuer Spieler",
     "Spieler bearbeiten": "Spieler bearbeiten",
+    "Registrierung": "Registrierung",
+    "freie Spieler": "freie Spieler",
+    "Einzelne Spieler": "Einzelne Spieler",
+    "Team erstellen": "Team erstellen",
+    "Spielplan erstellen": "Spielplan erstellen",
     "Z": "Z"
 }

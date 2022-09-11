@@ -9,7 +9,7 @@ import MyPagination from "@/Shared/MyPagination.vue";
 
 let props = defineProps({
     items: Object,
-    filters: Object,
+    options: Object,
     canCreate: Boolean,
 });
 
@@ -17,7 +17,7 @@ const createUrl = computed(() => {
     return props.canCreate ? "/items/create" : "";
 });
 
-let search = ref(props.filters.search);
+let search = ref(props.options.search);
 
 watch(search, throttle(function (value) {
     Inertia.get('/items', {search: value}, {

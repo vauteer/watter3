@@ -4,10 +4,12 @@ import { Inertia } from "@inertiajs/inertia";
 import { useForm } from "@inertiajs/inertia-vue3";
 import { Head, Link } from '@inertiajs/inertia-vue3';
 import MyLayout from '@/Shared/MyLayout.vue';
-import MyMyTextInput from '@/Shared/MyTextInput.vue';
+import MyTextInput from '@/Shared/MyTextInput.vue';
 import MyButton from '@/Shared/MyButton.vue';
+import MyConfirmation from "@/Shared/MyConfirmation.vue";
 
 let props = defineProps({
+    origin: String,
     tournamentId: Number,
     players: Object,
     teams: Object,
@@ -59,24 +61,44 @@ let submitConnect = () => {
     );
 };
 
-let deletePlayer = (playerId) => {
-    if (confirm('Wollen Sie den Spieler wirklich löschen ?')) {
+let deletablePlayer = ref(null);
+
+let playerName = computed(() => {
+    return props.players.find(item => item.id === deletablePlayer.value)?.name;
+});
+
+let deletePlayer = () => {
+    const playerId = deletablePlayer.value;
+    deletablePlayer.value = null;
+
+    if (playerId != null) {
         Inertia.delete(`/tournaments/${props.tournamentId}/players/${playerId}`);
     }
 };
 
-let draw = () => {
-    if (confirm('Wollen Sie das Turnier wirklich (neu) auslosen ?')) {
-        Inertia.post(`/tournaments/${props.tournamentId}/draw`);
-    }
-}
+let deletableTeam = ref(null);
 
-let deleteTeam = (teamId) => {
-    if (confirm('Wollen Sie das Team wirklich löschen ?')) {
+let teamName = computed(() => {
+    const team = props.teams.find(item => item.id === deletableTeam.value);
+
+    return team ? `${team.player1}/${team.player2}` : null;
+});
+
+let deleteTeam = () => {
+    const teamId = deletableTeam.value;
+    deletableTeam.value = null;
+
+    if (teamId != null) {
         Inertia.delete(`/tournaments/${props.tournamentId}/teams/${teamId}`);
     }
 };
 
+let confirmDraw = ref(false);
+
+let draw = () => {
+    confirmDraw.value = false;
+    Inertia.post(`/tournaments/${props.tournamentId}/draw`);
+}
 
 </script>
 
@@ -135,13 +157,9 @@ let deleteTeam = (teamId) => {
                                     </td>
 
                                     <td class="w-10 px-3">
-                                        <button
-                                            class="bg-red-500 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                                            type="button"
-                                            @click="deletePlayer(player.id)"
-                                        >
+                                        <MyButton theme="danger" @click="deletablePlayer=player.id">
                                             {{ $t('Löschen') }}
-                                        </button>
+                                        </MyButton>
                                     </td>
                                 </tr>
                                 </tbody>
@@ -167,11 +185,7 @@ let deleteTeam = (teamId) => {
                                     <div class="font-bold">{{ team.player2 }}</div>
                                 </td>
                                 <td class=" w-10 px-3">
-                                    <MyButton theme="danger"
-                                        class="bg-red-500 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                                        type="button"
-                                        @click="deleteTeam(team.id)"
-                                    >
+                                    <MyButton theme="danger" @click="deletableTeam=team.id">
                                         Löschen
                                     </MyButton>
                                 </td>
@@ -180,15 +194,30 @@ let deleteTeam = (teamId) => {
                         </table>
                     </div>
                     <div class="w-full flex justify-between mt-3">
-                        <MyButton theme="abort" @click="Inertia.get('tournaments')">
-                            {{ $t('Abbrechen') }}
+                        <MyButton theme="abort" @click="Inertia.get(origin)">
+                            {{ $t('Zurück') }}
                         </MyButton>
-                        <MyButton v-if="canDraw" @click="draw">
+                        <MyButton v-if="canDraw" @click="confirmDraw=true">
                             {{ $t("Spielplan erstellen") }}
                         </MyButton>
                     </div>
                 </div>
             </div>
         </div>
+        <MyConfirmation v-if="deletablePlayer" @canceled="deletablePlayer=null" @confirmed="deletePlayer"
+                        subText="Soll der Spieler vom Turnier gelöscht werden?"
+        >
+            {{ `Spieler ${playerName} löschen`}}
+        </MyConfirmation>
+        <MyConfirmation v-if="deletableTeam" @canceled="deletableTeam=null" @confirmed="deleteTeam"
+                        subText="Soll das Team vom Turnier gelöscht werden?"
+        >
+            {{ `Team ${teamName} löschen`}}
+        </MyConfirmation>
+        <MyConfirmation v-if="confirmDraw" @canceled="confirmDraw=false" @confirmed="draw"
+                        subText="Soll der Spielplan (neu) erstellt werden?"
+        >
+            Spielplan erstellen
+        </MyConfirmation>
     </MyLayout>
 </template>

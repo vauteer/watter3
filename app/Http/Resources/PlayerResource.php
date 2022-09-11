@@ -18,6 +18,7 @@ class PlayerResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'hasTournaments' => $this->playedTournaments()->count() > 0,
 
             'modifiable' => Auth::user()->admin,
         ];

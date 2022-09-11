@@ -22,6 +22,11 @@ class Player extends Model
             ->withTimestamps();
     }
 
+    public function playedTournaments()
+    {
+        return Tournament::playedBy($this->id);
+    }
+
     public function teams()
     {
         return Team::where('player1_id', $this->id)->orWhere('player2_id', $this->id)->get();

@@ -11,11 +11,11 @@ import {throttle} from "lodash";
 let props = defineProps({
     auth: Object,
     tournaments: Object,
-    filters: Object,
+    options: Object,
     canCreate: Boolean,
 });
 
-let search = ref(props.filters.search);
+let search = ref(props.options.search);
 
 watch(search, throttle(function (value) {
     Inertia.get(route('tournaments'), {search: value}, {
@@ -59,18 +59,23 @@ watch(search, throttle(function (value) {
                                         <div>{{ tournament.date }}</div>
                                     </td>
                                     <td class="whitespace-nowrap py-1 pl-4 text-sm sm:pl-6">
-                                        <Link :href="`/tournaments/${tournament.id}/show`" as="button"
-                                              class="font-semibold text-blue-500"
-                                        >{{ tournament.name }}</Link>
+                                        <div class="text-sm font-semibold">{{ tournament.name }}</div>
                                         <div v-if="auth.user?.admin" class="font-sm">{{ tournament.creator }}</div>
                                     </td>
                                     <td class="px-3">
                                         <EyeSlashIcon v-if="tournament.private" class="h-5 w-5" />
                                     </td>
-                                    <td class="px-3">
-                                        <div class="h-5">
-                                            <Link v-if="tournament.modifiable && !tournament.started" :href="`/tournaments/${tournament.id}/players`">
-                                                <UserPlusIcon class="h-5 w-5 text-blue-500" />
+                                    <td class="px-3 text-blue-500 text-sm font-semibold">
+                                        <div>
+                                            <Link v-if="tournament.modifiable && !tournament.started"
+                                                  :href="`/tournaments/${tournament.id}/players`" as="button"
+                                            >
+                                                Teilnehmer
+                                            </Link>
+                                        </div>
+                                        <div>
+                                            <Link :href="`/tournaments/${tournament.id}/show`" as="button">
+                                                Ergebnisse
                                             </Link>
                                         </div>
                                     </td>

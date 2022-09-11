@@ -1,6 +1,6 @@
 <script setup>
 import { computed, ref, onMounted } from "vue";
-import Inertia from "@inertiajs/inertia";
+import { Inertia } from "@inertiajs/inertia";
 import { useForm, Head } from "@inertiajs/inertia-vue3";
 import MyLayout from '@/Shared/MyLayout.vue';
 import MyTextInput from '@/Shared/MyTextInput.vue';
@@ -22,10 +22,6 @@ onMounted(() => {
         form.score = props.fixture.score;
     }
     document.getElementById('score').focus();
-});
-
-const getTitle = computed(() => {
-    return props.fixture.team1 + ' gegen ' + props.fixture.team2;
 });
 
 let submit = () => {
@@ -61,7 +57,7 @@ let submit = () => {
                                 <div class="py-5">
                                     <div class="flex justify-between">
                                         <div class="w-full flex justify-end">
-                                            <MyButton theme="abort" :@click="Inertia.get(origin)">
+                                            <MyButton theme="abort" @click="Inertia.get(origin)">
                                                 Abbrechen
                                             </MyButton>
                                             <MyButton type="submit" class="ml-2">Speichern</MyButton>

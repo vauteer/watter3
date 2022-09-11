@@ -65,7 +65,7 @@ class UserController extends Controller
                 ->withQueryString()
             ),
 
-            'filters' => $request->only(['search']),
+            'options' => $request->only(['search']),
 
             'canCreate' => Auth::user()->admin,
         ]);

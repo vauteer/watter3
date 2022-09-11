@@ -10,7 +10,7 @@ import {throttle} from "lodash";
 
 let props = defineProps({
     players: Object,
-    filters: Object,
+    options: Object,
 });
 
 let showTournaments = (id) => {
@@ -24,7 +24,7 @@ let showTournaments = (id) => {
         });
 };
 
-let search = ref(props.filters.search);
+let search = ref(props.options.search);
 
 watch(search, throttle(function (value) {
     Inertia.get('/players', {search: value}, {
@@ -61,7 +61,7 @@ watch(search, throttle(function (value) {
                                         <div class="font-bold">{{ player.name }}</div>
                                     </td>
                                     <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm text-blue-500 sm:pl-6">
-                                        <div v-if="true">
+                                        <div v-if="player.hasTournaments">
                                             <a class="cursor-pointer" @click="showTournaments(player.id)" as="button">Turniere</a>
                                         </div>
                                     </td>

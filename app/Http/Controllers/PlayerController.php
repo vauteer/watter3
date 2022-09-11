@@ -33,7 +33,7 @@ class PlayerController extends Controller
                 ->withQueryString()
             ),
 
-            'filters' => $request->only(['search']),
+            'options' => $request->only(['search']),
         ]);
     }
 
