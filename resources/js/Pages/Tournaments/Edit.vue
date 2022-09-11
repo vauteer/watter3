@@ -2,15 +2,16 @@
 import { computed, ref, onMounted } from "vue";
 import { Inertia } from "@inertiajs/inertia";
 import { useForm, Head } from "@inertiajs/inertia-vue3";
-import Layout from '@/Shared/Layout.vue';
-import TextInput from '@/Shared/TextInput.vue';
-import AbortButton from '@/Shared/AbortButton.vue';
-import SubmitButton from '@/Shared/SubmitButton.vue';
-import DeleteButton from '@/Shared/DeleteButton.vue';
-import CheckBox from '@/Shared/CheckBox.vue';
+import MyLayout from '@/Shared/MyLayout.vue';
+import MyTextInput from '@/Shared/MyTextInput.vue';
+import MyButton from '@/Shared/MyButton.vue';
+import MyCheckBox from '@/Shared/MyCheckBox.vue';
+import MyConfirmation from "@/Shared/MyConfirmation.vue";
 
 let props = defineProps({
+    origin: String,
     tournament: Object,
+    deletable: Boolean,
 });
 
 let form = useForm({
@@ -22,6 +23,7 @@ let form = useForm({
     private: false,
 });
 
+let showConfirmation = ref(false);
 let editMode = ref(false);
 let drawn = ref(false);
 
@@ -50,16 +52,15 @@ let submit = () => {
 };
 
 let deleteTournament = () => {
-    if (confirm('Wollen Sie das Turnier wirklich löschen ?')) {
-        Inertia.delete(`/tournaments/${props.tournament.id}`);
-    }
+    showConfirmation.value = false;
+    Inertia.delete(`/tournaments/${props.tournament.id}`);
 };
 
 const getTitle = computed(() => {
     return editMode.value ? "Turnier bearbeiten" : "Neues Turnier";
 });
 
-const getSubmitButtonText = computed(() => {
+const submitButtonText = computed(() => {
     return editMode.value ? "Speichern" : "Hinzufügen";
 });
 
@@ -68,7 +69,7 @@ const getSubmitButtonText = computed(() => {
 <template>
     <Head :title="$t('Turniere')" />
 
-    <Layout>
+    <MyLayout>
         <div>
             <button
                 tabindex="-1"
@@ -82,36 +83,42 @@ const getSubmitButtonText = computed(() => {
                         <form @submit.prevent="submit" class="space-y-8 divide-y divide-gray-200">
                             <div class="space-y-8 divide-y divide-gray-200 my-3 mx-2">
                                 <div class="grid grid-cols-1 gap-y-4 gap-x-4 sm:grid-cols-6">
-                                    <TextInput class="sm:col-span-3" v-model="form.name" :error="form.errors.name" id="name"
-                                               :label="$t('Name')"/>
-                                    <TextInput class="sm:col-span-3" v-model="form.start" :error="form.errors.start" id="start"
-                                               type='datetime-local' :label="$t('Start')" step="60"/>
-                                    <TextInput class="sm:col-span-3" v-model="form.rounds" :error="form.errors.rounds" id="rounds"
+                                    <MyTextInput class="sm:col-span-3" v-model="form.name" :error="form.errors.name" id="name"
+                                               :label="$t('Name')" autofocus
+                                    />
+                                    <MyTextInput class="sm:col-span-3" v-model="form.start" :error="form.errors.start" id="start"
+                                               type='datetime-local' :label="$t('Start')" step="60"
+                                    />
+                                    <MyTextInput class="sm:col-span-3" v-model="form.rounds" :error="form.errors.rounds" id="rounds"
                                                type="number" :label="$t('Runden')" min="0" step="1"
                                                :class="{ hidden: drawn }"
                                     />
-                                    <TextInput class="sm:col-span-3" v-model="form.games" :error="form.errors.games" id="games"
+                                    <MyTextInput class="sm:col-span-3" v-model="form.games" :error="form.errors.games" id="games"
                                                type="number" step="1" :label="$t('Spiele (pro Runde)')"
                                                :class="{ hidden: drawn }"
                                     />
-                                    <TextInput class="sm:col-span-3" v-model="form.winpoints" :error="form.errors.winpoints" id="winpoints"
+                                    <MyTextInput class="sm:col-span-3" v-model="form.winpoints" :error="form.errors.winpoints" id="winpoints"
                                                type="number" step="1" :label="$t('Punkte zum Sieg')"
                                                :class="{ hidden: drawn }"
                                     />
                                     <div class="sm:col-span-6">
-                                        <CheckBox v-model="form.private" :error="form.errors.private"
-                                                  id="private" :label="$t('Privat')"/>
+                                        <MyCheckBox v-model="form.private" :error="form.errors.private"
+                                                  id="private" :label="$t('Privat')"
+                                        />
                                     </div>
                                 </div>
                                 <div class="py-5">
                                     <div class="flex justify-between">
-                                        <DeleteButton v-if="editMode" :onDelete="deleteTournament"/>
+                                        <MyButton theme="danger" v-if="deletable" @click="showConfirmation=true">
+                                            Löschen
+                                        </MyButton>
                                         <div class="w-full flex justify-end">
-                                            <AbortButton :href="route('tournaments')">
+                                            <MyButton theme="abort" @click="Inertia.get(origin)">
                                                 {{ $t('Abbrechen') }}
-                                            </AbortButton>
-                                            <SubmitButton class="ml-2" :title="$t(getSubmitButtonText)"
-                                                          :disabled="form.processing"/>
+                                            </MyButton>
+                                            <MyButton type="submit" class="ml-2" :disabled="form.processing">
+                                                {{ submitButtonText }}
+                                            </MyButton>
                                         </div>
                                     </div>
                                 </div>
@@ -121,5 +128,8 @@ const getSubmitButtonText = computed(() => {
                 </div>
             </div>
         </div>
-    </Layout>
+        <MyConfirmation v-if="showConfirmation" @canceled="showConfirmation = false" @confirmed="deleteTournament">
+            {{ `Turnier '${tournament.name}' löschen`}}
+        </MyConfirmation>
+    </MyLayout>
 </template>

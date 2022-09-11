@@ -3,11 +3,9 @@ import { computed, ref, onMounted } from "vue";
 import { Inertia } from "@inertiajs/inertia";
 import { useForm } from "@inertiajs/inertia-vue3";
 import { Head, Link } from '@inertiajs/inertia-vue3';
-import Layout from '@/Shared/Layout.vue';
-import TextInput from '@/Shared/TextInput.vue';
-import AbortButton from '@/Shared/AbortButton.vue';
-import SubmitButton from '@/Shared/SubmitButton.vue';
-import ActionButton from "@/Shared/ActionButton.vue";
+import MyLayout from '@/Shared/MyLayout.vue';
+import MyMyTextInput from '@/Shared/MyTextInput.vue';
+import MyButton from '@/Shared/MyButton.vue';
 
 let props = defineProps({
     tournamentId: Number,
@@ -85,7 +83,7 @@ let deleteTeam = (teamId) => {
 <template>
     <Head :title="$t('Registrierung')" />
 
-    <Layout>
+    <MyLayout>
         <div>
             <button
                 tabindex="-1"
@@ -99,11 +97,13 @@ let deleteTeam = (teamId) => {
                         <form @submit.prevent="submit" class="space-y-8 divide-y divide-gray-200">
                             <div class="space-y-8 divide-y divide-gray-200 my-3 mx-2">
                                 <div class="grid grid-cols-1 gap-y-4 gap-x-4 bottom-0 sm:grid-cols-8">
-                                    <TextInput class="sm:col-span-3" v-model="form.player1" :error="form.errors.player1"
+                                    <MyTextInput class="sm:col-span-3" v-model="form.player1" :error="form.errors.player1"
                                         id="player1" label="Spieler 1" />
-                                    <TextInput class="sm:col-span-3" v-model="form.player2" :error="form.errors.player2"
+                                    <MyTextInput class="sm:col-span-3" v-model="form.player2" :error="form.errors.player2"
                                         id="player2" label="Spieler 2" />
-                                    <SubmitButton class="sm:col-span-2 mt-5 mb-3" :disabled="form.processing"/>
+                                    <MyButton type="submit" class="sm:col-span-2 mt-5 mb-3" :disabled="form.processing">
+                                        Speichern
+                                    </MyButton>
                                 </div>
                             </div>
                         </form>
@@ -147,9 +147,11 @@ let deleteTeam = (teamId) => {
                                 </tbody>
                             </table>
                             <div class="flex justify-center bg-white">
-                                <SubmitButton v-if="canConnect" :disabled="connectForm.processing"
+                                <MyButton type="submit" v-if="canConnect" :disabled="connectForm.processing"
                                               class="w-1/2 my-2"
-                                >{{ $t('Team erstellen') }}</SubmitButton>
+                                >
+                                    {{ $t('Team erstellen') }}
+                                </MyButton>
                             </div>
                         </form>
                     </div>
@@ -165,27 +167,28 @@ let deleteTeam = (teamId) => {
                                     <div class="font-bold">{{ team.player2 }}</div>
                                 </td>
                                 <td class=" w-10 px-3">
-                                    <button
+                                    <MyButton theme="danger"
                                         class="bg-red-500 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                                         type="button"
                                         @click="deleteTeam(team.id)"
                                     >
                                         Löschen
-                                    </button>
-
+                                    </MyButton>
                                 </td>
                             </tr>
                             </tbody>
                         </table>
                     </div>
                     <div class="w-full flex justify-between mt-3">
-                        <AbortButton :href="route('tournaments')">
+                        <MyButton theme="abort" @click="Inertia.get('tournaments')">
                             {{ $t('Abbrechen') }}
-                        </AbortButton>
-                        <ActionButton v-if="canDraw" :onClick="draw">{{ $t("Spielplan erstellen") }}</ActionButton>
+                        </MyButton>
+                        <MyButton v-if="canDraw" @click="draw">
+                            {{ $t("Spielplan erstellen") }}
+                        </MyButton>
                     </div>
                 </div>
             </div>
         </div>
-    </Layout>
+    </MyLayout>
 </template>

@@ -2,21 +2,22 @@
 import {computed, ref, onMounted} from "vue";
 import {Inertia} from "@inertiajs/inertia";
 import { useForm, Head } from "@inertiajs/inertia-vue3";
-import Layout from '@/Shared/Layout.vue';
-import TextInput from '@/Shared/TextInput.vue';
-import AbortButton from '@/Shared/AbortButton.vue';
-import SubmitButton from '@/Shared/SubmitButton.vue';
-import DeleteButton from '@/Shared/DeleteButton.vue';
-
+import MyLayout from '@/Shared/MyLayout.vue';
+import MyTextInput from '@/Shared/MyTextInput.vue';
+import MyButton from '@/Shared/MyButton.vue';
+import MyConfirmation from "@/Shared/MyConfirmation.vue";
 
 let props = defineProps({
+    origin: String,
     player: Object,
+    deletable: Boolean,
 });
 
 let form = useForm({
     name: '',
 });
 
+let showConfirmation = ref(false);
 let editMode = ref(false);
 
 onMounted(() => {
@@ -24,7 +25,6 @@ onMounted(() => {
         form.name = props.player.name;
         editMode.value = true;
     }
-    document.getElementById('name').focus();
 });
 
 let submit = () => {
@@ -36,16 +36,15 @@ let submit = () => {
 };
 
 let deletePlayer = () => {
-    if (confirm('Wollen Sie den Spieler wirklich löschen ?')) {
-        Inertia.delete(`/players/${props.player.id}`);
-    }
+    showConfirmation.value = false;
+    Inertia.delete(`/players/${props.player.id}`);
 };
 
 const getTitle = computed(() => {
     return editMode.value ? "Spieler bearbeiten" : "Neuer Spieler";
 });
 
-const getSubmitButtonText = computed(() => {
+const submitButtonText = computed(() => {
     return editMode.value ? "Speichern" : "Hinzufügen";
 });
 
@@ -54,7 +53,7 @@ const getSubmitButtonText = computed(() => {
 <template>
     <Head title="Spieler" />
 
-    <Layout>
+    <MyLayout>
         <div>
             <button
                 tabindex="-1"
@@ -70,17 +69,22 @@ const getSubmitButtonText = computed(() => {
                         <form @submit.prevent="submit" class="space-y-8 divide-y divide-gray-200">
                             <div class="space-y-8 divide-y divide-gray-200 my-3 mx-2">
                                 <div class="grid grid-cols-1 gap-y-4 gap-x-4 sm:grid-cols-6">
-                                    <TextInput class="sm:col-span-6" v-model="form.name" :error="form.errors.name"
-                                               id="name"
-                                               :label="$t('Name')"/>
+                                    <MyTextInput class="sm:col-span-6" v-model="form.name" :error="form.errors.name"
+                                               id="name" :label="$t('Name')" autofocus
+                                    />
                                 </div>
                                 <div class="py-5">
                                     <div class="flex justify-between">
-                                        <DeleteButton v-if="editMode" :onDelete="deletePlayer"/>
+                                        <MyButton theme="danger" v-if="deletable" @click="showConfirmation=true">
+                                            Löschen
+                                        </MyButton>
                                         <div class="w-full flex justify-end">
-                                            <AbortButton href="/players" />
-                                            <SubmitButton class="ml-2" :title="getSubmitButtonText"
-                                                          :disabled="form.processing"/>
+                                            <MyButton theme="abort" @click="Inertia.get(origin)">
+                                                Abbrechen
+                                            </MyButton>
+                                            <MyButton type="submit" class="ml-2" :disabled="form.processing">
+                                                {{ submitButtonText }}
+                                            </MyButton>
                                         </div>
                                     </div>
                                 </div>
@@ -90,5 +94,8 @@ const getSubmitButtonText = computed(() => {
                 </div>
             </div>
         </div>
-    </Layout>
+        <MyConfirmation v-if="showConfirmation" @canceled="showConfirmation=false" @confirmed="deletePlayer">
+            {{ `Spieler '${player.name}' löschen`}}
+        </MyConfirmation>
+    </MyLayout>
 </template>

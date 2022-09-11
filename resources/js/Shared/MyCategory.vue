@@ -8,7 +8,9 @@ let props =defineProps({
     },
     modelValue: String,
     createUrl: String,
-    buttonDisabled: Boolean,
+    buttonDisabled: {
+        type: [Boolean, Object],
+    },
     buttonTitle: {
         type: String,
         default: 'Neu',

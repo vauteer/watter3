@@ -3,8 +3,8 @@ import {computed} from "vue";
 import {Inertia} from "@inertiajs/inertia";
 import {Head, Link} from '@inertiajs/inertia-vue3';
 import {PencilIcon} from '@heroicons/vue/24/outline';
-import Layout from "@/Shared/Layout.vue";
-import Tabs from "@/Shared/Tabs.vue";
+import MyLayout from "@/Shared/MyLayout.vue";
+import MyTabs from "@/Shared/MyTabs.vue";
 
 let props = defineProps({
     auth: Object,
@@ -42,7 +42,7 @@ let switchRound = (round) => {
 <template>
     <Head title="Turniere"/>
 
-    <Layout>
+    <MyLayout>
         <div
             class="w-full mx-auto bg-gray-100 text-gray-900 text-sm sm:rounded sm:border sm:shadow sm:overflow-hidden mt-2 px-4 sm:px-6 lg:px-8">
             <div class="w-full flex justify-between pt-3 pl-2">
@@ -117,11 +117,11 @@ let switchRound = (round) => {
                             </div>
                         </div>
                         <nav class="flex items-center justify-center mx-3 mt-3">
-                            <Tabs class="w-full max-w-md"
+                            <MyTabs class="w-full max-w-md"
                                   :model="getTabsModel"
                                   :onClicked="switchRound"
                                   :selected-index="currentRound - 1"
-                            ></Tabs>
+                            ></MyTabs>
                         </nav>
                     </div>
                 </div>
@@ -181,5 +181,5 @@ let switchRound = (round) => {
                 </div>
             </div>
         </div>
-    </Layout>
+    </MyLayout>
 </template>

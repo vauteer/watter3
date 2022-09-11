@@ -4,8 +4,8 @@ import {Head, Link} from '@inertiajs/inertia-vue3';
 import {Inertia} from "@inertiajs/inertia";
 import {PencilIcon, LockClosedIcon} from '@heroicons/vue/24/outline';
 import {throttle} from "lodash";
-import Category from "@/Shared/Category.vue";
-import Pagination from "@/Shared/Pagination.vue";
+import MyCategory from "@/Shared/MyCategory.vue";
+import MyPagination from "@/Shared/MyPagination.vue";
 
 let props = defineProps({
     items: Object,
@@ -34,7 +34,7 @@ watch(search, throttle(function (value) {
 
         <div
             class="w-full max-w-2xl mx-auto bg-gray-100 text-gray-900 text-sm sm:rounded sm:border sm:shadow sm:overflow-hidden mt-2 px-4 sm:px-6 lg:px-8">
-            <Category :createUrl="createUrl" v-model="search">Items</Category>
+            <MyCategory :createUrl="createUrl" v-model="search">Items</MyCategory>
 
             <div class="mt-4 mb-4 flex flex-col">
                 <div class="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
@@ -84,8 +84,8 @@ watch(search, throttle(function (value) {
                             >
                                 Keine Daten
                             </div>
-                            <Pagination v-if="items.meta.last_page > 1" class="mt-6"
-                                        :meta="items.meta"></Pagination>
+                            <MyPagination v-if="items.meta.last_page > 1" class="mt-6"
+                                        :meta="items.meta"></MyPagination>
                         </div>
                     </div>
                 </div>

@@ -20,6 +20,8 @@ use Inertia\Response;
 
 class TournamentController extends Controller
 {
+    protected const URL_KEY = 'lastTournamentsUrl';
+
     public function validationRules(): array
     {
         return  [
@@ -40,10 +42,27 @@ class TournamentController extends Controller
         ];
     }
 
+    private function applyFilters(Request $request): \Illuminate\Database\Eloquent\Builder
+    {
+        $query = Tournament::query();
+        if ($request->has('filter')) {
+            $filter = $request->input('filter');
+            if (preg_match('/^createdBy_(\d+)$/', $filter, $match)) {
+                $query->createdBy($match[1]);
+            }
+            else if (preg_match('/^playedBy_(\d+)$/', $filter, $match)) {
+                $query->playedBy($match[1]);
+            }
+        }
+        return $query;
+    }
+
     public function index(Request $request):Response
     {
+        $request->session()->put(self::URL_KEY, url()->full());
+
         return inertia('Tournaments/Index', [
-            'tournaments' => TournamentResource::collection(Tournament::query()
+            'tournaments' => TournamentResource::collection($this->applyFilters($request)
                 ->whereIn('id', Tournament::visibleIds(auth()->user()))
                 ->when($request->input('search'), function($query, $search) {
                     $query->where('name', 'like', "%{$search}%");
@@ -78,9 +97,16 @@ class TournamentController extends Controller
         ]);
     }
 
+    private function editOptions(): array
+    {
+        return [
+            'origin' => session(self::URL_KEY),
+        ];
+    }
+
     public function create(Request $request):Response
     {
-        return inertia('Tournaments/Edit');
+        return inertia('Tournaments/Edit', $this->editOptions());
     }
 
     public function store(Request $request): RedirectResponse
@@ -94,13 +120,13 @@ class TournamentController extends Controller
         Team::deleteUnused();
         Player::deleteUnused();
 
-        return redirect()->route('tournaments')
+        return redirect(session(self::URL_KEY))
             ->with('success', "{$tournament->name} wurde hinzugefügt.");
     }
 
     public function edit(Request $request, Tournament $tournament): Response
     {
-        return inertia('Tournaments/Edit', [
+        return inertia('Tournaments/Edit', array_merge($this->editOptions(), [
             'tournament' => [
                 'id' => $tournament->id,
                 'name' => $tournament->name,
@@ -112,7 +138,7 @@ class TournamentController extends Controller
                 'private' => $tournament->private,
                 'drawn' => $tournament->drawn(),
             ],
-        ]);
+        ]));
     }
 
     public function update(Request $request, Tournament $tournament): RedirectResponse
@@ -121,7 +147,7 @@ class TournamentController extends Controller
 
         $tournament->update($attributes);
 
-        return redirect()->route('tournaments')
+        return redirect(session(self::URL_KEY))
             ->with('success', "{$tournament->name} wurde geändert.");
     }
 
@@ -131,18 +157,18 @@ class TournamentController extends Controller
 
         $tournament->delete();
 
-        return redirect()->route('tournaments')
+        return redirect(session(self::URL_KEY))
             ->with('success', 'Turnier wurde gelöscht.');
     }
 
     public function createPlayers(Request $request, Tournament $tournament): Response
     {
-        return inertia('Tournaments/Players', [
+        return inertia('Tournaments/Players', array_merge($this->editOptions(), [
             'tournamentId' => $tournament->id,
             'players' => $tournament->players()->get(['players.id', 'name']),
             'teams' => $tournament->teamsAsArray(),
             'playerCount' => $tournament->currentPlayerCount(),
-        ]);
+        ]));
     }
 
     public function storePlayers(Request $request, Tournament $tournament): Response

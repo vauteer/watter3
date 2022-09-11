@@ -2,15 +2,16 @@
 import { computed, ref, onMounted } from "vue";
 import { Inertia } from "@inertiajs/inertia";
 import { useForm, Head } from "@inertiajs/inertia-vue3";
-import Layout from '@/Shared/Layout.vue';
-import TextInput from '@/Shared/TextInput.vue';
-import AbortButton from '@/Shared/AbortButton.vue';
-import SubmitButton from '@/Shared/SubmitButton.vue';
-import DeleteButton from '@/Shared/DeleteButton.vue';
-import CheckBox from '@/Shared/CheckBox.vue';
+import MyLayout from '@/Shared/MyLayout.vue';
+import MyTextInput from '@/Shared/MyTextInput.vue';
+import MyButton from '@/Shared/MyButton.vue';
+import MyCheckBox from '@/Shared/MyCheckBox.vue';
+import MyConfirmation from "@/Shared/MyConfirmation.vue";
 
 let props = defineProps({
+    origin: String,
     user: Object,
+    deletable: Boolean,
 });
 
 let form = useForm({
@@ -19,6 +20,7 @@ let form = useForm({
     admin: false,
 });
 
+let showConfirmation = ref(false);
 let editMode = ref(false);
 
 onMounted(() => {
@@ -29,8 +31,6 @@ onMounted(() => {
 
         editMode.value = true;
     }
-
-    document.getElementById('name').focus();
 });
 
 let submit = () => {
@@ -42,16 +42,15 @@ let submit = () => {
 };
 
 let deleteUser = () => {
-    if (confirm('Wollen Sie den Benutzer wirklich löschen ?')) {
-        Inertia.delete(`/users/${props.user.id}`);
-    }
+    showConfirmation.value = false;
+    Inertia.delete(`/users/${props.user.id}`);
 };
 
 const getTitle = computed(() => {
     return editMode.value ? "Benutzer bearbeiten" : "Neuer Benutzer";
 });
 
-const getSubmitButtonText = computed(() => {
+const submitButtonText = computed(() => {
     return editMode.value ? "Speichern" : "Hinzufügen";
 });
 
@@ -59,7 +58,7 @@ const getSubmitButtonText = computed(() => {
 
 <template>
     <Head title="Benutzer" />
-    <Layout>
+    <MyLayout>
         <div>
             <button
                 tabindex="-1"
@@ -73,24 +72,30 @@ const getSubmitButtonText = computed(() => {
                         <form @submit.prevent="submit" class="space-y-8 divide-y divide-gray-200">
                             <div class="space-y-8 divide-y divide-gray-200 my-3 mx-2">
                                 <div class="grid grid-cols-1 gap-y-4 gap-x-4 sm:grid-cols-6">
-                                    <TextInput class="sm:col-span-6" v-model="form.name" :error="form.errors.name" id="name"
-                                               label="Name"/>
-                                    <TextInput class="sm:col-span-6" v-model="form.email" :error="form.errors.email" id="email"
-                                               label="Email"/>
+                                    <MyTextInput class="sm:col-span-6" v-model="form.name" :error="form.errors.name" id="name"
+                                               label="Name" autofocus
+                                    />
+                                    <MyTextInput class="sm:col-span-6" v-model="form.email" :error="form.errors.email" id="email"
+                                               label="Email"
+                                    />
                                     <div class="sm:col-span-6">
-                                        <CheckBox v-model="form.admin" :error="form.errors.admin"
-                                                  id="admin" label="Admin"/>
+                                        <MyCheckBox v-model="form.admin" :error="form.errors.admin"
+                                                  id="admin" label="Admin"
+                                        />
                                     </div>
                                 </div>
                                 <div class="py-5">
                                     <div class="flex justify-between">
-                                        <DeleteButton v-if="editMode" :onDelete="deleteUser"/>
+                                        <MyButton v-if="deletable" theme="danger" @click="showConfirmation=true">
+                                            Löschen
+                                        </MyButton>
                                         <div class="w-full flex justify-end">
-                                            <AbortButton :href="route('users')">
+                                            <MyButton theme="abort" @click="Inertia.get(origin)">
                                                 Abbrechen
-                                            </AbortButton>
-                                            <SubmitButton class="ml-2" :title="getSubmitButtonText"
-                                                          :disabled="form.processing"/>
+                                            </MyButton>
+                                            <MyButton type="submit" class="ml-2" :disabled="form.processing">
+                                                {{ submitButtonText }}
+                                            </MyButton>
                                         </div>
                                     </div>
                                 </div>
@@ -100,5 +105,8 @@ const getSubmitButtonText = computed(() => {
                 </div>
             </div>
         </div>
-    </Layout>
+        <MyConfirmation v-if="showConfirmation" @canceled="showConfirmation = false" @confirmed="deleteUser">
+            {{ `Benutzer '${user.name}' löschen`}}
+        </MyConfirmation>
+    </MyLayout>
 </template>

@@ -7,20 +7,22 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class NewUser extends Notification
+class UserNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    public string $password;
+    private string $headline;
+    private string $text;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct(string $password)
+    public function __construct(string $headline, string $text)
     {
-        $this->password = $password;
+        $this->headline = $headline;
+        $this->text = $text;
     }
 
     /**
@@ -29,7 +31,7 @@ class NewUser extends Notification
      * @param  mixed  $notifiable
      * @return array
      */
-    public function via(mixed $notifiable)
+    public function via($notifiable)
     {
         return ['mail'];
     }
@@ -40,13 +42,19 @@ class NewUser extends Notification
      * @param  mixed  $notifiable
      * @return \Illuminate\Notifications\Messages\MailMessage
      */
-    public function toMail(mixed $notifiable)
+    public function toMail($notifiable)
     {
+        $fromUser = currentUser();
+
         return (new MailMessage)
-            ->line(__('messages.account_was_created'))
-            ->line(__('messages.your_password', ['password' => $this->password]))
-            ->action(__('messages.login'), url('/'))
-            ->line(__('messages.thank_you_for_using_our_application'));
+            ->markdown('emails.user', ['senderName' => $fromUser->name])
+            ->subject('Benachrichtigung von ' . config('app.name'))
+            ->line($this->headline)
+            ->line($this->text)
+            ->action('Login', url('/'))
+            ->line(__('thank_you_for_using_our_application'))
+//            ->replyTo($fromUser->email, $fromUser->name)
+            ->from($fromUser->email, $fromUser->name);
     }
 
     /**
@@ -55,7 +63,7 @@ class NewUser extends Notification
      * @param  mixed  $notifiable
      * @return array
      */
-    public function toArray(mixed $notifiable)
+    public function toArray($notifiable)
     {
         return [
             //

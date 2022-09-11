@@ -260,4 +260,19 @@ class Tournament extends Model
             return $this->admin || ($this->start < Carbon::now() || $this->created_by === $user->id);
         }
     }
+
+    public function scopeCreatedBy($query, int $userId)
+    {
+        $query->where('created_by', $userId);
+    }
+
+    public function scopePlayedBy($query, int $playerId)
+    {
+        $where = 'tournaments.id in (select a.id from tournaments a ' .
+            'join team_tournament b on a.id = b.tournament_id ' .
+            'join teams c on c.id = b.team_id ' .
+            'where c.player1_id = ? or c.player2_id = ?)';
+
+        $query->whereRaw($where, [$playerId, $playerId]);
+    }
 }

@@ -1,3 +1,17 @@
+<script setup>
+let props = defineProps({
+    id: String,
+    label: String,
+    error: String,
+    modelValue: {
+        type: [Array, Boolean],
+        default: false,
+    }
+});
+
+defineEmits(['update:modelValue']);
+</script>
+
 <template>
     <div>
         <div class="flex">
@@ -11,17 +25,3 @@
         <div v-if="error" class="block text-xs font-medium text-red-500 mt-1">{{ error }}</div>
     </div>
 </template>
-
-<script setup>
-let props = defineProps({
-    id: String,
-    label: String,
-    error: String,
-    modelValue: {
-        type: Boolean,
-        default: false,
-    }
-});
-
-defineEmits(['update:modelValue']);
-</script>

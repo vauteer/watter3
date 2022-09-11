@@ -11,6 +11,8 @@ use Illuminate\Http\Request;
 
 class PlayerController extends Controller
 {
+    protected const URL_KEY = 'lastPlayersUrl';
+
     public function validationRules(): array
     {
         return  [
@@ -20,6 +22,7 @@ class PlayerController extends Controller
 
     public function index(Request $request):Response
     {
+        $request->session()->put(self::URL_KEY, url()->full());
         return inertia('Players/Index', [
             'players' => PlayerResource::collection(Player::query()
                 ->when($request->input('search'), function($query, $search) {
@@ -34,9 +37,16 @@ class PlayerController extends Controller
         ]);
     }
 
+    private function editOptions(): array
+    {
+        return [
+            'origin' => session(self::URL_KEY)
+        ];
+    }
+
     public function create(Request $request):Response
     {
-        return inertia('Players/Edit');
+        return inertia('Players/Edit', $this->editOptions());
     }
 
     public function store(Request $request): RedirectResponse
@@ -45,18 +55,16 @@ class PlayerController extends Controller
 
         $player = Player::create($attributes);
 
-        return redirect()->route('players')
-            ->with('success', "{$player->name} hinzugefügt");
+        return redirect(session(self::URL_KEY))
+            ->with('success', "{$player->name} hinzugefügt.");
     }
 
     public function edit(Request $request, Player $player): Response
     {
-        return inertia('Players/Edit', [
-            'player' => [
-                'id' => $player->id,
-                'name' => $player->name,
-            ],
-        ]);
+        return inertia('Players/Edit', array_merge($this->editOptions(),[
+            'player' => $player->getAttributes(),
+            'deletable' => !$player->isUsed(),
+        ]));
     }
 
     public function update(Request $request, Player $player): RedirectResponse
@@ -75,8 +83,8 @@ class PlayerController extends Controller
 
         $player->update($attributes);
 
-        return redirect()->route('players')
-            ->with('success', "{$player->name} wurde geändert");
+        return redirect(session(self::URL_KEY))
+            ->with('success', "{$player->name} wurde geändert.");
     }
 
     public function destroy(Request $request, Player $player): RedirectResponse
@@ -85,10 +93,10 @@ class PlayerController extends Controller
             $player->delete();
         } catch (\Exception $ex) {
             return redirect()->route('players')
-                ->with('error', "{$player->name} konnte nicht gelöscht werden");
+                ->with('error', "{$player->name} konnte nicht gelöscht werden.");
         }
 
-        return redirect()->route('players')
-            ->with('success', 'Spieler wurde gelöscht');
+        return redirect(session(self::URL_KEY))
+            ->with('success', 'Spieler wurde gelöscht.');
     }
 }

@@ -1,8 +1,8 @@
 <script setup>
 import { Head, Link, useForm } from '@inertiajs/inertia-vue3';
-import Layout from '@/Shared/Layout.vue';
-import TextInput from '@/Shared/TextInput.vue';
-import SubmitButton from '@/Shared/SubmitButton.vue';
+import MyLayout from '@/Shared/MyLayout.vue';
+import MyTextInput from '@/Shared/MyTextInput.vue';
+import MyButton from '@/Shared/MyButton.vue';
 
 const form = useForm({
     name: '',
@@ -20,25 +20,25 @@ const submit = () => {
 </script>
 
 <template>
-    <Layout>
+    <MyLayout>
         <Head title="Register" />
 
         <form @submit.prevent="submit">
-            <TextInput class="sm:col-span-6" v-model="form.name"
+            <MyTextInput class="sm:col-span-6" v-model="form.name"
                        :error="form.errors.name" id="name" type="text"
                        required autocomplete="name" autofocus
                        label="Name"/>
 
-            <TextInput class="sm:col-span-6" v-model="form.email"
+            <MyTextInput class="sm:col-span-6" v-model="form.email"
                        :error="form.errors.email" id="email" type="email"
                        label="Email" required autofocus autocomplete="username"/>
 
-            <TextInput class="sm:col-span-6" v-model="form.password"
+            <MyTextInput class="sm:col-span-6" v-model="form.password"
                        :error="form.errors.password" id="password" type="password"
                        required autocomplete="current-password"
                        label="Passwort"/>
 
-            <TextInput class="sm:col-span-6" v-model="form.password_confirmation"
+            <MyTextInput class="sm:col-span-6" v-model="form.password_confirmation"
                        :error="form.errors.password_confirmation" id="password_confirmation" type="password"
                        required autocomplete="new-password" label="Passwort bestätigen"/>
 
@@ -47,10 +47,10 @@ const submit = () => {
                     Already registered?
                 </Link>
 
-                <SubmitButton :disabled="form.processing" class="w-full">
+                <MyButton type="submit" class="w-full" :disabled="form.processing">
                     Register
-                </SubmitButton>
+                </MyButton>
             </div>
         </form>
-    </Layout>
+    </MyLayout>
 </template>

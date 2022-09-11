@@ -8,11 +8,11 @@ let props = defineProps({
 });
 
 let getUrl = function(page) {
-    if (page < 1 || page > props.meta.last_page) {
-        return null;
-    } else {
-        return props.meta.links[1].url.replace(/page=\d+/, 'page=' + page);
-    }
+  if (page < 1 || page > props.meta.last_page) {
+      return null;
+  } else {
+      return props.meta.links[1].url.replace(/page=\d+/, 'page=' + page);
+  }
 };
 
 let getLinks = computed(() => {
@@ -81,7 +81,7 @@ let getLinks = computed(() => {
                        class="z-10 bg-indigo-50 border-indigo-500 text-indigo-600 relative inline-flex items-center px-3.5 py-2 border text-sm font-medium"> {{ link.label }}
                     </p>
                     <p v-else-if="!link.url"
-                       class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-3.5 py-2 border text-sm font-medium">
+                          class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-3.5 py-2 border text-sm font-medium">
                         {{ link.label }}
                     </p>
                     <Link v-else :href="link.url"

@@ -3,13 +3,9 @@ import { computed } from 'vue';
 import { Inertia } from "@inertiajs/inertia";
 import { Link } from '@inertiajs/inertia-vue3';
 import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue'
-import { Bars3Icon, XMarkIcon } from '@heroicons/vue/24/outline'
+import { Bars3Icon, XMarkIcon, CheckCircleIcon, XCircleIcon } from '@heroicons/vue/24/outline'
 import { usePage } from "@inertiajs/inertia-vue3";
 
-// defineProps({
-//     auth: Object,
-// });
-//
 const user = computed(() => usePage().props.value.auth.user);
 const flashSuccess = computed(() => usePage().props.value.flash.success);
 const flashError = computed(() => usePage().props.value.flash.error);
@@ -132,11 +128,25 @@ let logout = () => {
 
         <main>
             <div class="max-w-7xl mx-auto py-2 sm:px-6 lg:px-8">
-                <div v-if="flashSuccess" class="bg-green-400 text-center">
-                    {{ flashSuccess }}
+                <div v-if="flashSuccess" class="rounded-md bg-green-50 p-4">
+                    <div class="flex">
+                        <div class="flex-shrink-0">
+                            <CheckCircleIcon class="h-5 w-5 text-green-400" aria-hidden="true" />
+                        </div>
+                        <div class="ml-3">
+                            <h3 class="text-sm font-medium text-green-800">{{ flashSuccess }}</h3>
+                        </div>
+                    </div>
                 </div>
-                <div v-if="flashError" class="bg-red-400 text-center">
-                    {{ flashError }}
+                <div v-if="flashError" class="rounded-md bg-red-50 p-4">
+                    <div class="flex">
+                        <div class="flex-shrink-0">
+                            <XCircleIcon class="h5 w-5 text-red-400" aria-hidden="true" />
+                        </div>
+                        <div class="ml-3">
+                            <h3 class="text-sm font-medium text-red-800">{{ flashError }}</h3>
+                        </div>
+                    </div>
                 </div>
                 <slot />
                 <div class="w-full text-gray-900 text-sm text-center mt-1.5">

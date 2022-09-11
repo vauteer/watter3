@@ -71,6 +71,8 @@ Route::middleware(['auth', 'verified'])->group(function() {
         ->can('create', Backup::class);
     Route::post('/backups/restore', [BackupController::class, 'restore'])
         ->can('restore', Backup::class);
+    Route::get('/backups/download/{filename}', [BackupController::class, 'download'])->name('backups.download')
+        ->can('restore', Backup::class);
 
     Route::get('/players', [PlayerController::class, 'index'])
         ->can('view', Player::class)

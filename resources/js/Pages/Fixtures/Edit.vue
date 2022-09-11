@@ -1,12 +1,13 @@
 <script setup>
 import { computed, ref, onMounted } from "vue";
+import Inertia from "@inertiajs/inertia";
 import { useForm, Head } from "@inertiajs/inertia-vue3";
-import Layout from '@/Shared/Layout.vue';
-import TextInput from '@/Shared/TextInput.vue';
-import AbortButton from '@/Shared/AbortButton.vue';
-import SubmitButton from '@/Shared/SubmitButton.vue';
+import MyLayout from '@/Shared/MyLayout.vue';
+import MyTextInput from '@/Shared/MyTextInput.vue';
+import MyButton from '@/Shared/MyButton.vue';
 
 let props = defineProps({
+    origin: String,
     fixture: Object,
     scorePattern: String,
     placeholder: String,
@@ -36,7 +37,7 @@ let submit = () => {
 <template>
     <Head title="Ergebnis" />
 
-    <Layout>
+    <MyLayout>
         <div>
             <button
                 tabindex="-1"
@@ -54,16 +55,16 @@ let submit = () => {
                         <form @submit.prevent="submit" class="space-y-8 divide-y divide-gray-200">
                             <div class="space-y-8 divide-y divide-gray-200 my-3 mx-2">
                                 <div class="grid grid-cols-1 gap-y-4 gap-x-4 sm:grid-cols-6">
-                                    <TextInput class="sm:col-span-6" v-model="form.score" :error="form.errors.score"
+                                    <MyTextInput class="sm:col-span-6" v-model="form.score" :error="form.errors.score"
                                                id="score" label="Ergebnis" :regex="scorePattern" :placeholder="placeholder"/>
                                 </div>
                                 <div class="py-5">
                                     <div class="flex justify-between">
                                         <div class="w-full flex justify-end">
-                                            <AbortButton :href="route('tournaments.show', fixture.tournament_id) + '?round=' + fixture.round">
+                                            <MyButton theme="abort" :@click="Inertia.get(origin)">
                                                 Abbrechen
-                                            </AbortButton>
-                                            <SubmitButton class="ml-2">Speichern</SubmitButton>
+                                            </MyButton>
+                                            <MyButton type="submit" class="ml-2">Speichern</MyButton>
                                         </div>
                                     </div>
                                 </div>
@@ -73,5 +74,5 @@ let submit = () => {
                 </div>
             </div>
         </div>
-    </Layout>
+    </MyLayout>
 </template>

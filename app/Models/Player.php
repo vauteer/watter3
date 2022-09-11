@@ -15,6 +15,7 @@ class Player extends Model
     protected $guarded = [];
     protected $hidden = ['pivot'];
 
+    // Vorsicht ! Nur solange keinem Team zugewiesen
     public function tournaments(): BelongsToMany
     {
         return $this->belongsToMany(Tournament::class)
@@ -24,6 +25,11 @@ class Player extends Model
     public function teams()
     {
         return Team::where('player1_id', $this->id)->orWhere('player2_id', $this->id)->get();
+    }
+
+    public function isUsed(): bool
+    {
+        return $this->tournaments()->count() > 0 || $this->teams()->count() > 0;
     }
 
     public static function deleteUnused()

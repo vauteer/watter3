@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\UserResource;
 use App\Models\User;
-use App\Notifications\NewUser;
+use App\Notifications\UserNotification;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -17,6 +17,8 @@ use Inertia\Response;
 
 class UserController extends Controller
 {
+    protected const URL_KEY = 'lastUsersUrl';
+
     public function validationRules($id): array
     {
         return [
@@ -53,6 +55,7 @@ class UserController extends Controller
 
     public function index(Request $request): Response
     {
+        $request->session()->put(self::URL_KEY, url()->full());
         return inertia('Users/Index', [
             'users' => UserResource::collection(User::query()
                 ->when($request->input('search'), function($query, $search) {
@@ -68,9 +71,16 @@ class UserController extends Controller
         ]);
     }
 
+    private function editOptions(): array
+    {
+        return [
+            'origin' => session(self::URL_KEY),
+        ];
+    }
+
     public function create(Request $request): Response
     {
-        return inertia('Users/Edit');
+        return inertia('Users/Edit', $this->editOptions());
     }
 
     public function store(Request $request): RedirectResponse
@@ -84,22 +94,23 @@ class UserController extends Controller
             'password' => Hash::make($password),
         ]));
 
-        $user->notify(new NewUser($password));
+        $user->notify(new UserNotification("Für Sie wurde ein Zugang erstellt.", "Ihr Passwort lautet: {$password}"));
 
-        return redirect()->route('users')
+        return redirect(session(self::URL_KEY))
             ->with('success', "{$user->name} wurde hinzugefügt.");
     }
 
     public function edit(Request $request, User $user): Response
     {
-        return inertia('Users/Edit', [
+        return inertia('Users/Edit', array_merge_recursive($this->editOptions(), [
+            'deletable' => !$user->isUsed(),
             'user' => [
                 'id' => $user->id,
                 'name' => $user->name,
                 'email' => $user->email,
                 'admin' => $user->admin,
             ],
-        ]);
+        ]));
     }
 
     public function update(Request $request, User $user): RedirectResponse
@@ -108,7 +119,7 @@ class UserController extends Controller
         $user->update($attributes);
 
 
-        return redirect()->route('users')
+        return redirect(session(self::URL_KEY))
             ->with('success', "{$user->name} wurde geändert.");
     }
 
@@ -116,15 +127,18 @@ class UserController extends Controller
     {
         $user->delete();
 
-        return redirect()->route('users')
-            ->with('success', 'Benutzer wurde gelöscht.');;
+        return redirect(session(self::URL_KEY))
+            ->with('success', 'Benutzer wurde gelöscht.');
     }
 
     public function editAccount(Request $request): Response
     {
+        $origin = url()->previous();
+        $request->session()->put(self::URL_KEY, $origin);
         $user = auth()->user();
 
         return inertia('Users/Account', [
+            'origin' => $origin,
             'user' => [
                 'id' => $user->id,
                 'name' => $user->name,
@@ -151,7 +165,7 @@ class UserController extends Controller
 
         User::removeOrphanProfileImages();
 
-        return redirect()->route('tournaments')
+        return redirect(session(self::URL_KEY))
             ->with('success', "Das Konto wurde geändert.");
     }
 

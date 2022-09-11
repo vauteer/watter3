@@ -20,6 +20,7 @@ class UserResource extends JsonResource
             'name' => $this->name,
             'email' => $this->email,
             'admin' => $this->admin,
+            'hasTournaments' => $this->tournaments()->count() > 0,
 
             'modifiable' => Auth::user()->admin,
         ];

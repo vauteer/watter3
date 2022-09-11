@@ -1,10 +1,10 @@
 <script setup>
-import Layout from '@/Shared/Layout.vue';
+import MyLayout from '@/Shared/MyLayout.vue';
 import {Inertia} from "@inertiajs/inertia";
 import {computed, ref, watch} from "vue";
 import { Head, Link } from '@inertiajs/inertia-vue3';
-import Category from '@/Shared/Category.vue';
-import Pagination from '@/Shared/Pagination.vue';
+import MyCategory from '@/Shared/MyCategory.vue';
+import MyPagination from '@/Shared/MyPagination.vue';
 import { PencilIcon, EyeSlashIcon, UserPlusIcon } from '@heroicons/vue/24/outline';
 import {throttle} from "lodash";
 
@@ -28,9 +28,9 @@ watch(search, throttle(function (value) {
 <template>
     <Head :title="$t('Turniere')" />
 
-    <Layout>
+    <MyLayout>
         <div class="w-full max-w-2xl mx-auto bg-gray-100 text-gray-900 text-sm sm:rounded sm:border sm:shadow sm:overflow-hidden mt-2 px-4 sm:px-6 lg:px-8">
-            <Category :createUrl="canCreate ? '/tournaments/create' : null" v-model="search">{{ $t('Turniere') }}</Category>
+            <MyCategory :createUrl="canCreate ? '/tournaments/create' : null" v-model="search">{{ $t('Turniere') }}</MyCategory>
 
             <div class="mt-4 mb-4 flex flex-col">
                 <div class="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
@@ -91,12 +91,12 @@ watch(search, throttle(function (value) {
                             </div>
                             <div v-if="tournaments.meta.last_page > 1"
                                  class="flex justify-center bg-white" >
-                                <Pagination :meta="tournaments.meta"></Pagination>
+                                <MyPagination :meta="tournaments.meta"></MyPagination>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </Layout>
+    </MyLayout>
 </template>

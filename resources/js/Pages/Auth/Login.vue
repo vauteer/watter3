@@ -1,9 +1,9 @@
 <script setup>
 import { Head } from '@inertiajs/inertia-vue3';
 import { useForm } from "@inertiajs/inertia-vue3";
-import Layout from '@/Shared/Layout.vue';
-import TextInput from "@/Shared/TextInput.vue";
-import SubmitButton from "@/Shared/SubmitButton.vue";
+import MyLayout from '@/Shared/MyLayout.vue';
+import MyTextInput from "@/Shared/MyTextInput.vue";
+import MyButton from "@/Shared/MyButton.vue";
 
 let form = useForm({
     email: '',
@@ -21,7 +21,7 @@ let submit = () => {
     <div>
         <Head title="Anmeldung" />
 
-        <Layout>
+        <MyLayout>
             <div class="min-h-full flex flex-col justify-center sm:px-6 lg:px-8 bg-gray-100">
                 <div class="sm:mx-auto sm:w-full sm:max-w-md">
                     <!--                <img class="mx-auto h-12 w-auto" src="https://tailwindui.com/img/logos/workflow-mark-indigo-600.svg" alt="Workflow" />-->
@@ -31,10 +31,10 @@ let submit = () => {
                 <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
                     <div class="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
                         <form @submit.prevent="submit" class="space-y-6" action="#" method="POST">
-                            <TextInput class="sm:col-span-6" v-model="form.email"
+                            <MyTextInput class="sm:col-span-6" v-model="form.email"
                                        :error="form.errors.email" id="email"
                                        label="Email"/>
-                            <TextInput v-model="form.password"
+                            <MyTextInput v-model="form.password"
                                        :error="form.errors.password" id="password"
                                        label="Passwort" type="password"/>
 
@@ -44,13 +44,13 @@ let submit = () => {
                                 </div>
                             </div>
 
-                            <SubmitButton :disabled="form.processing" class="w-full">
+                            <MyButton type="submit" class="w-full" :disabled="form.processing">
                                 Anmelden
-                            </SubmitButton>
+                            </MyButton>
                         </form>
                     </div>
                 </div>
             </div>
-        </Layout>
+        </MyLayout>
     </div>
 </template>
