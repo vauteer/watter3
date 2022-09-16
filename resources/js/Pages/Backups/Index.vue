@@ -12,22 +12,16 @@ let props = defineProps({
     isDirty: Boolean,
 });
 
-let showConfirmation = ref(false);
-let currentBackup = ref(null);
-
-let confirmRestore = (backup) => {
-    currentBackup.value = backup;
-    showConfirmation.value = true;
-}
+let backupToRestore = ref(false);
 
 let restoreBackup = () => {
-    showConfirmation.value = false;
     Inertia.post('/backups/restore', {
-        filename: currentBackup.value.filename,
+        filename: backupToRestore.value.filename,
     });
+    backupToRestore.value = null;
 };
 
-let dsa = computed(() => {
+let disabled = computed(() => {
     return !props.isDirty;
 })
 
@@ -41,7 +35,7 @@ let dsa = computed(() => {
             <div
                 class="w-full max-w-2xl mx-auto bg-gray-100 text-gray-900 text-sm sm:rounded sm:border sm:shadow sm:overflow-hidden mt-2 px-4 sm:px-6 lg:px-8">
                 <MyCategory createUrl="/backups/create" :search="false"
-                          button-title="Backup erstellen" :button-disabled="dsa">
+                          button-title="Backup erstellen" :button-disabled="!isDirty">
                     Backups
                 </MyCategory>
 
@@ -76,7 +70,7 @@ let dsa = computed(() => {
                                             </a>
                                         </td>
                                         <td class="px-3">
-                                            <MyButton theme="danger" @click="confirmRestore(backup)">
+                                            <MyButton theme="danger" @click="backupToRestore=backup">
                                                 Wiederherstellen
                                             </MyButton>
                                         </td>
@@ -93,8 +87,9 @@ let dsa = computed(() => {
                     </div>
                 </div>
             </div>
-            <MyConfirmation v-if="showConfirmation" @canceled="showConfirmation = false" @confirmed="restoreBackup" subText="Die jetzigen Daten werden vorher gesichert">
-                {{ `${currentBackup.date} wiederherstellen ?` }}
+            <MyConfirmation v-if="backupToRestore" @canceled="backupToRestore=null" @confirmed="restoreBackup"
+                            subText="Die jetzigen Daten werden vorher gesichert">
+                {{ `${backupToRestore.date} wiederherstellen ?` }}
             </MyConfirmation>
         </MyLayout>
     </div>
