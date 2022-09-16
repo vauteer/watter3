@@ -35,12 +35,12 @@ let submit = () => {
     }
 };
 
-let deletePlayer = () => {
+let deleteEntity = () => {
     showConfirmation.value = false;
     Inertia.delete(`/players/${props.player.id}`);
 };
 
-const getTitle = computed(() => {
+const title = computed(() => {
     return editMode.value ? "Spieler bearbeiten" : "Neuer Spieler";
 });
 
@@ -62,7 +62,7 @@ const submitButtonText = computed(() => {
             <div
                 class="relative z-30 w-full max-w-xl mx-auto bg-gray-100 text-gray-900 text-sm sm:rounded sm:border sm:shadow sm:overflow-hidden mt-2">
                 <div class="sm:px-2 lg:px-4 sm:py-2 lg:py-4">
-                    <div class="font-medium text-lg text-gray-900 ml-3 mb-4">{{ $t(getTitle) }}</div>
+                    <div class="font-medium text-lg text-gray-900 ml-3 mb-4">{{ $t(title) }}</div>
 
                     <div
                         class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg sm:px-2 lg:px-4 bg-white">
@@ -94,7 +94,7 @@ const submitButtonText = computed(() => {
                 </div>
             </div>
         </div>
-        <MyConfirmation v-if="showConfirmation" @canceled="showConfirmation=false" @confirmed="deletePlayer">
+        <MyConfirmation v-if="showConfirmation" @canceled="showConfirmation=false" @confirmed="deleteEntity">
             {{ `Spieler '${player.name}' löschen`}}
         </MyConfirmation>
     </MyLayout>

@@ -17,7 +17,7 @@ let props = defineProps({
     tabsModel: Object,
 });
 
-let getTitle = computed(() => {
+let title = computed(() => {
     let date = new Date(props.tournament.start);
 
     return date.toLocaleDateString() + ' ' + props.tournament.name;
@@ -46,7 +46,7 @@ let switchRound = (round) => {
         <div
             class="w-full mx-auto bg-gray-100 text-gray-900 text-sm sm:rounded sm:border sm:shadow sm:overflow-hidden mt-2 px-4 sm:px-6 lg:px-8">
             <div class="w-full flex justify-between pt-3 pl-2">
-                <div class="text-xl font-semibold text-gray-900">{{ getTitle }}</div>
+                <div class="text-xl font-semibold text-gray-900">{{ title }}</div>
                 <a v-if="auth.user"
                     class="bg-blue-500 py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-center text-gray-700 hover:bg-blue-200 focus:outline-none focus:ring-1 focus:ring-offset-1 focus:ring-indigo-500"
                     :href="`/tournaments/${tournament.id}/lists/${currentRound}`" target="_blank">Tisch-Listen</a>

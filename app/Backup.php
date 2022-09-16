@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Storage;
 class Backup
 {
     const DATE_FORMAT = 'Y_m_d_H_i_s';
+    const TABLES = ['fixtures', 'players', 'player_tournament', 'teams', 'team_tournament', 'tournaments', 'users'];
 
     public static function create(): string|array
     {
@@ -162,15 +163,18 @@ class Backup
 
     public static function isDirty()
     {
-        $latestDate = self::latestDate();
-        if ($latestDate === null)
+        $latestBackup = self::latestDate();
+
+        if ($latestBackup === null)
             return true;
 
-        $changes = Fixture::where('updated_at', '>', $latestDate)->count();
-        if ($changes === 0)
-            $changes = DB::table('team_tournament')->where('updated_at', '>', $latestDate)->count();
+        foreach (self::TABLES as $table) {
+            $latestUpdate = DB::table($table)->max('updated_at');
+            if ($latestUpdate !== null && $latestUpdate > $latestBackup)
+                return true;
+        }
 
-        return $changes > 0;
+        return false;
     }
 
 }
