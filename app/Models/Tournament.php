@@ -54,13 +54,15 @@ class Tournament extends Model
         if ($user === null) {
             $tournaments = Tournament::where('start', '<', Carbon::now())
                 ->where('private', false)
-                ->get()
-                ->filter(function ($item, $key) {
-                    return $item->finished();
-                });
-        } else if ($user->admin) {
+                ->get();
+//                ->filter(function ($item, $key) {
+//                    return $item->finished();
+//                });
+        }
+        else if ($user->admin) {
             $tournaments = Tournament::all();
-        } else {
+        }
+        else {
             $tournaments = Tournament::where('start', '<', Carbon::now())
                 ->where('private', false)
                 ->orWhere('created_by', $user->id)

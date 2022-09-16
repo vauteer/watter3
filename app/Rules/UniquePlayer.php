@@ -28,10 +28,11 @@ class UniquePlayer implements InvokableRule
         $player = Player::where('name', $value)->first();
 
         if ($player) {
-            $tournament = Tournament::find($this->tournamentId);
-            if ($tournament->players->contains($player)) {
+            if ($player->tournaments()->where('tournaments.id', $this->tournamentId)->first())
                 $fail("Der Spieler ist schon registriert");
-            }
+
+            if (Tournament::playedBy($player->id)->where('tournaments.id', $this->tournamentId)->first())
+                $fail("Der Spieler ist schon in einem Team registriert");
         }
     }
 }
