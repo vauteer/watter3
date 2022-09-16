@@ -126,6 +126,8 @@ class TournamentController extends Controller
 
     public function edit(Request $request, Tournament $tournament): Response
     {
+        $user = auth()->user();
+
         return inertia('Tournaments/Edit', array_merge($this->editOptions(), [
             'tournament' => [
                 'id' => $tournament->id,
@@ -138,6 +140,7 @@ class TournamentController extends Controller
                 'private' => $tournament->private,
                 'drawn' => $tournament->drawn(),
             ],
+            'deletable' => $user->admin || $tournament->created_by === $user->id,
         ]));
     }
 
