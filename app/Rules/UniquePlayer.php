@@ -25,7 +25,7 @@ class UniquePlayer implements InvokableRule
      */
     public function __invoke($attribute, $value, $fail)
     {
-        $player = Player::where('name', $value)->first();
+        $player = Player::find($value['id']);
 
         if ($player) {
             if ($player->tournaments()->where('tournaments.id', $this->tournamentId)->first())

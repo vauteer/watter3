@@ -37,8 +37,8 @@ class TournamentController extends Controller
     public function playersValidationRules($tournament): array
     {
         return  [
-            'player1' => ['required', 'string', 'max:100', new UniquePlayer($tournament->id)],
-            'player2' => ['nullable', 'string', 'max:100', new UniquePlayer($tournament->id)]
+            'player1' => ['required', new UniquePlayer($tournament->id)],
+            'player2' => ['nullable', 'different:player1', new UniquePlayer($tournament->id)],
         ];
     }
 
@@ -168,9 +168,10 @@ class TournamentController extends Controller
     {
         return inertia('Tournaments/Players', array_merge($this->editOptions(), [
             'tournamentId' => $tournament->id,
-            'players' => $tournament->players()->get(['players.id', 'name']),
+            'singles' => $tournament->players()->get(['players.id', 'name']),
             'teams' => $tournament->teamsAsArray(),
             'playerCount' => $tournament->currentPlayerCount(),
+            'players' => Player::orderBy('name')->get(['id', 'name']),
         ]));
     }
 
@@ -185,10 +186,10 @@ class TournamentController extends Controller
 
     private function attachPlayers(Tournament $tournament, array $attributes)
     {
-        $player1 = Player::firstOrCreate(['name' => $attributes['player1']]);
+        $player1 = Player::firstOrCreate(['name' => $attributes['player1']['name']]);
 
         if ($attributes['player2']) {
-            $player2 = Player::firstOrCreate(['name' => $attributes['player2']]);
+            $player2 = Player::firstOrCreate(['name' => $attributes['player2']['name']]);
 
             $team = Team::firstOrCreate([
                 'player1_id' => $player1->id,
@@ -196,27 +197,28 @@ class TournamentController extends Controller
             ]);
 
             $tournament->teams()->syncWithoutDetaching([$team->id]);
-        } else {
+        }
+        else {
             $tournament->players()->syncWithoutDetaching([$player1->id]);
         }
     }
 
-    public function detachPlayer(Request $request, Tournament $tournament, Player $player): Response
+    public function detachPlayer(Request $request, Tournament $tournament, Player $player): RedirectResponse
     {
         $tournament->players()->detach([$player->id]);
 
-        return $this->createPlayers($request, $tournament);
+        return redirect(route('tournament.players', $tournament));
     }
 
-    public function detachTeam(Request $request, Tournament $tournament, Team $team): Response
+    public function detachTeam(Request $request, Tournament $tournament, Team $team): RedirectResponse
     {
         $tournament->teams()->detach([$team->id]);
         $tournament->players()->detach([$team->player1_id, $team->player2_id]);
 
-        return $this->createPlayers($request, $tournament);
+        return redirect(route('tournament.players', $tournament));
     }
 
-    public function connectPlayers(Request $request, Tournament $tournament): Response
+    public function connectPlayers(Request $request, Tournament $tournament): RedirectResponse
     {
         $players = $request->input('checkedPlayers');
 
@@ -232,7 +234,7 @@ class TournamentController extends Controller
 
         $tournament->teams()->attach($team->id);
 
-        return $this->createPlayers($request, $tournament);
+        return redirect(route('tournament.players', $tournament));
     }
 
     public function draw(Request $request, Tournament $tournament): RedirectResponse
@@ -303,4 +305,15 @@ class TournamentController extends Controller
         return (new \Illuminate\Http\Response($tournament->tableLists($round)->Output(), 200))
             ->header('Content-Type', 'application/pdf');
     }
+
+    private function getPlayerId(array $player): int
+    {
+        if ($player['id'] === 0) {
+            $newPlayer = Player::create(['name' => $player['name']]);
+            return $newPlayer->id;
+        } else {
+            return $player['id'];
+        }
+    }
+
 }
