@@ -20,7 +20,7 @@ class PlayerResource extends JsonResource
             'name' => $this->name,
             'hasTournaments' => $this->playedTournaments()->count() > 0,
 
-            'modifiable' => Auth::user()->admin,
+            'modifiable' => $request->user()?->can('update', $this->resource),
         ];
     }
 }

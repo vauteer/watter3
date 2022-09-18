@@ -26,7 +26,7 @@ class TournamentResource extends JsonResource
             'private' => $this->private,
             'creator' => $this->creator->name,
 
-            'modifiable' => $this->modifiableBy(Auth::user()),
+            'modifiable' => $request->user()?->can('update', $this->resource),
             'started' => $this->started(),
         ];
     }

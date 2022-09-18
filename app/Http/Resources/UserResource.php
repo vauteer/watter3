@@ -22,7 +22,7 @@ class UserResource extends JsonResource
             'admin' => $this->admin,
             'hasTournaments' => $this->tournaments()->count() > 0,
 
-            'modifiable' => Auth::user()->admin,
+            'modifiable' => $request->user()?->can('update', $this->resource),
         ];
     }
 }
