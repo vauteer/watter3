@@ -20,6 +20,7 @@ class UserResource extends JsonResource
             'name' => $this->name,
             'email' => $this->email,
             'admin' => $this->admin,
+            'lastLogin' => $this->lastLogin()?->format('d.m.Y H:i'),
             'hasTournaments' => $this->tournaments()->count() > 0,
 
             'modifiable' => $request->user()?->can('update', $this->resource),

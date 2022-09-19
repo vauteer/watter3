@@ -3,6 +3,8 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\ActionType;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -45,6 +47,20 @@ class User extends Authenticatable
     public function tournaments(): HasMany
     {
         return $this->hasMany(Tournament::class, 'created_by');
+    }
+
+    public function tracings(): HasMany
+    {
+        return $this->hasMany(Tracing::class);
+    }
+
+    public function lastLogin(): ?Carbon
+    {
+        $lastLogin = $this->tracings()
+            ->actionType(ActionType::Login)->orderByDesc('at')
+            ->first();
+
+        return $lastLogin?->at;
     }
 
     public function profileURL(): string

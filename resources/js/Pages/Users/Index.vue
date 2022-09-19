@@ -75,6 +75,7 @@ watch(search, throttle(function (value) {
                                     </td>
                                     <td class="hidden md:table-cell pl-2 text-sm text-gray-500 sm:pl-4">
                                         <div>{{ user.email }}</div>
+                                        <div v-if="auth.user.admin">{{ user.lastLogin }}</div>
                                     </td>
                                     <td class="px-3">
                                         <div class="h5">
