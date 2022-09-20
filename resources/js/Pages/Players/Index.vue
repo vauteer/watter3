@@ -39,7 +39,7 @@ watch(search, throttle(function (value) {
 
     <MyLayout>
         <div class="w-full max-w-2xl mx-auto bg-gray-100 text-gray-900 text-sm sm:rounded sm:border sm:shadow sm:overflow-hidden mt-2 px-4 sm:px-6 lg:px-8">
-            <MyCategory createUrl="/players/create" v-model="search">{{ $t('Spieler') }}</MyCategory>
+            <MyCategory createUrl="/players/create" v-model="search">{{ $t('Spieler') }} ({{ players.meta.total }})</MyCategory>
 
             <div class="mt-4 mb-4 flex flex-col">
                 <div class="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">

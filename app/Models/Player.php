@@ -37,20 +37,12 @@ class Player extends Model
         return $this->tournaments()->count() > 0 || $this->teams()->count() > 0;
     }
 
-    public static function deleteUnused()
+    public function scopeUnused($query)
     {
-        $count = 0;
-        foreach (Player::all() as $player) {
-            if ($player->tournaments()->count() === 0) {
-                if ($player->teams()->count() === 0) {
-                   $player->delete();
-                   $count++;
-                };
-            }
-        }
+        $where = "id not in (SELECT player1_id FROM teams " . "
+            UNION SELECT player2_id FROM teams " .
+            "UNION SELECT player_id FROM player_tournament)";
 
-        Log::info("Player::deleteUnused: {$count} Spieler wurden gelöscht.");
-        return $count;
+        $query->whereRaw($where);
     }
-
 }

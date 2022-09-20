@@ -117,8 +117,8 @@ class TournamentController extends Controller
             'created_by' => auth()->id(),
         ]));
 
-        Team::deleteUnused();
-        Player::deleteUnused();
+        Team::unused()->delete();
+        Player::unused()->delete();
 
         return redirect(session(self::URL_KEY))
             ->with('success', "{$tournament->name} wurde hinzugefügt.");
@@ -159,6 +159,8 @@ class TournamentController extends Controller
         Backup::create();
 
         $tournament->delete();
+        Team::unused()->delete();
+        Player::unused()->delete();
 
         return redirect(session(self::URL_KEY))
             ->with('success', 'Turnier wurde gelöscht.');
