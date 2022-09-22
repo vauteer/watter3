@@ -113,6 +113,6 @@ class UserController extends Controller
     {
         auth()->login($user);
 
-        return redirect()->route('tournaments');
+        return redirect()->route('tournaments.index');
     }
 }
