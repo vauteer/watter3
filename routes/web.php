@@ -1,6 +1,7 @@
 <?php
 
 use App\Backup;
+use App\Http\Controllers\AccountController;
 use App\Http\Controllers\BackupController;
 use App\Http\Controllers\PlayerController;
 use App\Http\Controllers\TournamentController;
@@ -46,11 +47,12 @@ Route::middleware(['auth', 'verified'])->group(function() {
         return Inertia::render('Dashboard');
     })->middleware(['auth', 'verified'])->name('dashboard');
 
+    Route::get('/account', [AccountController::class, 'edit'])->name('account.edit');
+    Route::put('/account', [AccountController::class, 'update'])->name('account.update');
+
     Route::get('/users', [UserController::class, 'index'])
         ->can('viewAny', User::class)
         ->name('users');
-    Route::get('/users/account', [UserController::class, 'editAccount']);
-    Route::put('/users/account', [UserController::class, 'updateAccount']);
     Route::get('/users/create', [UserController::class, 'create'])
         ->can('create', User::class);
     Route::post('/users', [UserController::class, 'store'])

@@ -25,23 +25,20 @@ onMounted(() => {
     if (props.user !== undefined) {
         form.name = props.user.name;
         form.email = props.user.email;
+        form.profile_image = props.user.profile_image;
     }
 });
 
 let submit = () => {
-    form.put('/users/account');
+    form.put(route('account.update'));
 };
 
-const getProfileImageUrl = computed(() => {
+const profileUrl = computed(() => {
     return props.user?.profile_image ? '/storage/profile/' + props.user.profile_image : null;
 })
 
 function onProfileImageChanged(filename) {
     form.profile_image = filename;
-}
-
-function back() {
-    window.history.back();
 }
 
 </script>
@@ -63,7 +60,7 @@ function back() {
                                         label="Profile Image"
                                         class="sm:col-span-2"
                                         id="profile-image"
-                                        :image-url="getProfileImageUrl"
+                                        :image-url="profileUrl"
                                         location="profile"
                                         resize-height="150"
                                         v-on:change="onProfileImageChanged"
