@@ -3,7 +3,9 @@
 use App\Backup;
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\BackupController;
+use App\Http\Controllers\FixtureController;
 use App\Http\Controllers\PlayerController;
+use App\Http\Controllers\StarterController;
 use App\Http\Controllers\TournamentController;
 use App\Http\Controllers\UserController;
 use App\Models\Player;
@@ -88,33 +90,35 @@ Route::middleware(['auth', 'verified'])->group(function() {
         ->can('delete', 'player');
 
     Route::get('/tournaments/create', [TournamentController::class, 'create'])
-        ->can('create', Tournament::class);
+        ->name('tournaments.create')->can('create', Tournament::class);
     Route::post('/tournaments', [TournamentController::class, 'store'])
-        ->can('create', Tournament::class);
+        ->name('tournaments.store')->can('create', Tournament::class);
     Route::get('/tournaments/{tournament}/edit', [TournamentController::class, 'edit'])
-        ->can('update', 'tournament');
+        ->name('tournaments.edit')->can('update', 'tournament');
     Route::put('/tournaments/{tournament}', [TournamentController::class, 'update'])
-        ->can('update', 'tournament');
+        ->name('tournaments.update')->can('update', 'tournament');
     Route::delete('/tournaments/{tournament}', [TournamentController::class, 'destroy'])
-        ->can('delete', 'tournament');
-    Route::get('/tournaments/{tournament}/players', [TournamentController::class, 'createPlayers'])
-        ->can('update', 'tournament')
-        ->name('tournament.players');
-    Route::post('/tournaments/{tournament}/players', [TournamentController::class, 'storePlayers'])
-        ->can('update', 'tournament');
-    Route::delete('/tournaments/{tournament}/players/{player}', [TournamentController::class, 'detachPlayer'])
-        ->can('update', 'tournament');
-    Route::delete('/tournaments/{tournament}/teams/{team}', [TournamentController::class, 'detachTeam'])
-        ->can('update', 'tournament');
-    Route::post('/tournaments/{tournament}/players/connect', [TournamentController::class, 'connectPlayers'])
-        ->can('update', 'tournament');
+        ->name('tournaments.destroy')->can('delete', 'tournament');
     Route::post('/tournaments/{tournament}/draw', [TournamentController::class, 'draw'])
-        ->can('update', 'tournament');
-    Route::get('/tournaments/fixtures/{fixture}/edit', [TournamentController::class, 'editFixture'])
-        ->can('update', 'fixture');
-    Route::put('/tournaments/fixtures/{fixture}', [TournamentController::class, 'updateFixture'])
-        ->can('update', 'fixture');
-    Route::get('/tournaments/{tournament}/lists/{round}', [TournamentController::class, 'tableLists']);
+        ->name('tournaments.draw')->can('update', 'tournament');
+    Route::get('/tournaments/{tournament}/lists/{round}', [TournamentController::class, 'tableLists'])
+        ->name('tournaments.lists');
+
+    Route::get('/tournaments/{tournament}/players', [StarterController::class, 'create'])
+        ->name('tournaments.players.create')->can('update', 'tournament');
+    Route::post('/tournaments/{tournament}/players', [StarterController::class, 'store'])
+        ->name('tournaments.players.store')->can('update', 'tournament');
+    Route::delete('/tournaments/{tournament}/players/{player}', [StarterController::class, 'destroyPlayer'])
+        ->name('tournaments.players.destroy')->can('update', 'tournament');
+    Route::delete('/tournaments/{tournament}/teams/{team}', [StarterController::class, 'destroyTeam'])
+        ->name('tournaments.teams.destroy')->can('update', 'tournament');
+    Route::post('/tournaments/{tournament}/players/connect', [StarterController::class, 'connect'])
+        ->name('tournaments.players.connect')->can('update', 'tournament');
+
+    Route::get('/tournaments/fixtures/{fixture}/edit', [FixtureController::class, 'edit'])
+        ->name('fixtures.edit')->can('update', 'fixture');
+    Route::put('/tournaments/fixtures/{fixture}', [FixtureController::class, 'update'])
+        ->name('fixtures.update')->can('update', 'fixture');
 });
 
 require __DIR__.'/auth.php';

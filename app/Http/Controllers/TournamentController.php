@@ -34,14 +34,6 @@ class TournamentController extends Controller
         ];
     }
 
-    public function playersValidationRules($tournament): array
-    {
-        return  [
-            'player1' => ['required', new UniquePlayer($tournament->id)],
-            'player2' => ['nullable', 'different:player1', new UniquePlayer($tournament->id)],
-        ];
-    }
-
     private function applyFilters(Request $request): \Illuminate\Database\Eloquent\Builder
     {
         $query = Tournament::query();
@@ -166,79 +158,6 @@ class TournamentController extends Controller
             ->with('success', 'Turnier wurde gelöscht.');
     }
 
-    public function createPlayers(Request $request, Tournament $tournament): Response
-    {
-        return inertia('Tournaments/Players', array_merge($this->editOptions(), [
-            'tournamentId' => $tournament->id,
-            'singles' => $tournament->players()->get(['players.id', 'name']),
-            'teams' => $tournament->teamsAsArray(),
-            'playerCount' => $tournament->currentPlayerCount(),
-            'players' => Player::orderBy('name')->get(['id', 'name']),
-        ]));
-    }
-
-    public function storePlayers(Request $request, Tournament $tournament): Response
-    {
-        $attributes = $request->validate($this->playersValidationRules($tournament));
-
-        $this->attachPlayers($tournament, $attributes);
-
-        return $this->createPlayers($request, $tournament);
-    }
-
-    private function attachPlayers(Tournament $tournament, array $attributes)
-    {
-        $player1 = Player::firstOrCreate(['name' => $attributes['player1']['name']]);
-
-        if ($attributes['player2']) {
-            $player2 = Player::firstOrCreate(['name' => $attributes['player2']['name']]);
-
-            $team = Team::firstOrCreate([
-                'player1_id' => $player1->id,
-                'player2_id' => $player2->id,
-            ]);
-
-            $tournament->teams()->syncWithoutDetaching([$team->id]);
-        }
-        else {
-            $tournament->players()->syncWithoutDetaching([$player1->id]);
-        }
-    }
-
-    public function detachPlayer(Request $request, Tournament $tournament, Player $player): RedirectResponse
-    {
-        $tournament->players()->detach([$player->id]);
-
-        return redirect(route('tournament.players', $tournament));
-    }
-
-    public function detachTeam(Request $request, Tournament $tournament, Team $team): RedirectResponse
-    {
-        $tournament->teams()->detach([$team->id]);
-        $tournament->players()->detach([$team->player1_id, $team->player2_id]);
-
-        return redirect(route('tournament.players', $tournament));
-    }
-
-    public function connectPlayers(Request $request, Tournament $tournament): RedirectResponse
-    {
-        $players = $request->input('checkedPlayers');
-
-        $player1_id = $players[0];
-        $player2_id = $players[1];
-
-        $tournament->players()->detach([$player1_id, $player2_id]);
-
-        $team = Team::firstOrCreate([
-            'player1_id' => $player1_id,
-            'player2_id' => $player2_id,
-        ]);
-
-        $tournament->teams()->attach($team->id);
-
-        return redirect(route('tournament.players', $tournament));
-    }
-
     public function draw(Request $request, Tournament $tournament): RedirectResponse
     {
         $tournament->draw();
@@ -249,73 +168,10 @@ class TournamentController extends Controller
         ]);
     }
 
-    public function editFixture(Request $request, Fixture $fixture): Response
-    {
-        $tournament = $fixture->tournament;
-        $winpoints = $tournament->winpoints;
-
-        return inertia('Fixtures/Edit', [
-            'origin' => session(self::URL_KEY),
-            'fixture' => [
-                'id' => $fixture->id,
-                'tournament_id' => $tournament->id,
-                'score' => $fixture->score,
-                'round' => $fixture->round,
-                'team1' => $fixture->team1->__toString(),
-                'team2' => $fixture->team2->__toString(),
-            ],
-            'placeholder' => $this->getPlaceholder($tournament),
-            'scorePattern' => $tournament->getScoreRegex(),
-        ]);
-    }
-
-    /**
-     * @throws \Exception
-     */
-    private function getPlaceholder($tournament)
-    {
-        $winPoints = $tournament->winpoints;
-        $result = 'z.B.: ';
-        for ($i = 0; $i < $tournament->games; $i++) {
-            $points1 = $i % 2 ? $winPoints : random_int(2, $winPoints - 1);
-            $points2 = $i % 2 ? random_int(2, $winPoints - 1) : $winPoints;
-
-            $result .= "$points1-$points2 ";
-        }
-
-        return rtrim($result);
-    }
-    public function updateFixture(Request $request, Fixture $fixture): RedirectResponse
-    {
-        $attributes = $request->validate([
-            'score' => new Score($fixture),
-        ]);
-
-        $fixture->calculate($attributes['score'], true);
-        //$fixture->update($attributes);
-
-        if ($fixture->tournament->finished())
-            Backup::create();
-
-        return redirect()
-            ->route('tournaments.show', ['tournament' => $fixture->tournament_id, 'round' => $fixture->round])
-            ->with('success', "Ergebnis {$fixture->team1->__toString()} gegen {$fixture->team2->__toString()} wurde geändert.");
-    }
-
     public function tableLists(Request $request, Tournament $tournament, $round)
     {
         return (new \Illuminate\Http\Response($tournament->tableLists($round)->Output(), 200))
             ->header('Content-Type', 'application/pdf');
-    }
-
-    private function getPlayerId(array $player): int
-    {
-        if ($player['id'] === 0) {
-            $newPlayer = Player::create(['name' => $player['name']]);
-            return $newPlayer->id;
-        } else {
-            return $player['id'];
-        }
     }
 
 }

@@ -33,7 +33,7 @@ onMounted(() => {
 });
 
 let submit = () => {
-    form.post(`/tournaments/${props.tournamentId}/players`, {
+    form.post(route('tournaments.players.store', props.tournamentId), {
             onSuccess: () => {
                 form.reset();
                 document.getElementById('player1').focus();
@@ -51,7 +51,7 @@ let canDraw = computed(() => {
 });
 
 let submitConnect = () => {
-    connectForm.post(`/tournaments/${props.tournamentId}/players/connect`, {
+    connectForm.post(route('tournaments.players.connect', props.tournamentId), {
             onSuccess: () => {
                 connectForm.reset();
                 document.getElementById('player1').focus();
@@ -71,7 +71,7 @@ let deletePlayer = () => {
     deletablePlayer.value = null;
 
     if (playerId != null) {
-        Inertia.delete(`/tournaments/${props.tournamentId}/players/${playerId}`);
+        Inertia.delete(route('tournaments.players.destroy', [props.tournamentId, playerId]));
     }
 };
 
@@ -88,7 +88,7 @@ let deleteTeam = () => {
     deletableTeam.value = null;
 
     if (teamId != null) {
-        Inertia.delete(`/tournaments/${props.tournamentId}/teams/${teamId}`);
+        Inertia.delete(route('tournaments.teams.destroy', [props.tournamentId, teamId]));
     }
 };
 
@@ -96,7 +96,7 @@ let confirmDraw = ref(false);
 
 let draw = () => {
     confirmDraw.value = false;
-    Inertia.post(`/tournaments/${props.tournamentId}/draw`);
+    Inertia.post(route('tournaments.draw', props.tournamentId));
 }
 
 </script>
@@ -162,7 +162,7 @@ let draw = () => {
                                 </tbody>
                             </table>
                             <div class="flex justify-center bg-white">
-                                <MyButton type="submit" v-if="canConnect" :disabled="connectForm.processing"
+                                <MyButton v-if="canConnect" type="submit" :disabled="connectForm.processing"
                                               class="w-1/2 my-2"
                                 >
                                     {{ $t('Team erstellen') }}

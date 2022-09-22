@@ -27,6 +27,7 @@ class TournamentResource extends JsonResource
             'creator' => $this->creator->name,
 
             'modifiable' => $request->user()?->can('update', $this->resource),
+            'drawn' => $this->drawn(),
             'started' => $this->started(),
         ];
     }

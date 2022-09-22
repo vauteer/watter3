@@ -25,7 +25,7 @@ onMounted(() => {
 });
 
 let submit = () => {
-    form.put(`/tournaments/fixtures/${props.fixture.id}`);
+    form.put(route('fixtures.update', props.fixture.id));
 };
 
 </script>

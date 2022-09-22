@@ -68,20 +68,20 @@ watch(search, throttle(function (value) {
                                     <td class="px-3 text-blue-500 text-sm font-semibold">
                                         <div>
                                             <Link v-if="tournament.modifiable && !tournament.started"
-                                                  :href="`/tournaments/${tournament.id}/players`" as="button"
+                                                  :href="route('tournaments.players.create', tournament.id)" as="button"
                                             >
                                                 Teilnehmer
                                             </Link>
                                         </div>
                                         <div>
-                                            <Link :href="`/tournaments/${tournament.id}/show`" as="button">
+                                            <Link v-if="tournament.drawn" :href="route('tournaments.show', tournament.id)" as="button">
                                                 Ergebnisse
                                             </Link>
                                         </div>
                                     </td>
                                     <td class="px-3">
                                         <div class="h-5">
-                                            <Link v-if="tournament.modifiable" :href="`/tournaments/${tournament.id}/edit`">
+                                            <Link v-if="tournament.modifiable" :href="route('tournaments.edit', tournament.id)">
                                                 <PencilIcon class="h-5 w-5 text-blue-500" />
                                             </Link>
                                         </div>
