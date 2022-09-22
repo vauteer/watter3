@@ -38,7 +38,7 @@ Route::get('/test', function() {
    redirect('/');
 });
 
-Route::get('/', [TournamentController::class, 'index'])->name('tournaments');
+Route::get('/', [TournamentController::class, 'index'])->name('tournaments.index');
 Route::get('/tournaments/{tournament}/show', [TournamentController::class, 'show'])
     ->name('tournaments.show');
 
@@ -51,8 +51,7 @@ Route::middleware(['auth', 'verified'])->group(function() {
     Route::put('/account', [AccountController::class, 'update'])->name('account.update');
 
     Route::get('/users', [UserController::class, 'index'])
-        ->can('viewAny', User::class)
-        ->name('users');
+        ->name('users.index')->can('viewAny', User::class);
     Route::get('/users/create', [UserController::class, 'create'])
         ->can('create', User::class);
     Route::post('/users', [UserController::class, 'store'])
@@ -67,8 +66,7 @@ Route::middleware(['auth', 'verified'])->group(function() {
         ->can('create', 'user');
 
     Route::get('/backups', [BackupController::class, 'index'])
-        ->can('view', Backup::class)
-        ->name('backups');
+        ->name('backups.index')->can('view', Backup::class);
     Route::get('/backups/create', [BackupController::class, 'create'])
         ->can('create', Backup::class);
     Route::post('/backups/restore', [BackupController::class, 'restore'])
@@ -77,8 +75,7 @@ Route::middleware(['auth', 'verified'])->group(function() {
         ->can('restore', Backup::class);
 
     Route::get('/players', [PlayerController::class, 'index'])
-        ->can('view', Player::class)
-        ->name('players');
+        ->name('players.index')->can('view', Player::class);
     Route::get('/players/create', [PlayerController::class, 'create'])
         ->can('create', Player::class);
     Route::post('/players', [PlayerController::class, 'store'])

@@ -12,8 +12,8 @@ const flashError = computed(() => usePage().props.value.flash.error);
 
 const getNavigation = computed(() => {
     return [
-        { name: 'Turniere', route: 'tournaments', admin: false },
-        { name: 'Spieler', route: 'players', admin: true },
+        { name: 'Turniere', route: 'tournaments.index', admin: false },
+        { name: 'Spieler', route: 'players.index', admin: true },
     ];
 })
 
@@ -67,13 +67,13 @@ let logout = () => {
                                             <span class="block px-4 py-2 text-sm text-gray-700 opacity-75">{{ user.name }}</span>
                                         </MenuItem>
                                         <MenuItem v-if="user.admin" v-slot="{ active }">
-                                            <Link :href="route('users')"
+                                            <Link :href="route('users.index')"
                                                   :class="[active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700']">
                                                 Benutzer
                                             </Link>
                                         </MenuItem>
                                         <MenuItem v-if="user.admin" v-slot="{ active }">
-                                            <Link :href="route('backups')"
+                                            <Link :href="route('backups.index')"
                                                   :class="[active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700']">
                                                 Backups
                                             </Link>
@@ -126,11 +126,11 @@ let logout = () => {
                         </div>
                     </div>
                     <div class="mt-3 px-2 space-y-1">
-                        <DisclosureButton v-if="user.admin" as="a" :href="route('users')"
+                        <DisclosureButton v-if="user.admin" as="a" :href="route('users.index')"
                                           class="block px-3 py-2 rounded-md text-base font-medium text-gray-400 hover:text-white hover:bg-gray-700">
                             Benutzer
                         </DisclosureButton>
-                        <DisclosureButton v-if="user.admin" as="a" :href="route('backups')"
+                        <DisclosureButton v-if="user.admin" as="a" :href="route('backups.index')"
                                           class="block px-3 py-2 rounded-md text-base font-medium text-gray-400 hover:text-white hover:bg-gray-700">
                             Backups
                         </DisclosureButton>
