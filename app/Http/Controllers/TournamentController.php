@@ -12,6 +12,7 @@ use App\Models\Tournament;
 use App\Rules\Score;
 use App\Rules\UniquePlayer;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -22,7 +23,7 @@ class TournamentController extends Controller
 {
     protected const URL_KEY = 'lastTournamentsUrl';
 
-    public function validationRules(): array
+    public function rules(): array
     {
         return  [
             'name' => 'required|string|max:100',
@@ -34,7 +35,7 @@ class TournamentController extends Controller
         ];
     }
 
-    private function applyFilters(Request $request): \Illuminate\Database\Eloquent\Builder
+    private function applyFilters(Request $request): Builder
     {
         $query = Tournament::query();
         if ($request->has('filter')) {
@@ -96,14 +97,14 @@ class TournamentController extends Controller
         ];
     }
 
-    public function create(Request $request):Response
+    public function create():Response
     {
         return inertia('Tournaments/Edit', $this->editOptions());
     }
 
     public function store(Request $request): RedirectResponse
     {
-        $attributes = $request->validate($this->validationRules());
+        $attributes = $request->validate($this->rules());
 
         $tournament = Tournament::create(array_merge($attributes, [
             'created_by' => auth()->id(),
@@ -116,7 +117,7 @@ class TournamentController extends Controller
             ->with('success', "{$tournament->name} wurde hinzugefügt.");
     }
 
-    public function edit(Request $request, Tournament $tournament): Response
+    public function edit(Tournament $tournament): Response
     {
         $user = auth()->user();
 
@@ -138,7 +139,7 @@ class TournamentController extends Controller
 
     public function update(Request $request, Tournament $tournament): RedirectResponse
     {
-        $attributes = $request->validate($this->validationRules());
+        $attributes = $request->validate($this->rules());
 
         $tournament->update($attributes);
 
@@ -146,7 +147,7 @@ class TournamentController extends Controller
             ->with('success', "{$tournament->name} wurde geändert.");
     }
 
-    public function destroy(Request $request, Tournament $tournament): RedirectResponse
+    public function destroy(Tournament $tournament): RedirectResponse
     {
         Backup::create();
 
@@ -158,7 +159,7 @@ class TournamentController extends Controller
             ->with('success', 'Turnier wurde gelöscht.');
     }
 
-    public function draw(Request $request, Tournament $tournament): RedirectResponse
+    public function draw(Tournament $tournament): RedirectResponse
     {
         $tournament->draw();
 
@@ -168,7 +169,7 @@ class TournamentController extends Controller
         ]);
     }
 
-    public function tableLists(Request $request, Tournament $tournament, $round)
+    public function tableLists(Tournament $tournament, $round)
     {
         return (new \Illuminate\Http\Response($tournament->tableLists($round)->Output(), 200))
             ->header('Content-Type', 'application/pdf');

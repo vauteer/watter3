@@ -38,7 +38,7 @@ class AccountController extends Controller
     public function edit(): Response
     {
         $origin = url()->previous();
-        session()->put(self::URL_KEY, $origin);
+        session([self::URL_KEY => $origin]);
 
         $user = auth()->user();
 

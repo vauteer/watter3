@@ -4,13 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Backup;
 use App\Http\Resources\BackupResource;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Response;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class BackupController extends Controller
 {
-    public function index(Request $request):Response
+    public function index():Response
     {
         return inertia('Backups/Index', [
             'backups' => BackupResource::collection(Backup::all()),
@@ -25,7 +27,7 @@ class BackupController extends Controller
         return $this->index($request);
     }
 
-    public function restore(Request $request): \Illuminate\Http\RedirectResponse
+    public function restore(Request $request): RedirectResponse
     {
         $filename = $request->input('filename');
 
@@ -35,7 +37,7 @@ class BackupController extends Controller
             ->with('success', "Das Backup wurde wiederhergestellt.");
     }
 
-    public function download(Request $request, string $filename): \Symfony\Component\HttpFoundation\BinaryFileResponse
+    public function download(string $filename): BinaryFileResponse
     {
         return \response()->download(Backup::path($filename), $filename);
     }

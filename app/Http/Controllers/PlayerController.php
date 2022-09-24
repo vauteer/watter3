@@ -13,7 +13,7 @@ class PlayerController extends Controller
 {
     protected const URL_KEY = 'lastPlayersUrl';
 
-    public function validationRules(): array
+    public function rules(): array
     {
         return  [
             'name' => 'required|string|max:100',
@@ -22,7 +22,8 @@ class PlayerController extends Controller
 
     public function index(Request $request):Response
     {
-        $request->session()->put(self::URL_KEY, url()->full());
+        session([self::URL_KEY => url()->full()]);
+
         return inertia('Players/Index', [
             'players' => PlayerResource::collection(Player::query()
                 ->when($request->input('search'), function($query, $search) {
@@ -44,14 +45,14 @@ class PlayerController extends Controller
         ];
     }
 
-    public function create(Request $request):Response
+    public function create():Response
     {
         return inertia('Players/Edit', $this->editOptions());
     }
 
     public function store(Request $request): RedirectResponse
     {
-        $attributes = $request->validate($this->validationRules());
+        $attributes = $request->validate($this->rules());
 
         $player = Player::create($attributes);
 
@@ -59,7 +60,7 @@ class PlayerController extends Controller
             ->with('success', "{$player->name} hinzugefügt.");
     }
 
-    public function edit(Request $request, Player $player): Response
+    public function edit(Player $player): Response
     {
         return inertia('Players/Edit', array_merge($this->editOptions(),[
             'player' => $player->getAttributes(),
@@ -69,7 +70,7 @@ class PlayerController extends Controller
 
     public function update(Request $request, Player $player): RedirectResponse
     {
-        $attributes = $request->validate($this->validationRules());
+        $attributes = $request->validate($this->rules());
 
         if ($existingPlayer = Player::where('name', $attributes['name'])
             ->where('id', '<>', $player->id)
@@ -87,7 +88,7 @@ class PlayerController extends Controller
             ->with('success', "{$player->name} wurde geändert.");
     }
 
-    public function destroy(Request $request, Player $player): RedirectResponse
+    public function destroy(Player $player): RedirectResponse
     {
         try {
             $player->delete();
@@ -99,4 +100,5 @@ class PlayerController extends Controller
         return redirect(session(self::URL_KEY))
             ->with('success', 'Spieler wurde gelöscht.');
     }
+
 }
