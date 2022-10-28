@@ -22,8 +22,9 @@ class Controller extends BaseController
         session([$this->lastUrlKey() => $url?:url()->full()]);
     }
 
-    protected function getLastUrl()
+    protected function getLastUrl(string $default = null)
     {
-        return session($this->lastUrlKey(), RouteServiceProvider::HOME);
+        return session($this->lastUrlKey(), $default?:RouteServiceProvider::HOME);
     }
+
 }
