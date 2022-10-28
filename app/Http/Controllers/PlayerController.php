@@ -11,9 +11,7 @@ use Illuminate\Http\Request;
 
 class PlayerController extends Controller
 {
-    protected const URL_KEY = 'lastPlayersUrl';
-
-    public function rules(): array
+    private function rules(): array
     {
         return  [
             'name' => 'required|string|max:100',
@@ -22,7 +20,7 @@ class PlayerController extends Controller
 
     public function index(Request $request):Response
     {
-        session([self::URL_KEY => url()->full()]);
+        $this->setLastUrl();
 
         return inertia('Players/Index', [
             'players' => PlayerResource::collection(Player::query()
@@ -41,7 +39,7 @@ class PlayerController extends Controller
     private function editOptions(): array
     {
         return [
-            'origin' => session(self::URL_KEY)
+            'origin' => $this->getLastUrl()
         ];
     }
 
@@ -56,7 +54,7 @@ class PlayerController extends Controller
 
         $player = Player::create($attributes);
 
-        return redirect(session(self::URL_KEY))
+        return redirect($this->getLastUrl())
             ->with('success', "{$player->name} hinzugefügt.");
     }
 
@@ -84,7 +82,7 @@ class PlayerController extends Controller
 
         $player->update($attributes);
 
-        return redirect(session(self::URL_KEY))
+        return redirect($this->getLastUrl())
             ->with('success', "{$player->name} wurde geändert.");
     }
 
@@ -97,7 +95,7 @@ class PlayerController extends Controller
                 ->with('error', "{$player->name} konnte nicht gelöscht werden.");
         }
 
-        return redirect(session(self::URL_KEY))
+        return redirect($this->getLastUrl())
             ->with('success', 'Spieler wurde gelöscht.');
     }
 

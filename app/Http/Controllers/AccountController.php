@@ -12,8 +12,6 @@ use Inertia\Response;
 
 class AccountController extends Controller
 {
-    protected const URL_KEY = 'lastAccountUrl';
-
     private function rules($id): array
     {
         return [
@@ -38,7 +36,7 @@ class AccountController extends Controller
     public function edit(): Response
     {
         $origin = url()->previous();
-        session([self::URL_KEY => $origin]);
+        $this->setLastUrl($origin);
 
         $user = auth()->user();
 

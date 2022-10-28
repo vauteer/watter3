@@ -12,7 +12,7 @@ use Inertia\Response;
 
 class StarterController extends Controller
 {
-    public function rules($tournament): array
+    private function rules($tournament): array
     {
         return  [
             'player1' => ['required', new UniquePlayer($tournament->id)],

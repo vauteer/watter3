@@ -21,9 +21,7 @@ use Inertia\Response;
 
 class TournamentController extends Controller
 {
-    protected const URL_KEY = 'lastTournamentsUrl';
-
-    public function rules(): array
+    private function rules(): array
     {
         return  [
             'name' => 'required|string|max:100',
@@ -52,7 +50,7 @@ class TournamentController extends Controller
 
     public function index(Request $request):Response
     {
-        $request->session()->put(self::URL_KEY, url()->full());
+        $this->setLastUrl();
 
         return inertia('Tournaments/Index', [
             'tournaments' => TournamentResource::collection($this->applyFilters($request)
@@ -93,7 +91,7 @@ class TournamentController extends Controller
     private function editOptions(): array
     {
         return [
-            'origin' => session(self::URL_KEY),
+            'origin' => $this->getLastUrl(),
         ];
     }
 
@@ -113,7 +111,7 @@ class TournamentController extends Controller
         Team::unused()->delete();
         Player::unused()->delete();
 
-        return redirect(session(self::URL_KEY))
+        return redirect($this->getLastUrl())
             ->with('success', "{$tournament->name} wurde hinzugefügt.");
     }
 
@@ -143,7 +141,7 @@ class TournamentController extends Controller
 
         $tournament->update($attributes);
 
-        return redirect(session(self::URL_KEY))
+        return redirect($this->getLastUrl())
             ->with('success', "{$tournament->name} wurde geändert.");
     }
 
@@ -155,7 +153,7 @@ class TournamentController extends Controller
         Team::unused()->delete();
         Player::unused()->delete();
 
-        return redirect(session(self::URL_KEY))
+        return redirect($this->getLastUrl())
             ->with('success', 'Turnier wurde gelöscht.');
     }
 

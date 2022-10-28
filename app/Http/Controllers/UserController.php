@@ -16,9 +16,7 @@ use Inertia\Response;
 
 class UserController extends Controller
 {
-    protected const URL_KEY = 'lastUsersUrl';
-
-    public function rules($id): array
+    private function rules($id): array
     {
         return [
             'name' => 'required|string',
@@ -33,7 +31,7 @@ class UserController extends Controller
 
     public function index(Request $request): Response
     {
-        session([self::URL_KEY => url()->full()]);
+        $this->setLastUrl();
 
         return inertia('Users/Index', [
             'users' => UserResource::collection(User::query()
@@ -53,7 +51,7 @@ class UserController extends Controller
     private function editOptions(): array
     {
         return [
-            'origin' => session(self::URL_KEY),
+            'origin' => $this->getLastUrl(),
         ];
     }
 
@@ -75,7 +73,7 @@ class UserController extends Controller
 
         $user->notify(new UserNotification("Für Sie wurde ein Zugang erstellt.", "Ihr Passwort lautet: {$password}"));
 
-        return redirect(session(self::URL_KEY))
+        return redirect($this->getLastUrl())
             ->with('success', "{$user->name} wurde hinzugefügt.");
     }
 
@@ -98,7 +96,7 @@ class UserController extends Controller
         $user->update($attributes);
 
 
-        return redirect(session(self::URL_KEY))
+        return redirect($this->getLastUrl())
             ->with('success', "{$user->name} wurde geändert.");
     }
 
@@ -106,7 +104,7 @@ class UserController extends Controller
     {
         $user->delete();
 
-        return redirect(session(self::URL_KEY))
+        return redirect($this->getLastUrl())
             ->with('success', 'Benutzer wurde gelöscht.');
     }
 
