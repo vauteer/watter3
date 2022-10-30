@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\AccountRequest;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -12,19 +13,6 @@ use Inertia\Response;
 
 class AccountController extends Controller
 {
-    private function rules($id): array
-    {
-        return [
-            'name' => 'required|string',
-            'email' => [
-                'required',
-                'email',
-                Rule::unique('users')->ignore($id)
-            ],
-            'profile_image' => 'nullable|string|max:100',
-        ];
-    }
-
     private function passwordRules(): array
     {
         return [
@@ -51,10 +39,10 @@ class AccountController extends Controller
         ]);
     }
 
-    public function update(Request $request): RedirectResponse
+    public function update(AccountRequest $request): RedirectResponse
     {
         $user = auth()->user();
-        $attributes = $request->validate($this->rules($user->id));
+        $attributes = $request->validated();
         $passwordAttributes = $request->validate($this->passwordRules());
 
         if ($passwordAttributes['password'] !== null) {
@@ -68,7 +56,7 @@ class AccountController extends Controller
 
         User::removeOrphanProfileImages();
 
-        return redirect(session(self::URL_KEY))
+        return redirect($this->getLastUrl())
             ->with('success', "Das Konto wurde geändert.");
     }
 

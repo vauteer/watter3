@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UserRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use App\Notifications\UserNotification;
@@ -16,19 +17,6 @@ use Inertia\Response;
 
 class UserController extends Controller
 {
-    private function rules($id): array
-    {
-        return [
-            'name' => 'required|string',
-            'email' => [
-                'required',
-                'email',
-                Rule::unique('users')->ignore($id)
-            ],
-            'admin' => 'required|boolean',
-        ];
-    }
-
     public function index(Request $request): Response
     {
         $this->setLastUrl();
@@ -60,9 +48,9 @@ class UserController extends Controller
         return inertia('Users/Edit', $this->editOptions());
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(UserRequest $request): RedirectResponse
     {
-        $attributes = $request->validate($this->rules(-1));
+        $attributes = $request->validated();
 
         $password = Str::random(8);
         Log::info("Created User {$attributes['name']} with Password {$password}");
@@ -90,11 +78,10 @@ class UserController extends Controller
         ]));
     }
 
-    public function update(Request $request, User $user): RedirectResponse
+    public function update(UserRequest $request, User $user): RedirectResponse
     {
-        $attributes = $request->validate($this->rules($user->id));
+        $attributes = $request->validated();
         $user->update($attributes);
-
 
         return redirect($this->getLastUrl())
             ->with('success', "{$user->name} wurde geändert.");

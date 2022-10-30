@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StarterRequest;
 use App\Models\Player;
 use App\Models\Team;
 use App\Models\Tournament;
@@ -12,14 +13,6 @@ use Inertia\Response;
 
 class StarterController extends Controller
 {
-    private function rules($tournament): array
-    {
-        return  [
-            'player1' => ['required', new UniquePlayer($tournament->id)],
-            'player2' => ['nullable', 'different:player1', new UniquePlayer($tournament->id)],
-        ];
-    }
-
     private function editOptions(): array
     {
         return [
@@ -38,9 +31,9 @@ class StarterController extends Controller
         ]));
     }
 
-    public function store(Request $request, Tournament $tournament): RedirectResponse
+    public function store(StarterRequest $request, Tournament $tournament): RedirectResponse
     {
-        $attributes = $request->validate($this->rules($tournament));
+        $attributes = $request->validated();
 
         $this->attachPlayers($tournament, $attributes);
 

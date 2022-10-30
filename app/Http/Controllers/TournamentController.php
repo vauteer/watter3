@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Backup;
+use App\Http\Requests\TournamentRequest;
 use App\Http\Resources\FixtureResource;
 use App\Http\Resources\TournamentResource;
 use App\Models\Fixture;
@@ -21,18 +22,6 @@ use Inertia\Response;
 
 class TournamentController extends Controller
 {
-    private function rules(): array
-    {
-        return  [
-            'name' => 'required|string|max:100',
-            'start' => 'required|date',
-            'rounds' => 'int|min:2|max:9',
-            'games' => 'int|min:2|max:9',
-            'winpoints' => 'int|min:11|max:21',
-            'published' => 'boolean',
-        ];
-    }
-
     private function applyFilters(Request $request): Builder
     {
         $query = Tournament::query();
@@ -100,9 +89,9 @@ class TournamentController extends Controller
         return inertia('Tournaments/Edit', $this->editOptions());
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(TournamentRequest $request): RedirectResponse
     {
-        $attributes = $request->validate($this->rules());
+        $attributes = $request->validated();
 
         $tournament = Tournament::create(array_merge($attributes, [
             'created_by' => auth()->id(),
@@ -135,9 +124,9 @@ class TournamentController extends Controller
         ]));
     }
 
-    public function update(Request $request, Tournament $tournament): RedirectResponse
+    public function update(TournamentRequest $request, Tournament $tournament): RedirectResponse
     {
-        $attributes = $request->validate($this->rules());
+        $attributes = $request->validated();
 
         $tournament->update($attributes);
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\PlayerRequest;
 use App\Http\Resources\PlayerResource;
 use App\Models\Player;
 use App\Models\Team;
@@ -11,13 +12,6 @@ use Illuminate\Http\Request;
 
 class PlayerController extends Controller
 {
-    private function rules(): array
-    {
-        return  [
-            'name' => 'required|string|max:100',
-        ];
-    }
-
     public function index(Request $request):Response
     {
         $this->setLastUrl();
@@ -48,9 +42,9 @@ class PlayerController extends Controller
         return inertia('Players/Edit', $this->editOptions());
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(PlayerRequest $request): RedirectResponse
     {
-        $attributes = $request->validate($this->rules());
+        $attributes = $request->validated();
 
         $player = Player::create($attributes);
 
@@ -66,9 +60,9 @@ class PlayerController extends Controller
         ]));
     }
 
-    public function update(Request $request, Player $player): RedirectResponse
+    public function update(PlayerRequest $request, Player $player): RedirectResponse
     {
-        $attributes = $request->validate($this->rules());
+        $attributes = $request->validated();
 
         if ($existingPlayer = Player::where('name', $attributes['name'])
             ->where('id', '<>', $player->id)
