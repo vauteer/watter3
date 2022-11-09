@@ -6,6 +6,7 @@ import { createInertiaApp } from '@inertiajs/inertia-vue3';
 import { InertiaProgress } from '@inertiajs/progress';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy/dist/vue.m';
+import MyLayout from "@/Shared/MyLayout.vue";
 import LangEn from '../../lang/en.json';
 import LangDe from '../../lang/de.json';
 
@@ -13,7 +14,13 @@ const appName = window.document.getElementsByTagName('title')[0]?.innerText || '
 
 createInertiaApp({
     title: (title) => `${appName} | ${title}`,
-    resolve: (name) => resolvePageComponent(`./Pages/${name}.vue`, import.meta.glob('./Pages/**/*.vue')),
+    resolve: (name) => {
+        const page = resolvePageComponent(`./Pages/${name}.vue`, import.meta.glob('./Pages/**/*.vue'));
+        page.then((module) => {
+            module.default.layout = module.default.layout || MyLayout;
+        });
+        return page;
+    },
     setup({ el, app, props, plugin }) {
 
         const i18n = createI18n({

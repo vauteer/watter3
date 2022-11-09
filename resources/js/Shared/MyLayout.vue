@@ -55,31 +55,29 @@ let logout = () => {
                         <div class="ml-4 flex items-center md:ml-6">
                             <!-- Profile dropdown -->
                             <Menu as="div" class="ml-3 relative">
-                                <div>
-                                    <MenuButton class="max-w-xs bg-gray-800 rounded-full flex items-center text-sm text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white">
-                                        <span class="sr-only">Open user menu</span>
-                                        <img class="w-16 object-cover rounded-full" :src="user.profileUrl" alt="" />
-                                    </MenuButton>
-                                </div>
+                                <MenuButton class="max-w-xs bg-gray-800 rounded-full flex items-center text-sm text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white">
+                                    <span class="sr-only">Open user menu</span>
+                                    <img class="w-16 object-cover rounded-full" :src="user.profileUrl" alt="" />
+                                </MenuButton>
                                 <transition enter-active-class="transition ease-out duration-100" enter-from-class="transform opacity-0 scale-95" enter-to-class="transform opacity-100 scale-100" leave-active-class="transition ease-in duration-75" leave-from-class="transform opacity-100 scale-100" leave-to-class="transform opacity-0 scale-95">
                                     <MenuItems class="z-50 origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
                                         <MenuItem disabled>
                                             <span class="block px-4 py-2 text-sm text-gray-700 opacity-75">{{ user.name }}</span>
                                         </MenuItem>
-                                        <MenuItem v-if="user.admin" v-slot="{ active }">
-                                            <Link :href="route('users.index')"
+                                        <MenuItem v-if="user.admin" v-slot="{ active, close }">
+                                            <Link :href="route('users.index')" preserve-state @click="close"
                                                   :class="[active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700']">
                                                 Benutzer
                                             </Link>
                                         </MenuItem>
-                                        <MenuItem v-if="user.admin" v-slot="{ active }">
-                                            <Link :href="route('backups.index')"
+                                        <MenuItem v-if="user.admin" v-slot="{ active, close }">
+                                            <Link :href="route('backups.index')" preserve-state @click="close"
                                                   :class="[active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700']">
                                                 Backups
                                             </Link>
                                         </MenuItem>
-                                        <MenuItem v-slot="{ active }">
-                                            <Link :href="route('account.edit')"
+                                        <MenuItem v-slot="{ active, close }">
+                                            <Link :href="route('account.edit')" preserve-state @click="close"
                                                   :class="[active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700']">
                                                 Mein Konto
                                             </Link>

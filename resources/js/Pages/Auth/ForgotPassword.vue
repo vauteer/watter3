@@ -1,9 +1,3 @@
-<script>
-export default {
-    layout: null,
-}
-</script>
-
 <script setup>
 import { useForm } from "@inertiajs/inertia-vue3";
 
