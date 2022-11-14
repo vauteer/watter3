@@ -49,12 +49,12 @@ let switchRound = (round) => {
                 class="bg-blue-500 py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-center text-gray-700 hover:bg-blue-200 focus:outline-none focus:ring-1 focus:ring-offset-1 focus:ring-indigo-500"
                 :href="`/tournaments/${tournament.id}/lists/${currentRound}`" target="_blank">Tisch-Listen</a>
         </div>
-        <div class="mt-4 mb-4 flex flex-col">
+        <div class="mt-4 mb-4 flex flex-col print:break-after-page">
             <div class="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
                 <div class="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
                     <div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
                         <table class="min-w-full divide-y divide-gray-300">
-                            <thead class="bg-gray-50">
+                            <thead class="bg-gray-50 break-inside-auto">
                             <tr>
                                 <th scope="col"
                                     class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 text-center sm:pl-6">
@@ -129,7 +129,7 @@ let switchRound = (round) => {
                 <div class="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
                     <div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
                         <table class="min-w-full divide-y divide-gray-300">
-                            <thead class="bg-gray-50">
+                            <thead class="bg-gray-50 break-inside-auto">
                             <tr>
                                 <th scope="col"
                                     class="w-6 py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 text-center sm:pl-6">

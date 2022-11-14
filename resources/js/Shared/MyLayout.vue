@@ -24,7 +24,7 @@ let logout = () => {
 
 <template>
     <div class="min-h-full">
-        <Disclosure as="nav" class="bg-gray-800" v-slot="{ open }">
+        <Disclosure as="nav" class="bg-gray-800 print:hidden" v-slot="{ open }">
             <div class="max-w-2xl mx-auto px-2 sm:px-6 lg:px-4">
                 <div class="flex items-center justify-between h-16">
                     <div class="w-full flex items-center justify-between">
