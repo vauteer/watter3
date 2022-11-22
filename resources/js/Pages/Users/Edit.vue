@@ -20,20 +20,17 @@ let form = useForm({
 });
 
 let showConfirmation = ref(false);
-let editMode = ref(false);
 
 onMounted(() => {
     if (props.user !== undefined) {
         form.name = props.user.name;
         form.email = props.user.email;
         form.admin = props.user.admin;
-
-        editMode.value = true;
     }
 });
 
 let submit = () => {
-    if (editMode.value === true) {
+    if (editMode.value) {
         form.put(`/users/${props.user.id}`);
     } else {
         form.post('/users');
@@ -45,13 +42,9 @@ let deleteEntity = () => {
     Inertia.delete(`/users/${props.user.id}`);
 };
 
-const title = computed(() => {
-    return editMode.value ? "Benutzer bearbeiten" : "Neuer Benutzer";
-});
-
-const submitButtonText = computed(() => {
-    return editMode.value ? "Speichern" : "Hinzufügen";
-});
+const editMode = computed(() => props.user !== undefined);
+const title = computed(() => editMode.value ? "Benutzer bearbeiten" : "Neuer Benutzer");
+const submitButtonText = computed(() => editMode.value ? "Speichern" : "Hinzufügen");
 
 </script>
 

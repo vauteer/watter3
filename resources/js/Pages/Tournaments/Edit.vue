@@ -23,7 +23,6 @@ let form = useForm({
 });
 
 let showConfirmation = ref(false);
-let editMode = ref(false);
 let drawn = ref(false);
 
 onMounted(() => {
@@ -35,7 +34,6 @@ onMounted(() => {
         form.winpoints = String(props.tournament.winpoints);
         form.private = Boolean(props.tournament.private);
 
-        editMode.value = true;
         drawn.value = Boolean(props.tournament.drawn)
     }
 
@@ -43,7 +41,7 @@ onMounted(() => {
 });
 
 let submit = () => {
-    if (editMode.value === true) {
+    if (editMode.value) {
         form.put(`/tournaments/${props.tournament.id}`);
     } else {
         form.post('/tournaments');
@@ -55,13 +53,9 @@ let deleteEntity = () => {
     Inertia.delete(`/tournaments/${props.tournament.id}`);
 };
 
-const title = computed(() => {
-    return editMode.value ? "Turnier bearbeiten" : "Neues Turnier";
-});
-
-const submitButtonText = computed(() => {
-    return editMode.value ? "Speichern" : "Hinzufügen";
-});
+const editMode = computed(() => props.tournament !== undefined);
+const title = computed(() => editMode.value ? "Turnier bearbeiten" : "Neues Turnier");
+const submitButtonText = computed(() => editMode.value ? "Speichern" : "Hinzufügen");
 
 </script>
 

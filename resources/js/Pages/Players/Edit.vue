@@ -17,17 +17,15 @@ let form = useForm({
 });
 
 let showConfirmation = ref(false);
-let editMode = ref(false);
 
 onMounted(() => {
     if (props.player !== undefined) {
         form.name = props.player.name;
-        editMode.value = true;
     }
 });
 
 let submit = () => {
-    if (editMode.value === true) {
+    if (editMode.value) {
         form.put(`/players/${props.player.id}`);
     } else {
         form.post('/players');
@@ -39,13 +37,9 @@ let deleteEntity = () => {
     Inertia.delete(`/players/${props.player.id}`);
 };
 
-const title = computed(() => {
-    return editMode.value ? "Spieler bearbeiten" : "Neuer Spieler";
-});
-
-const submitButtonText = computed(() => {
-    return editMode.value ? "Speichern" : "Hinzufügen";
-});
+const editMode = computed(() => props.player !== undefined);
+const title = computed(() => editMode.value ? "Spieler bearbeiten" : "Neuer Spieler");
+const submitButtonText = computed(() => editMode.value ? "Speichern" : "Hinzufügen");
 
 </script>
 
