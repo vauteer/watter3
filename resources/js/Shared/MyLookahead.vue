@@ -20,6 +20,14 @@ let props = defineProps({
         default: true,
     },
     id: String,
+    optionsUp: {
+        type: Boolean,
+        default: false,
+    },
+    lowHeight: {
+        type: Boolean,
+        default: false,
+    }
 });
 
 const filteredOptions = computed(() => {
@@ -63,7 +71,9 @@ const query = ref('')
                 <ChevronUpDownIcon class="h-5 w-5 text-gray-400" aria-hidden="true"/>
             </ComboboxButton>
             <ComboboxOptions v-if="filteredOptions.length > 0"
-                             class="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                             class="absolute z-10 mt-1 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm"
+                             :class="[lowHeight ? 'max-h-28' : 'max-h-60', { 'bottom-full' : optionsUp }]"
+            >
                 <ComboboxOption v-for="option in filteredOptions" :key="option.id"
                                 :value="option"
                                 v-slot="{ active, selected }">

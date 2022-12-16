@@ -116,9 +116,13 @@ let draw = () => {
                         <div class="space-y-8 divide-y divide-gray-200 my-3 mx-2">
                             <div class="grid grid-cols-1 gap-y-4 gap-x-4 bottom-0 sm:grid-cols-8 py-2">
                                 <MyLookahead class="sm:col-span-3" v-model="form.player1" :error="form.errors.player1"
-                                             :options="players" label="Spieler 1" :nullable="false" id="player1" />
+                                             :options="players" label="Spieler 1" :nullable="false" id="player1"
+                                             lowHeight
+                                />
                                 <MyLookahead class="sm:col-span-3" v-model="form.player2" :error="form.errors.player2"
-                                             :options="players" label="Spieler 2" :nullable="true" id="player2" />
+                                             :options="players" label="Spieler 2" :nullable="true" id="player2"
+                                             lowHeight
+                                />
                                 <MyButton type="submit" class="h-10 sm:col-span-2 mt-5 mb-3" :disabled="form.processing">
                                     Speichern
                                 </MyButton>
