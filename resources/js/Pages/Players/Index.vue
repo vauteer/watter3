@@ -1,11 +1,10 @@
 <script setup>
-import {Inertia} from "@inertiajs/inertia";
-import {computed, ref, watch} from "vue";
-import { Head, Link } from '@inertiajs/inertia-vue3';
+import { computed, ref, watch } from "vue";
+import { router, Head, Link } from '@inertiajs/vue3';
 import MyCategory from '@/Shared/MyCategory.vue';
 import MyPagination from '@/Shared/MyPagination.vue';
 import { PencilIcon, LockClosedIcon } from '@heroicons/vue/24/outline';
-import {throttle} from "lodash";
+import { throttle } from "lodash";
 
 let props = defineProps({
     players: Object,
@@ -14,7 +13,7 @@ let props = defineProps({
 
 let showTournaments = (id) => {
     let filter = `playedBy_${id}`
-    Inertia.get(route('tournaments.index'), {
+    router.get(route('tournaments.index'), {
             filter: filter,
         },
         {
@@ -26,7 +25,7 @@ let showTournaments = (id) => {
 let search = ref(props.options.search);
 
 watch(search, throttle(function (value) {
-    Inertia.get('/players', {search: value}, {
+    router.get('/players', {search: value}, {
         preserveState: true,
         replace: true,
     });

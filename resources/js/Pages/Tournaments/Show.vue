@@ -1,8 +1,7 @@
 <script setup>
-import {computed} from "vue";
-import {Inertia} from "@inertiajs/inertia";
-import {Head, Link} from '@inertiajs/inertia-vue3';
-import {PencilIcon} from '@heroicons/vue/24/outline';
+import { computed } from "vue";
+import { router, Head, Link } from '@inertiajs/vue3';
+import { PencilIcon } from '@heroicons/vue/24/outline';
 import MyTabs from "@/Shared/MyTabs.vue";
 
 let props = defineProps({
@@ -32,7 +31,7 @@ let getTabsModel = computed(() => {
 });
 
 let switchRound = (round) => {
-    Inertia.get(`/tournaments/${props.tournament.id}/show?round=${round}`);
+    router.get(`/tournaments/${props.tournament.id}/show?round=${round}`);
 };
 
 </script>

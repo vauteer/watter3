@@ -1,8 +1,6 @@
 <script setup>
 import { computed, ref, onMounted } from "vue";
-import { Inertia } from "@inertiajs/inertia";
-import { useForm } from "@inertiajs/inertia-vue3";
-import { Head } from '@inertiajs/inertia-vue3';
+import { router, Head, useForm } from "@inertiajs/vue3";
 import MyButton from '@/Shared/MyButton.vue';
 import MyLookahead from "@/Shared/MyLookahead.vue";
 import MyConfirmation from "@/Shared/MyConfirmation.vue";
@@ -70,7 +68,7 @@ let deletePlayer = () => {
     deletablePlayer.value = null;
 
     if (playerId != null) {
-        Inertia.delete(route('tournaments.players.destroy', [props.tournamentId, playerId]));
+        router.delete(route('tournaments.players.destroy', [props.tournamentId, playerId]));
     }
 };
 
@@ -87,7 +85,7 @@ let deleteTeam = () => {
     deletableTeam.value = null;
 
     if (teamId != null) {
-        Inertia.delete(route('tournaments.teams.destroy', [props.tournamentId, teamId]));
+        router.delete(route('tournaments.teams.destroy', [props.tournamentId, teamId]));
     }
 };
 
@@ -95,7 +93,7 @@ let confirmDraw = ref(false);
 
 let draw = () => {
     confirmDraw.value = false;
-    Inertia.post(route('tournaments.draw', props.tournamentId));
+    router.post(route('tournaments.draw', props.tournamentId));
 }
 
 </script>
@@ -193,7 +191,7 @@ let draw = () => {
                     </table>
                 </div>
                 <div class="w-full flex justify-between mt-3">
-                    <MyButton theme="abort" @click="Inertia.get(origin)">
+                    <MyButton theme="abort" @click="router.get(origin)">
                         {{ $t('Zurück') }}
                     </MyButton>
                     <MyButton v-if="canDraw" @click="confirmDraw=true">

@@ -1,11 +1,10 @@
 <script setup>
-import {Inertia} from "@inertiajs/inertia";
-import {computed, ref, watch} from "vue";
-import { Head, Link } from '@inertiajs/inertia-vue3';
+import { computed, ref, watch } from "vue";
+import { router, Head, Link } from '@inertiajs/vue3';
 import MyCategory from '@/Shared/MyCategory.vue';
 import MyPagination from '@/Shared/MyPagination.vue';
 import { PencilIcon, EyeSlashIcon, UserPlusIcon } from '@heroicons/vue/24/outline';
-import {throttle} from "lodash";
+import { throttle } from "lodash";
 
 let props = defineProps({
     auth: Object,
@@ -17,7 +16,7 @@ let props = defineProps({
 let search = ref(props.options.search);
 
 watch(search, throttle(function (value) {
-    Inertia.get(route('tournaments'), {search: value}, {
+    router.get(route('tournaments'), {search: value}, {
         preserveState: true,
         replace: true,
     });

@@ -1,9 +1,8 @@
 <script setup>
-import {computed, ref, watch} from "vue";
-import {Head, Link} from '@inertiajs/inertia-vue3';
-import {Inertia} from "@inertiajs/inertia";
-import {PencilIcon, LockClosedIcon} from '@heroicons/vue/24/outline';
-import {throttle} from "lodash";
+import { computed, ref, watch } from "vue";
+import { router, Head, Link } from '@inertiajs/vue3';
+import { PencilIcon, LockClosedIcon } from '@heroicons/vue/24/outline';
+import { throttle } from "lodash";
 import MyCategory from "@/Shared/MyCategory.vue";
 import MyPagination from "@/Shared/MyPagination.vue";
 
@@ -20,7 +19,7 @@ const createUrl = computed(() => {
 let search = ref(props.options.search);
 
 watch(search, throttle(function (value) {
-    Inertia.get('/items', {search: value}, {
+    router.get('/items', {search: value}, {
         preserveState: true,
         replace: true,
     });

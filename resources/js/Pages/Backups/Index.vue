@@ -1,7 +1,6 @@
 <script setup>
 import { computed, ref } from "vue";
-import {Head, Link} from '@inertiajs/inertia-vue3';
-import { Inertia } from '@inertiajs/inertia';
+import { router, Head, Link } from '@inertiajs/vue3';
 import MyCategory from "@/Shared/MyCategory.vue";
 import MyConfirmation from "@/Shared/MyConfirmation.vue";
 import MyButton from "@/Shared/MyButton.vue";
@@ -14,7 +13,7 @@ let props = defineProps({
 let backupToRestore = ref(false);
 
 let restoreBackup = () => {
-    Inertia.post('/backups/restore', {
+    router.post('/backups/restore', {
         filename: backupToRestore.value.filename,
     });
     backupToRestore.value = null;
