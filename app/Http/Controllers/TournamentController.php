@@ -39,7 +39,7 @@ class TournamentController extends Controller
 
         return inertia('Tournaments/Index', [
             'tournaments' => TournamentResource::collection($this->applyFilters($request)
-                ->whereIn('id', Tournament::visibleIds(auth()->user()))
+                ->visibleTo(auth()->user())
                 ->when($request->input('search'), function($query, $search) {
                     $query->where('name', 'like', "%{$search}%");
                 })

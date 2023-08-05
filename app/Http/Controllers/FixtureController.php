@@ -14,7 +14,10 @@ class FixtureController extends Controller
     public function edit(Fixture $fixture): Response
     {
         $tournament = $fixture->tournament;
-        $origin = route('tournaments.show', ['tournament' => $fixture->tournament_id, 'round' => $fixture->round]);
+        $origin = route('tournaments.show', [
+            'tournament' => $fixture->tournament_id,
+            'round' => $fixture->round
+        ]);
 
         return inertia('Fixtures/Edit', [
             'origin' => $origin,

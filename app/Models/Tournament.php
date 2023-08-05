@@ -50,27 +50,6 @@ class Tournament extends Model
         return $this->teams()->count() * 2 + $this->players()->count();
     }
 
-    public static function visibleIds(User|null $user)
-    {
-        if ($user === null) {
-            $tournaments = Tournament::where('start', '<', Carbon::now())
-                ->where('private', false)
-                ->get();
-//                ->filter(function ($item, $key) {
-//                    return $item->finished();
-//                });
-        } else if ($user->admin) {
-            $tournaments = Tournament::all();
-        } else {
-            $tournaments = Tournament::where('start', '<', Carbon::now())
-                ->where('private', false)
-                ->orWhere('created_by', $user->id)
-                ->get();
-        }
-
-        return $tournaments->pluck(['id'])->toArray();
-    }
-
     public static function test()
     {
         $tournaments = Tournament::all();
@@ -261,6 +240,19 @@ class Tournament extends Model
             return $this->admin || ($this->start < Carbon::now() || $this->created_by === $user->id);
         }
     }
+
+    public function scopeVisibleTo($query, User|null $user)
+    {
+        if ($user?->admin)
+            return;
+
+        $query->where('start', '<', Carbon::now())
+            ->where('private', false);
+
+        if ($user !== null)
+            $query->orWhere('created_by', $user->id);
+    }
+
 
     public function scopeCreatedBy($query, int $userId)
     {
