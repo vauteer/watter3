@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 
 class Tournament extends Model
 {
@@ -58,15 +59,13 @@ class Tournament extends Model
 //                ->filter(function ($item, $key) {
 //                    return $item->finished();
 //                });
-        }
-        else if ($user->admin) {
+        } else if ($user->admin) {
             $tournaments = Tournament::all();
-        }
-        else {
+        } else {
             $tournaments = Tournament::where('start', '<', Carbon::now())
                 ->where('private', false)
                 ->orWhere('created_by', $user->id)
-            ->get();
+                ->get();
         }
 
         return $tournaments->pluck(['id'])->toArray();
@@ -105,8 +104,8 @@ class Tournament extends Model
             ->get(['player_id', 'name'])
             ->mapWithKeys(function ($player) {
                 return [$player->player_id => [
-                        'name' => $player->name,
-                    ]
+                    'name' => $player->name,
+                ]
                 ];
             });
     }
@@ -270,11 +269,13 @@ class Tournament extends Model
 
     public function scopePlayedBy($query, int $playerId)
     {
-        $where = 'tournaments.id in (select a.id from tournaments a ' .
-            'join team_tournament b on a.id = b.tournament_id ' .
-            'join teams c on c.id = b.team_id ' .
-            'where c.player1_id = ? or c.player2_id = ?)';
-
-        $query->whereRaw($where, [$playerId, $playerId]);
+        $query->whereIn('id', DB::table('tournaments')
+            ->join('team_tournament', 'tournaments.id', '=',
+                'team_tournament.tournament_id')
+            ->join('teams', 'teams.id', '=', 'team_tournament.team_id')
+            ->where('teams.player1_id', $playerId)
+            ->orWhere('teams.player2_id', $playerId)
+            ->pluck('tournaments.id'));
     }
+
 }

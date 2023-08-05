@@ -39,10 +39,11 @@ class Player extends Model
 
     public function scopeUnused($query)
     {
-        $where = "id not in (SELECT player1_id FROM teams " . "
-            UNION SELECT player2_id FROM teams " .
-            "UNION SELECT player_id FROM player_tournament)";
-
-        $query->whereRaw($where);
+        $query->whereNotIn('id',
+            DB::table('teams')->select('player1_id as player_id')
+                ->union(DB::table('teams')->select('player2_id as player_id'))
+                ->union(DB::table('player_tournament')->select('player_id'))
+                ->pluck('player_id'));
     }
+
 }
