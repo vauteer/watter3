@@ -1,4 +1,5 @@
 {
+    "name": "watter3",
     "private": true,
     "scripts": {
         "dev": "vite",
