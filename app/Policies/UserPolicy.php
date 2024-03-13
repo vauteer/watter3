@@ -67,4 +67,8 @@ class UserPolicy
         return $user->admin;
     }
 
+    public function root(User $user)
+    {
+        return $user->admin;
+    }
 }

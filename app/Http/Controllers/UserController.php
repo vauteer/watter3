@@ -101,4 +101,11 @@ class UserController extends Controller
 
         return redirect()->route('tournaments.index');
     }
+
+    public function showLog(Request $request): \Symfony\Component\HttpFoundation\BinaryFileResponse
+    {
+        $filename = storage_path('logs/laravel.log');
+
+        return response()->file($filename, ['content-type' => 'text']);
+    }
 }
