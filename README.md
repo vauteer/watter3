@@ -23,12 +23,14 @@ Es ist eine 'Single-Page-Application' und kann per Browser von verschiedenen End
 3. Die Konfigurations-Datei erzeugen<br>cp .env.example .env
 1. composer install --optimize-autoloader --no-dev
 4. php artisan key:generate
+5. php artisan storage:link
 5. Eine leere MySQL Datenbank erzeugen
 7. Die Konfigurations-Datei anpassen (Datenbank, Titel, ...)
 8. php artisan migrate
 9. Einen Administrator anlegen<br>php artisan app:user 'Max Mustermann' 'max@mustermann.de' --password=******** --admin
 9. npm install
 10. npm run build
+11. Zum Testen: php artisan serve
 11. Eine Domain/Subdomain einrichten<br>Dokumentenstamm ist das 'public' Verzeichnis!
 12. Mit den Administrator-Daten anmelden
 
