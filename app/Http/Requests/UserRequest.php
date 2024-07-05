@@ -24,12 +24,14 @@ class UserRequest extends FormRequest
      */
     public function rules()
     {
+        // $this->user is the user we create or edit, not the logged-in user
+
         return [
             'name' => 'required|string',
             'email' => [
                 'required',
                 'email',
-                Rule::unique('users')->ignore($this->user()->id)
+                Rule::unique('users')->ignore($this->user?->id)
             ],
             'admin' => 'required|boolean',
         ];
