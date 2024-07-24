@@ -28,7 +28,10 @@ class BackupCommand extends Command
     public function handle(): void
     {
         if (!Backup::isDirty()) {
-            $this->info('The database has not changed since the last backup');
+            $message = 'No backup made. No changes since the last backup.';
+            Log::info($message);
+            $this->info($message);
+
             return;
         }
 
