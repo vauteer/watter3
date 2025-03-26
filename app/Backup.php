@@ -20,9 +20,6 @@ class Backup
         if (!self::isDirty()) {
             $message = 'Kein Backup gemacht. Keine Änderungen seit dem letzten Backup.';
             Log::info($message);
-            if (env('APP_ENV') === 'production') {
-                User::root()->sendMail($message);
-            }
 
             return $message;
         }
@@ -98,10 +95,10 @@ class Backup
 
     private static function copyS3(string $filePath): void
     {
-        if (!env('AWS_ENABLED', false))
+        if (!config('services.aws.enabled', false))
             return;
 
-        $destinationPath = env('AWS_ROOT', '') . DIRECTORY_SEPARATOR .
+        $destinationPath = config('services.aws.root', '') . DIRECTORY_SEPARATOR .
             pathinfo($filePath, PATHINFO_BASENAME);
 
         $fp = fopen($filePath, 'r');
@@ -135,7 +132,7 @@ class Backup
             ];
         }
 
-        return Arr::sort($result, function ($value) {
+        return Arr::sortDesc($result, function ($value) {
             return $value['age'];
         });
     }
